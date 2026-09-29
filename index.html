@@ -1320,13 +1320,50 @@ async function _upsertEntry(k) {
   }
 }
 
+// ── SERIALIZACIÓN DE GUARDADOS POR DÍA ──────────────────────
+// Evita que dos guardados para la MISMA key (p.ej. marcar SL y, segundos después,
+// marcar Funded) puedan viajar en paralelo y que la respuesta del más antiguo
+// llegue DESPUÉS que la del más reciente, pisando en la BD un cambio más nuevo
+// con uno más viejo. Si ya hay un guardado en curso para `k`, este se limita a
+// esperarlo y relanza automáticamente con el estado MÁS ACTUAL de journal[k] en
+// cuanto termina, así el último guardado que se ejecuta siempre refleja lo último
+// que el usuario marcó. También reintenta una vez ante un fallo puntual (red
+// inestable, blip momentáneo) antes de dar el guardado por fallido, para no
+// obligar al usuario a repetir la acción por un error transitorio.
+let _saveInFlight = {}; // k -> Promise del guardado en curso
+let _saveRerun = {};    // k -> true si llegó un cambio nuevo mientras se guardaba
+
+async function _performSave(k) {
+  if (_saveInFlight[k]) {
+    _saveRerun[k] = true;
+    return _saveInFlight[k];
+  }
+  const run = (async () => {
+    let result = await _upsertEntry(k);
+    if (result.error) {
+      // Un reintento automático antes de rendirse — cubre blips de red puntuales
+      await new Promise(r => setTimeout(r, 600));
+      result = await _upsertEntry(k);
+    }
+    return result;
+  })();
+  _saveInFlight[k] = run;
+  const result = await run;
+  delete _saveInFlight[k];
+  if (_saveRerun[k]) {
+    delete _saveRerun[k];
+    return _performSave(k); // relanzar con el estado más reciente de journal[k]
+  }
+  return result;
+}
+
 async function smartSave(k) {
   if(_isGuest()) { _guestSaveJournal(); renderMonthTable(); renderCalendar(); return; }
   if(!currentUser || !_cachedToken) { showToast('⚠️ Debes iniciar sesión para guardar', 'err'); return; }
   clearTimeout(_saveTimers[k]);
   _saveTimers[k] = setTimeout(async () => {
     delete _saveTimers[k];
-    const { error } = await _upsertEntry(k);
+    const { error } = await _performSave(k);
     if(error) {
       if(Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) {
         if(_prevSnapshot[k] !== null) { journal[k] = _prevSnapshot[k]; } else { delete journal[k]; }
@@ -1353,7 +1390,7 @@ async function flushPendingSaves() {
   _saveTimers = {};
   if(_isGuest()) { _guestSaveJournal(); return; }
   if(!currentUser || !_cachedToken) return;
-  await Promise.all(keys.map(k => _upsertEntry(k)));
+  await Promise.all(keys.map(k => _performSave(k)));
 }
 
 // ── AVATAR SUPABASE ──
@@ -2376,7 +2413,7 @@ function renderDayFormBody(k,m){
       </div>
     </div>
     <div><div class="field-label">P&L (USD)</div>
-      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')"/></div>
+      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onPnlBlur('${k}')"/></div>
     </div>
     <div><div class="field-label">HORA DE ENTRADA</div>
       <div style="display:flex;gap:6px;align-items:center;">
@@ -2415,9 +2452,25 @@ function onFieldChange(k){
   const notasEl=document.getElementById('notas-'+k); if(notasEl) journal[k].notas=notasEl.value;
   smartSave(k);
 }
+// Al salir del campo P&L (no en cada tecla, para no interrumpir mientras se escribe):
+// si el resultado marcado es SL y el importe quedó en positivo, forzar el signo negativo.
+function onPnlBlur(k){
+  const pnlEl=document.getElementById('pnl-'+k);
+  if(pnlEl && journal[k] && journal[k].resultado==='sl' && pnlEl.value!==''){
+    const n=parseFloat(pnlEl.value);
+    if(!isNaN(n) && n>0) pnlEl.value=String(-n);
+  }
+  onFieldChange(k);
+}
 function clearHora(k){ const el=document.getElementById('hora-'+k); if(el) el.value=''; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=journal[k]?JSON.parse(JSON.stringify(journal[k])):null; if(!journal[k]) journal[k]={}; journal[k].hora=''; smartSave(k); }
 function toggleDay(k,h){ const b=document.getElementById('body-'+k); b.classList.toggle('open'); h.querySelector('.arr').style.transform=b.classList.contains('open')?'rotate(90deg)':''; }
-function toggleRes(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].resultado===val; journal[k].resultado=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>c.className='chip'); if(!a) el.classList.add('sel-'+val); smartSave(k); }
+function toggleRes(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].resultado===val; journal[k].resultado=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>c.className='chip'); if(!a) el.classList.add('sel-'+val); if(!a&&val==='sl') _applySlSign(k); smartSave(k); }
+// Si se marca SL y ya hay un importe de P&L introducido, forzar que sea negativo automáticamente
+function _applySlSign(k){
+  const el=document.getElementById('pnl-'+k); if(!el||el.value==='') return;
+  const n=parseFloat(el.value);
+  if(!isNaN(n) && n>0){ el.value=String(-n); if(journal[k]) journal[k].pnl=el.value; }
+}
 function toggleFlag(k,flag,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; journal[k][flag]=!journal[k][flag]; el.className='chip'+(journal[k][flag]?' sel-'+flag:''); smartSave(k); }
 function toggleScore(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].score===val; journal[k].score=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>c.className='chip'); if(!a) el.classList.add('sel-'+val); smartSave(k); }
 function toggleCond(k,el,cond){
@@ -2615,7 +2668,7 @@ async function saveDay(k){
   if(pEl) journal[k].pnl=pEl.value; if(hEl) journal[k].hora=hEl.value; if(nEl) journal[k].notas=nEl.value;
   // Cancel any pending debounced save for this key before explicit save
   if(_saveTimers[k]){ clearTimeout(_saveTimers[k]); delete _saveTimers[k]; }
-  const { error } = await _upsertEntry(k);
+  const { error } = await _performSave(k);
   if(error) {
     if(prev !== undefined) { journal[k] = prev; }
     // Si no hay snapshot previo no revertir — no destruir datos que el usuario acaba de introducir
