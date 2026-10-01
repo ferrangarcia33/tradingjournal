@@ -2188,7 +2188,7 @@ function renderGallery(){
             const rowCells2=gcells2.slice(r*5,(r+1)*5); const hasImg2=rowCells2.some(cell=>cell.inMonth&&dayMap2[cell.d]);
             const row2=document.createElement('div'); row2.style.cssText=`display:grid;grid-template-columns:repeat(5,1fr);gap:8px;flex:${hasImg2?2:1};min-height:0;`;
             for(let c=0;c<5;c++){
-              const cell2=gcells2[r*5+c]; const wrap2=document.createElement('div'); wrap2.style.cssText='height:100%;';
+              const cell2=gcells2[r*5+c]; const wrap2=document.createElement('div'); wrap2.style.cssText='height:100%;min-width:0;';
               if(cell2.inMonth&&dayMap2[cell2.d]){
                 const item2=dayMap2[cell2.d]; const lbIdx2=lightboxItems.findIndex(i=>i.d===item2.d);
                 const {e:ev2,m:m2,d:d2}=item2;
@@ -2204,7 +2204,7 @@ function renderGallery(){
                 card2.style.cssText=`background:#111;border-radius:10px;overflow:hidden;cursor:pointer;${todayBorder2}transition:border-color .15s;height:100%;display:flex;flex-direction:column;`;
                 card2.onmouseenter=()=>card2.style.borderColor='#4caf50'; card2.onmouseleave=()=>card2.style.borderColor=isToday2?'#4caf50':'#1e1e1e';
                 card2.onclick=()=>openLightbox(lbIdx2);
-                card2.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(ev2.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res2?`<span style="position:absolute;top:6px;right:6px;background:${resBg2};color:${resColor2};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res2==='nt'?'NT':res2.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;${isToday2?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday2?'#4caf50':'#ccc'};">${isToday2?'● ':''} ${dow2b} ${d2} ${MONTHS[m2-1]}</div>${pnlStr2?`<div style="font-size:12px;font-weight:600;color:${pnl2>0?'#4caf50':pnl2<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr2}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+                card2.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(ev2.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res2?`<span style="position:absolute;top:6px;right:6px;background:${resBg2};color:${resColor2};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res2==='nt'?'NT':res2.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday2?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday2?'#4caf50':'#ccc'};">${isToday2?'● ':''} ${dow2b} ${d2} ${MONTHS[m2-1]}</div>${pnlStr2?`<div style="font-size:12px;font-weight:600;color:${pnl2>0?'#4caf50':pnl2<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr2}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
                 wrap2.appendChild(card2);
               } else if(cell2.inMonth){
                 const isToday2=reqYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&cell2.d===TODAY_DAY;
@@ -2269,7 +2269,7 @@ function renderGallery(){
     for(let c=0;c<5;c++){
       const cell=gcells[r*5+c];
       const wrap=document.createElement('div');
-      wrap.style.cssText='height:100%;';
+      wrap.style.cssText='height:100%;min-width:0;';
       if(cell.inMonth&&dayMap[cell.d]){
         const item=dayMap[cell.d];
         const lbIdx=lightboxItems.findIndex(i=>i.d===item.d);
@@ -2287,7 +2287,7 @@ function renderGallery(){
         card.onmouseenter=()=>card.style.borderColor='#4caf50';
         card.onmouseleave=()=>card.style.borderColor=isToday?'#4caf50':'#1e1e1e';
         card.onclick=()=>openLightbox(lbIdx);
-        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(e.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(e.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
         const isToday=galleryYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&cell.d===TODAY_DAY;
@@ -3282,7 +3282,7 @@ function _renderFjGallery(){
     for(let c=0;c<5;c++){
       const cell=gcells[r*5+c];
       const wrap=document.createElement('div');
-      wrap.style.cssText='height:100%;';
+      wrap.style.cssText='height:100%;min-width:0;';
       if(cell.inMonth&&dayMap[cell.d]){
         const item=dayMap[cell.d];
         const {e,m,d}=item;
@@ -3301,7 +3301,7 @@ function _renderFjGallery(){
         card.onmouseleave=()=>card.style.borderColor=isToday?'#4caf50':'#1e1e1e';
         card.onclick=()=>openLightbox(lbIdx);
         const src=e.img_url||e.img||'';
-        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
         const isToday=fjYear===TODAY_YEAR&&_fjGalleryMonth===TODAY_MONTH&&cell.d===TODAY_DAY;
