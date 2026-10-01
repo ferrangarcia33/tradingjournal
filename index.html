@@ -327,11 +327,53 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 .del-data-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .ghost-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:8px;padding:6px 13px;font-size:11px;font-family:'DM Sans',sans-serif;color:#a0a0b0;cursor:pointer;transition:all .15s;white-space:nowrap;font-weight:500;width:100%;margin-bottom:8px;}
 .ghost-btn:hover{background:#2e2e38;color:#f0f0f2;border-color:rgba(255,255,255,.13);}
+
+/* ── PANTALLA DE CARGA ── */
+#loadingSplash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 32%, #0b140c 0%, #000 65%);transition:opacity .4s ease, visibility .4s ease;}
+#loadingSplash.ls-hide{opacity:0;visibility:hidden;pointer-events:none;}
+#loadingSplash .ls-mark{font-size:14px;font-weight:700;letter-spacing:.02em;color:#fff;margin-bottom:34px;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;}
+#loadingSplash .ls-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;box-shadow:0 0 10px #4caf50;}
+#loadingSplash .ls-candles{display:flex;align-items:flex-end;gap:7px;height:90px;margin-bottom:30px;}
+#loadingSplash .ls-candle{width:9px;background:#2a2a2a;border-radius:2px;transform-origin:bottom;animation:lsGrow 1.8s ease-in-out infinite;}
+#loadingSplash .ls-candle.ls-g{background:#4caf50;}
+#loadingSplash .ls-candle.ls-r{background:#e53935;}
+#loadingSplash .ls-candle:nth-child(1){height:28px;animation-delay:0s;}
+#loadingSplash .ls-candle:nth-child(2){height:46px;animation-delay:.15s;}
+#loadingSplash .ls-candle:nth-child(3){height:20px;animation-delay:.3s;}
+#loadingSplash .ls-candle:nth-child(4){height:62px;animation-delay:.45s;}
+#loadingSplash .ls-candle:nth-child(5){height:38px;animation-delay:.6s;}
+#loadingSplash .ls-candle:nth-child(6){height:80px;animation-delay:.75s;}
+#loadingSplash .ls-candle:nth-child(7){height:50px;animation-delay:.9s;}
+@keyframes lsGrow{0%{transform:scaleY(.15);opacity:.35;}35%{transform:scaleY(1);opacity:1;}75%{transform:scaleY(1);opacity:1;}100%{transform:scaleY(.15);opacity:.35;}}
+#loadingSplash .ls-txt{font-size:12.5px;color:#777;letter-spacing:.01em;margin-bottom:18px;font-family:'DM Sans',sans-serif;}
+#loadingSplash .ls-bar{width:140px;height:2px;background:#1c1c1c;border-radius:2px;overflow:hidden;}
+#loadingSplash .ls-bar i{display:block;height:100%;width:40%;background:linear-gradient(90deg,transparent,#4caf50,transparent);animation:lsSweep 1.3s ease-in-out infinite;}
+@keyframes lsSweep{0%{transform:translateX(-140px);}100%{transform:translateX(220px);}}
+@media (prefers-reduced-motion: reduce){
+  #loadingSplash .ls-candle,#loadingSplash .ls-bar i{animation:none;}
+  #loadingSplash .ls-candle{opacity:1;transform:scaleY(1);}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
+<!-- PANTALLA DE CARGA -->
+<div id="loadingSplash">
+  <div class="ls-mark"><span class="ls-dot"></span>TRADING JOURNAL</div>
+  <div class="ls-candles">
+    <div class="ls-candle ls-g"></div>
+    <div class="ls-candle ls-r"></div>
+    <div class="ls-candle ls-g"></div>
+    <div class="ls-candle ls-g"></div>
+    <div class="ls-candle ls-r"></div>
+    <div class="ls-candle ls-g"></div>
+    <div class="ls-candle ls-g"></div>
+  </div>
+  <div class="ls-txt">Cargando tu journal…</div>
+  <div class="ls-bar"><i></i></div>
+</div>
 
 <!-- AUTH SCREEN -->
 <div id="authWrap" style="display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:#000;">
@@ -962,6 +1004,18 @@ function initSupabase() {
 }
 
 // ══════════════════════════════════════════
+// PANTALLA DE CARGA
+// ══════════════════════════════════════════
+function _hideLoadingSplash() {
+  const el = document.getElementById('loadingSplash');
+  if(!el || el.classList.contains('ls-hide')) return;
+  el.classList.add('ls-hide');
+  setTimeout(() => { el.style.display = 'none'; }, 450); // tras el fade-out
+}
+// Red de seguridad: si por lo que sea ningún flujo llega a ocultarla antes, se oculta sola
+setTimeout(_hideLoadingSplash, 8000);
+
+// ══════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════
 function showLogin() {
@@ -969,6 +1023,7 @@ function showLogin() {
   document.getElementById('registerWrap').style.display = 'none';
   document.querySelector('.app').style.display = 'none';
   const err = document.getElementById('authError'); if(err) err.style.display = 'none';
+  _hideLoadingSplash();
 }
 function showRegister() {
   document.getElementById('authWrap').style.display = 'none';
@@ -1477,14 +1532,12 @@ function saveAvatarToSupabase(dataUrl) {
 function _waitForTokenThenLoad(attempts) {
   attempts = attempts || 0;
   if(_cachedToken) {
-    loadJournalSupabase();
-    invLoadFromSupabase();
+    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(_hideLoadingSplash);
     return;
   }
   if(attempts >= 20) {
     // Tras 2s sin token, intentar igualmente (dejamos que Supabase devuelva el error real)
-    loadJournalSupabase();
-    invLoadFromSupabase();
+    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(_hideLoadingSplash);
     return;
   }
   setTimeout(() => _waitForTokenThenLoad(attempts + 1), 100);
@@ -1509,6 +1562,7 @@ function startApp(user) {
     _guestLoadInv();
     _guestLoadConds();
     renderAll();
+    _hideLoadingSplash();
   }
   loadAvatar();
   renderProfileUI();
@@ -1557,6 +1611,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('registerWrap').style.display = 'none';
     document.querySelector('.app').style.display = 'none';
     document.getElementById('resetWrap').style.display = 'flex';
+    _hideLoadingSplash();
   }
 
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -1585,6 +1640,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('registerWrap').style.display = 'none';
       document.querySelector('.app').style.display = 'none';
       document.getElementById('resetWrap').style.display = 'flex';
+      _hideLoadingSplash();
     } else if(event === 'SIGNED_OUT') {
       // Solo ir al login si fue un logout manual explícito
       if(_manualLogout) { _manualLogout = false; currentUser = null; showLogin(); }
@@ -2413,7 +2469,7 @@ function renderDayFormBody(k,m){
       </div>
     </div>
     <div><div class="field-label">P&L (USD)</div>
-      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onPnlBlur('${k}')"/></div>
+      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')"/></div>
     </div>
     <div><div class="field-label">HORA DE ENTRADA</div>
       <div style="display:flex;gap:6px;align-items:center;">
@@ -2447,20 +2503,19 @@ function onFieldChange(k){
   // Capturar snapshot del estado anterior ANTES de crear la entrada si no existe
   if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k] = journal[k] ? JSON.parse(JSON.stringify(journal[k])) : null;
   if(!journal[k]) journal[k]={};
-  const pnlEl=document.getElementById('pnl-'+k); if(pnlEl) journal[k].pnl=pnlEl.value;
+  const pnlEl=document.getElementById('pnl-'+k);
+  if(pnlEl){
+    // Si el resultado marcado es SL, forzar signo negativo al instante, tecla a tecla
+    // (si el importe ya es negativo o el campo está vacío, no se toca nada).
+    if(journal[k].resultado==='sl' && pnlEl.value!==''){
+      const n=parseFloat(pnlEl.value);
+      if(!isNaN(n) && n>0) pnlEl.value=String(-n);
+    }
+    journal[k].pnl=pnlEl.value;
+  }
   const horaEl=document.getElementById('hora-'+k); if(horaEl) journal[k].hora=horaEl.value;
   const notasEl=document.getElementById('notas-'+k); if(notasEl) journal[k].notas=notasEl.value;
   smartSave(k);
-}
-// Al salir del campo P&L (no en cada tecla, para no interrumpir mientras se escribe):
-// si el resultado marcado es SL y el importe quedó en positivo, forzar el signo negativo.
-function onPnlBlur(k){
-  const pnlEl=document.getElementById('pnl-'+k);
-  if(pnlEl && journal[k] && journal[k].resultado==='sl' && pnlEl.value!==''){
-    const n=parseFloat(pnlEl.value);
-    if(!isNaN(n) && n>0) pnlEl.value=String(-n);
-  }
-  onFieldChange(k);
 }
 function clearHora(k){ const el=document.getElementById('hora-'+k); if(el) el.value=''; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=journal[k]?JSON.parse(JSON.stringify(journal[k])):null; if(!journal[k]) journal[k]={}; journal[k].hora=''; smartSave(k); }
 function toggleDay(k,h){ const b=document.getElementById('body-'+k); b.classList.toggle('open'); h.querySelector('.arr').style.transform=b.classList.contains('open')?'rotate(90deg)':''; }
