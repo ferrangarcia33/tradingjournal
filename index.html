@@ -226,8 +226,8 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 /* PANELS */
 .panel-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9998;pointer-events:auto;}
 .panel-backdrop.open{display:block;}
-.panel{position:fixed;top:0;right:0;height:100%;width:300px;max-width:92vw;background:#111;border-left:1px solid #1e1e1e;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;pointer-events:all;}
-.panel.open{transform:translateX(0);}
+.panel{position:fixed;top:0;right:0;height:100%;width:300px;max-width:92vw;background:#111;border-left:1px solid #1e1e1e;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease,visibility .25s;visibility:hidden;pointer-events:all;}
+.panel.open{transform:translateX(0);visibility:visible;}
 .panel-header{padding:16px;border-bottom:1px solid #1e1e1e;display:flex;align-items:center;gap:10px;}
 .panel-header h2{font-size:15px;font-weight:500;flex:1;}
 .panel-close{background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
@@ -376,11 +376,11 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 </div>
 
 <!-- AUTH SCREEN -->
-<div id="authWrap" style="display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:#000;">
-  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;">
+<div id="authWrap" style="display:flex;height:100vh;overflow-y:auto;align-items:center;justify-content:center;padding:20px;background:#000;">
+  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;margin:auto;">
     <h1 style="font-size:22px;font-weight:600;margin-bottom:4px;">Trading Journal</h1>
     <p style="font-size:13px;color:#555;margin-bottom:28px;">Sigue tu disciplina y P&L diario</p>
-    <div id="authError" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
+    <div id="authError" role="alert" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
     <div style="margin-bottom:12px;">
       <label for="loginEmail" style="display:block;font-size:10px;color:#555;letter-spacing:.5px;margin-bottom:5px;">CORREO O NICKNAME</label>
       <input id="loginEmail" type="text" placeholder="tu@email.com o tu_nickname" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;background:#2c2c2e;border:1px solid #3a3a3c;color:#fff;border-radius:10px;padding:11px 12px;font-size:16px;outline:none;"/>
@@ -389,22 +389,22 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
       <label for="loginPass" style="display:block;font-size:10px;color:#555;letter-spacing:.5px;margin-bottom:5px;">CONTRASEÑA</label>
       <div style="position:relative;">
         <input id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;background:#2c2c2e;border:1px solid #3a3a3c;color:#fff;border-radius:10px;padding:11px 40px 11px 12px;font-size:16px;outline:none;"/>
-        <span onclick="const i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;">👁</span>
+        <span role="button" tabindex="0" aria-label="Mostrar u ocultar contraseña" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="const i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;">👁</span>
       </div>
     </div>
     <button id="loginBtn" onclick="doLogin()" style="width:100%;background:#4caf50;color:#111;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;">Entrar</button>
     <button onclick="showRegister()" style="width:100%;background:transparent;color:#4caf50;border:1px solid #2a2a2a;border-radius:12px;padding:11px;font-size:13px;cursor:pointer;margin-bottom:14px;">Crear cuenta nueva</button>
-    <p style="text-align:center;font-size:11px;color:#444;">También puedes <a onclick="skipAuth()" style="color:#4caf50;cursor:pointer;">usar sin cuenta →</a></p>
+    <p style="text-align:center;font-size:11px;color:#444;">También puedes <a role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="skipAuth()" style="color:#4caf50;cursor:pointer;">usar sin cuenta →</a></p>
     <p style="text-align:center;font-size:10px;color:#3a3a3c;margin-top:5px;">⚠ Sin cuenta los datos no se guardan en la nube</p>
   </div>
 </div>
 
 <!-- REGISTER SCREEN -->
-<div id="registerWrap" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:#000;">
-  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;">
+<div id="registerWrap" style="display:none;height:100vh;overflow-y:auto;align-items:center;justify-content:center;padding:20px;background:#000;">
+  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;margin:auto;">
     <h1 style="font-size:22px;font-weight:600;margin-bottom:4px;">Crear cuenta</h1>
     <p style="font-size:13px;color:#555;margin-bottom:28px;">Tus datos accesibles desde cualquier dispositivo</p>
-    <div id="regError" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
+    <div id="regError" role="alert" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
     <div style="margin-bottom:12px;">
       <label for="regEmail" style="display:block;font-size:10px;color:#555;letter-spacing:.5px;margin-bottom:5px;">CORREO ELECTRÓNICO</label>
       <input id="regEmail" type="email" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')doRegister()" style="width:100%;background:#2c2c2e;border:1px solid #3a3a3c;color:#fff;border-radius:10px;padding:11px 12px;font-size:16px;outline:none;"/>
@@ -423,11 +423,11 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 </div>
 
 <!-- RESET PASSWORD SCREEN -->
-<div id="resetWrap" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:#000;">
-  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;">
+<div id="resetWrap" style="display:none;height:100vh;overflow-y:auto;align-items:center;justify-content:center;padding:20px;background:#000;">
+  <div style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:20px;padding:36px 28px;width:100%;max-width:380px;margin:auto;">
     <h1 style="font-size:22px;font-weight:600;margin-bottom:4px;">Nueva contraseña</h1>
     <p style="font-size:13px;color:#555;margin-bottom:28px;">Elige una nueva contraseña para tu cuenta</p>
-    <div id="resetError" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
+    <div id="resetError" role="alert" style="background:#3a1b1b;color:#e53935;border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:14px;display:none;"></div>
     <div style="margin-bottom:16px;">
       <label for="resetPass" style="display:block;font-size:10px;color:#555;letter-spacing:.5px;margin-bottom:5px;">NUEVA CONTRASEÑA</label>
       <input id="resetPass" type="password" placeholder="mínimo 6 caracteres" style="width:100%;background:#2c2c2e;border:1px solid #3a3a3c;color:#fff;border-radius:10px;padding:11px 12px;font-size:16px;outline:none;"/>
@@ -441,21 +441,21 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
     <div style="width:80px;flex-shrink:0;"></div>
     <h1 style="position:absolute;left:50%;transform:translateX(-50%);font-size:22px;font-weight:600;color:#fff;letter-spacing:.3px;white-space:nowrap;">Trading Journal</h1>
     <div class="header-right">
-      <button class="icon-btn" onclick="openFriends()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="notif-dot" id="notifDot" style="display:none;"></span></button>
-      <button class="icon-btn" onclick="openProfile()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></button>
+      <button class="icon-btn" aria-label="Amigos" onclick="openFriends()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="notif-dot" id="notifDot" style="display:none;"></span></button>
+      <button class="icon-btn" aria-label="Mi perfil" onclick="openProfile()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></button>
     </div>
   </div>
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('monthly')">Resumen Anual</div>
-    <div class="tab" onclick="switchTab('calendar')">Calendario</div>
-    <div class="tab" onclick="switchTab('daily')">Galería</div>
+    <div class="tab active" role="button" aria-pressed="true" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchTab('monthly')">Resumen Anual</div>
+    <div class="tab" role="button" aria-pressed="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchTab('calendar')">Calendario</div>
+    <div class="tab" role="button" aria-pressed="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchTab('daily')">Galería</div>
   </div>
 
   <div class="view active" id="view-monthly">
     <div class="year-nav">
-      <button class="year-nav-btn" onclick="changeYear(-1)">&#8249;</button>
+      <button class="year-nav-btn" aria-label="Año anterior" onclick="changeYear(-1)">&#8249;</button>
       <span class="year-nav-label" id="yearNavLabel">2026</span>
-      <button class="year-nav-btn" onclick="changeYear(1)">&#8250;</button>
+      <button class="year-nav-btn" aria-label="Año siguiente" onclick="changeYear(1)">&#8250;</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
       <div class="sc" style="padding:14px 16px;display:flex;align-items:center;gap:10px;"><span class="sl2" style="flex-shrink:0;color:#fff;font-size:15px;">WR% año</span><span class="sv purple" id="mStatWr" style="font-size:22px;">—</span><div class="wr-bar-wrap" style="flex:1;margin-top:0;"><div class="wr-bar" id="wrBar" style="width:0%"></div></div></div>
@@ -475,12 +475,12 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 
   <div class="view" id="view-calendar">
     <div class="cal-nav" id="calNav" style="display:flex;align-items:center;position:relative;">
-      <button onclick="calPrev()">‹</button>
+      <button aria-label="Mes anterior" onclick="calPrev()">‹</button>
       <h2 id="calTitle" style="flex:1;text-align:center;margin:0;"></h2>
-      <button onclick="calNext()">›</button>
+      <button aria-label="Mes siguiente" onclick="calNext()">›</button>
       <button id="calRetirosBtn" class="cal-retiros-btn" onclick="openCalRetirosModal()" style="display:none;position:absolute;left:75%;transform:translateX(-50%);">Retiros</button>
     </div>
-    <div style="overflow:hidden;flex:1;min-height:0;">
+    <div style="overflow-y:auto;flex:1;min-height:0;">
       <table class="cal-table" style="height:100%;">
         <thead><tr id="calDowRow"><th class="dow-normal">L</th><th class="dow-normal">M</th><th class="dow-normal">X</th><th class="dow-normal">J</th><th class="dow-normal">V</th><th class="dow-normal">S</th><th class="dow-normal">D</th><th class="weekly-h">SEM</th></tr></thead>
         <tbody id="calBody"></tbody>
@@ -496,7 +496,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
         <div class="count-divider"></div>
         <div class="count-item"><span class="count-num nt" id="footerNt">0</span><span class="count-lbl nt">NO TRADE</span></div>
       </div>
-      <button id="footerBestWrap" onclick="toggleBestPeorPanel('footer')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
+      <button id="footerBestWrap" aria-label="Mostrar u ocultar mejor y peor trade" onclick="toggleBestPeorPanel('footer')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
       <div style="display:flex;flex-direction:row;gap:14px;align-items:center;justify-content:flex-end;">
         <div class="cal-footer-pnl"><div class="footer-pnl-lbl">WINRATE MES</div><div class="footer-pnl-val" id="footerWr" style="color:#9c27b0;">—</div></div>
         <div style="width:1px;height:32px;background:#222;"></div>
@@ -518,9 +518,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 
   <div class="view" id="view-daily" style="flex-direction:column;min-height:0;">
     <div class="cal-nav" style="flex-shrink:0;">
-      <button onclick="galleryMonthPrev()">‹</button>
+      <button aria-label="Mes anterior" onclick="galleryMonthPrev()">‹</button>
       <h2 id="galleryMonthLabel" style="flex:1;text-align:center;margin:0;font-size:15px;"></h2>
-      <button onclick="galleryMonthNext()">›</button>
+      <button aria-label="Mes siguiente" onclick="galleryMonthNext()">›</button>
     </div>
     <div style="overflow:hidden;flex:1;min-height:0;">
       <div id="galleryGrid" style="padding:12px 14px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;"></div>
@@ -536,7 +536,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
         <div class="count-divider"></div>
         <div class="count-item"><span class="count-num nt" id="galleryFooterNt">0</span><span class="count-lbl nt">NO TRADE</span></div>
       </div>
-      <button id="galleryFooterBestWrap" onclick="toggleBestPeorPanel('galleryFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
+      <button id="galleryFooterBestWrap" aria-label="Mostrar u ocultar mejor y peor trade" onclick="toggleBestPeorPanel('galleryFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
       <div style="display:flex;flex-direction:row;gap:14px;align-items:center;justify-content:flex-end;">
         <div class="cal-footer-pnl"><div class="footer-pnl-lbl">WINRATE MES</div><div class="footer-pnl-val" id="galleryFooterWr" style="color:#555;">—</div></div>
         <div style="width:1px;height:32px;background:#222;"></div>
@@ -563,9 +563,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
   <div class="panel-header">
     <h2 id="dayFormTitle" style="font-size:15px;"></h2>
     <div style="display:flex;gap:8px;align-items:center;">
-      <button onclick="dayFormNav(-1)" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">‹</button>
-      <button onclick="dayFormNav(1)" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">›</button>
-      <button class="panel-close" onclick="closeDayForm().catch(()=>{})">×</button>
+      <button aria-label="Día anterior" onclick="dayFormNav(-1)" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">‹</button>
+      <button aria-label="Día siguiente" onclick="dayFormNav(1)" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">›</button>
+      <button class="panel-close" aria-label="Cerrar" onclick="closeDayForm().catch(()=>{})">×</button>
     </div>
   </div>
   <div class="panel-body" id="dayFormBody" style="padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;"></div>
@@ -576,7 +576,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
   <div style="background:#1c1c1e;border:1px solid #2a6a2a;border-radius:16px;padding:24px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
       <div style="font-size:15px;font-weight:700;color:#4caf50;" id="calRetirosTitle">Retiros</div>
-      <button onclick="closeCalRetirosModal()" style="background:#2c2c2e;border:none;color:#888;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;">×</button>
+      <button aria-label="Cerrar" onclick="closeCalRetirosModal()" style="background:#2c2c2e;border:none;color:#888;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;">×</button>
     </div>
     <div id="calRetirosList" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
@@ -674,7 +674,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 </div><!-- /fjDetallesExtra -->
 
 <!-- TOAST -->
-<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e1e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:99999;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;border:1px solid #2a2a2a;"></div>
+<div id="toast" role="status" aria-live="polite" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e1e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:99999;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;border:1px solid #2a2a2a;"></div>
 
 <!-- LIGHTBOX -->
 <div id="lightboxOverlay" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99997;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
@@ -682,20 +682,20 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
     <img id="lightboxImg" src="" alt="Captura ampliada del gráfico" style="max-width:92vw;max-height:75vh;border-radius:10px;object-fit:contain;display:block;"/>
   </div>
   <div id="lightboxMeta" style="text-align:center;"></div>
-  <button onclick="closeLightbox()" style="position:fixed;top:16px;right:16px;background:#1e1e1e;border:none;color:#aaa;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:20px;">×</button>
-  <button onclick="event.stopPropagation();lightboxNav(-1)" style="position:fixed;bottom:32px;left:calc(50% - 56px);background:#1e1e1e;border:none;color:#888;width:44px;height:44px;border-radius:8px;cursor:pointer;font-size:24px;">‹</button>
-  <button onclick="event.stopPropagation();lightboxNav(1)" style="position:fixed;bottom:32px;left:calc(50% + 12px);background:#1e1e1e;border:none;color:#888;width:44px;height:44px;border-radius:8px;cursor:pointer;font-size:24px;">›</button>
+  <button aria-label="Cerrar" onclick="closeLightbox()" style="position:fixed;top:16px;right:16px;background:#1e1e1e;border:none;color:#aaa;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:20px;">×</button>
+  <button aria-label="Imagen anterior" onclick="event.stopPropagation();lightboxNav(-1)" style="position:fixed;bottom:32px;left:calc(50% - 56px);background:#1e1e1e;border:none;color:#888;width:44px;height:44px;border-radius:8px;cursor:pointer;font-size:24px;">‹</button>
+  <button aria-label="Imagen siguiente" onclick="event.stopPropagation();lightboxNav(1)" style="position:fixed;bottom:32px;left:calc(50% + 12px);background:#1e1e1e;border:none;color:#888;width:44px;height:44px;border-radius:8px;cursor:pointer;font-size:24px;">›</button>
 </div>
 
 <!-- FRIENDS PANEL -->
 <div class="panel-backdrop" id="friendsBackdrop" onclick="closeFriends()"></div>
 <div class="panel" id="friendsPanel">
-  <div class="panel-header"><h2><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Amigos</h2><button class="panel-close" onclick="closeFriends()">×</button></div>
+  <div class="panel-header"><h2><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Amigos</h2><button class="panel-close" aria-label="Cerrar" onclick="closeFriends()">×</button></div>
   <div class="panel-body">
     <div class="section-lbl">SOLICITUDES PENDIENTES <span class="req-badge" id="reqBadge" style="display:none;"></span></div>
     <div id="friendRequests"><div class="panel-msg">Sin solicitudes pendientes</div></div>
     <div class="section-lbl" style="margin-top:20px;">AÑADIR AMIGO</div>
-    <div class="add-row"><input type="text" id="friendSearchInput" placeholder="Nickname del amigo..."/><button onclick="addFriend()">Añadir</button></div>
+    <div class="add-row"><input type="text" id="friendSearchInput" aria-label="Nickname del amigo" placeholder="Nickname del amigo..."/><button onclick="addFriend()">Añadir</button></div>
     <div id="friendSearchResult" style="font-size:11px;min-height:16px;margin-bottom:4px;color:#4caf50;"></div>
     <div class="section-lbl" style="margin-top:4px;">MIS AMIGOS</div>
     <div id="friendsList"><div class="panel-msg">Aún no tienes amigos añadidos</div></div>
@@ -705,11 +705,11 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 <!-- PROFILE PANEL -->
 <div class="panel-backdrop" id="profileBackdrop" onclick="closeProfile()"></div>
 <div class="panel" id="profilePanel">
-  <div class="panel-header"><h2><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Mi Perfil</h2><button class="panel-close" onclick="closeProfile()">×</button></div>
+  <div class="panel-header"><h2><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Mi Perfil</h2><button class="panel-close" aria-label="Cerrar" onclick="closeProfile()">×</button></div>
   <div class="panel-body">
     <div class="prof-avatar-wrap">
       <!-- Contenedor avatar con icono cámara superpuesto -->
-      <div style="position:relative;display:inline-block;margin:0 auto 8px;cursor:pointer;" id="avatarClickArea" onclick="if(!currentUser||userProfile?.guest){return;}document.getElementById('avatarFileInput').click()">
+      <div style="position:relative;display:inline-block;margin:0 auto 8px;cursor:pointer;" id="avatarClickArea" role="button" tabindex="0" aria-label="Cambiar foto de perfil" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="if(!currentUser||userProfile?.guest){return;}document.getElementById('avatarFileInput').click()">
         <div class="prof-avatar" id="profAvatarCircle" style="position:relative;overflow:hidden;margin:0;">
           <span id="profAvatarLetter">F</span>
           <img id="profAvatarImg" src="" alt="Foto de perfil" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
@@ -778,9 +778,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
   </div>
   <div class="fj-body">
     <div class="fj-tabs">
-      <div class="fj-tab active" onclick="switchFjTab('summary')">Resumen Anual</div>
-      <div class="fj-tab" onclick="switchFjTab('cal')">Calendario</div>
-      <div class="fj-tab" onclick="switchFjTab('daily')">Galería</div>
+      <div class="fj-tab active" role="button" aria-pressed="true" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchFjTab('summary')">Resumen Anual</div>
+      <div class="fj-tab" role="button" aria-pressed="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchFjTab('cal')">Calendario</div>
+      <div class="fj-tab" role="button" aria-pressed="false" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="switchFjTab('daily')">Galería</div>
     </div>
     <div class="fj-view active" id="fj-summary">
       <div id="fjRlsErrorBanner" style="display:none;background:#3a1b1b;border:1px solid #5a2a2a;border-radius:10px;margin:10px 14px 0;padding:12px 14px;font-size:12px;color:#e08080;line-height:1.6;">
@@ -803,9 +803,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
         <button onclick="navigator.clipboard.writeText(document.getElementById('fjRlsSql').textContent).then(()=>{this.textContent='✓ Copiado';setTimeout(()=>this.textContent='Copiar SQL',2000)}).catch(()=>{})" style="background:#2a2a2a;border:1px solid #444;color:#aaa;border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;">Copiar SQL</button>
       </div>
       <div class="year-nav">
-        <button class="year-nav-btn" onclick="fjSummaryYearPrev()">&#8249;</button>
+        <button class="year-nav-btn" aria-label="Año anterior" onclick="fjSummaryYearPrev()">&#8249;</button>
         <span class="year-nav-label" id="fjYearNavLabel">2026</span>
-        <button class="year-nav-btn" onclick="fjSummaryYearNext()">&#8250;</button>
+        <button class="year-nav-btn" aria-label="Año siguiente" onclick="fjSummaryYearNext()">&#8250;</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
         <div class="sc" style="padding:14px 16px;display:flex;align-items:center;gap:10px;"><span class="sl2" style="flex-shrink:0;color:#fff;font-size:15px;">WR% año</span><span class="sv purple" id="fjStatWr" style="font-size:22px;">—</span><div class="wr-bar-wrap" style="flex:1;margin-top:0;"><div class="wr-bar" id="fjWrBar" style="width:0%;"></div></div></div>
@@ -824,8 +824,8 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 
     </div>
     <div class="fj-view" id="fj-cal">
-            <div class="cal-nav"><button onclick="fjCalPrev()">‹</button><h2 id="fjCalTitle" style="font-size:14px;font-weight:500;"></h2><button onclick="fjCalNext()">›</button></div>
-      <div style="overflow:hidden;flex:1;min-height:0;">
+            <div class="cal-nav"><button aria-label="Mes anterior" onclick="fjCalPrev()">‹</button><h2 id="fjCalTitle" style="font-size:14px;font-weight:500;"></h2><button aria-label="Mes siguiente" onclick="fjCalNext()">›</button></div>
+      <div style="overflow-y:auto;flex:1;min-height:0;">
         <table class="cal-table" style="height:100%;">
           <thead><tr id="fjCalDowRow"><th class="dow-normal">L</th><th class="dow-normal">M</th><th class="dow-normal">X</th><th class="dow-normal">J</th><th class="dow-normal">V</th><th class="dow-normal">S</th><th class="dow-normal">D</th><th class="weekly-h">SEM</th></tr></thead>
           <tbody id="fjCalBody"></tbody>
@@ -841,7 +841,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
           <div class="count-divider"></div>
           <div class="count-item"><span class="count-num nt" id="fjFooterNt">0</span><span class="count-lbl nt">NO TRADE</span></div>
         </div>
-        <button id="fjFooterBestWrap" onclick="toggleBestPeorPanel('fjFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
+        <button id="fjFooterBestWrap" aria-label="Mostrar u ocultar mejor y peor trade" onclick="toggleBestPeorPanel('fjFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
         <div style="display:flex;flex-direction:row;gap:14px;align-items:center;justify-content:flex-end;">
           <div class="cal-footer-pnl"><div class="footer-pnl-lbl">WINRATE MES</div><div class="footer-pnl-val" id="fjFooterWr" style="color:#555;">—</div></div>
           <div style="width:1px;height:32px;background:#222;"></div>
@@ -862,9 +862,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
     </div>
     <div class="fj-view" id="fj-daily">
       <div class="cal-nav" style="flex-shrink:0;">
-        <button onclick="fjGalleryMonthPrev()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8249;</button>
+        <button aria-label="Mes anterior" onclick="fjGalleryMonthPrev()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8249;</button>
         <span id="fjGalleryMonthLabel" style="font-size:14px;font-weight:500;color:#aaa;flex:1;text-align:center;"></span>
-        <button onclick="fjGalleryMonthNext()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8250;</button>
+        <button aria-label="Mes siguiente" onclick="fjGalleryMonthNext()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8250;</button>
       </div>
       <div style="overflow:hidden;flex:1;min-height:0;">
         <div id="fjGalleryGrid" style="padding:12px 14px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;"></div>
@@ -880,7 +880,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
           <div class="count-divider"></div>
           <div class="count-item"><span class="count-num nt" id="fjGalFooterNt">0</span><span class="count-lbl nt">NO TRADE</span></div>
         </div>
-        <button id="fjGalFooterBestWrap" onclick="toggleBestPeorPanel('fjGalFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
+        <button id="fjGalFooterBestWrap" aria-label="Mostrar u ocultar mejor y peor trade" onclick="toggleBestPeorPanel('fjGalFooter')" style="display:flex;background:#1e1e1e;border:none;color:#888;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">▲</button>
         <div style="display:flex;flex-direction:row;gap:14px;align-items:center;justify-content:flex-end;">
           <div class="cal-footer-pnl"><div class="footer-pnl-lbl">WINRATE MES</div><div class="footer-pnl-val" id="fjGalFooterWr" style="color:#555;">—</div></div>
           <div style="width:1px;height:32px;background:#222;"></div>
@@ -1077,6 +1077,8 @@ async function doLogin() {
   const pass  = document.getElementById('loginPass').value;
   const err   = document.getElementById('authError');
   const btn   = document.getElementById('loginBtn');
+  if(btn && btn.disabled) return; // petición en curso: el Enter de los inputs no respeta el botón deshabilitado
+  if(err){ err.style.display='none'; err.style.background='#3a1b1b'; err.style.color='#e53935'; } // restaurar estilo de error tras un mensaje de éxito previo
   if(!input || !pass) { err.textContent='Rellena todos los campos'; err.style.display='block'; return; }
   if(!sb) { err.textContent='Sin conexión. Usa "sin cuenta" o conéctate a internet.'; err.style.display='block'; return; }
   btn.textContent='Entrando...'; btn.disabled=true;
@@ -1084,7 +1086,7 @@ async function doLogin() {
     // Si parece email, login directo; si no, buscar email por nickname en profiles
     let email = input;
     if (!input.includes('@')) {
-      const { data: prof, error: profErr } = await sb.from('profiles').select('email').eq('nickname', input.toLowerCase()).maybeSingle();
+      const { data: prof, error: profErr } = await sb.from('profiles').select('email').eq('nickname', input.toLowerCase().replace(/\s+/g,'_')).maybeSingle();
       if (profErr) { err.textContent='Error de conexión al buscar el nickname'; err.style.display='block'; btn.textContent='Entrar'; btn.disabled=false; return; }
       if (!prof) { err.textContent='Nickname no encontrado'; err.style.display='block'; btn.textContent='Entrar'; btn.disabled=false; return; }
       email = prof.email;
@@ -1102,6 +1104,8 @@ async function doRegister() {
   const pass  = document.getElementById('regPass').value;
   const err   = document.getElementById('regError');
   const btn   = document.getElementById('registerBtn');
+  if(btn && btn.disabled) return; // petición en curso: el Enter de los inputs no respeta el botón deshabilitado
+  if(err){ err.style.display='none'; err.style.background='#3a1b1b'; err.style.color='#e53935'; } // restaurar estilo de error tras un mensaje de éxito previo
   if(!email || !nick || !pass) { err.textContent='Rellena todos los campos'; err.style.display='block'; return; }
   if(!email.includes('@') || !email.includes('.')) { err.textContent='Email no válido'; err.style.display='block'; return; }
   if(nick.length < 3) { err.textContent='Nickname mínimo 3 caracteres'; err.style.display='block'; return; }
@@ -1125,6 +1129,9 @@ async function doRegister() {
 }
 
 async function doLogout() {
+  // Enviar los guardados del journal aún en debounce (500 ms) mientras la sesión sigue activa;
+  // si no, el temporizador se dispara sin token, revierte la última edición y muestra un error.
+  await flushPendingSaves().catch(()=>{});
   _manualLogout = true;
   _cachedToken = null;
   localStorage.removeItem('tj_guest_mode');
@@ -1132,6 +1139,26 @@ async function doLogout() {
   if(_friendsPollingTimer) { clearInterval(_friendsPollingTimer); _friendsPollingTimer = null; }
   if(sb && currentUser) await sb.auth.signOut().catch(()=>{ _manualLogout = false; });
   currentUser = null; userProfile = null;
+  // Limpiar del DOM amigos/solicitudes del usuario saliente (loadFriends no se ejecuta sin sesión y quedarían visibles)
+  const _frReq=document.getElementById('friendRequests'); if(_frReq) _frReq.innerHTML='<div class="panel-msg">Sin solicitudes pendientes</div>';
+  const _frList=document.getElementById('friendsList'); if(_frList) _frList.innerHTML='<div class="panel-msg">Aún no tienes amigos añadidos</div>';
+  const _frBadge=document.getElementById('reqBadge'); if(_frBadge) _frBadge.style.display='none';
+  const _frDot=document.getElementById('notifDot'); if(_frDot) _frDot.style.display='none';
+  updateFriendsCount();
+  removeAvatar(); // solo resetea la UI: currentUser y _cachedToken ya son null
+  journal = {};
+  CONDITIONS = ['Dol claro','Liquidity Sweep / SMT','Reacción a FVG','IFVG','CISD'];
+  invPerdidas = []; invPcats = JSON.parse(JSON.stringify(INV_DEF_PCATS)); invPNextId = 1;
+  invGanancias = []; invGcats = JSON.parse(JSON.stringify(INV_DEF_GCATS)); invGNextId = 1;
+  // Cerrar las capas fijas que viven fuera de .app: ocultar .app no las oculta y quedarían sobre la pantalla de login
+  const _mDetP=document.getElementById('mDetallesExtra'); if(_mDetP) _mDetP.style.display='none';
+  const _mDetBd=document.getElementById('mDetallesBackdrop'); if(_mDetBd) _mDetBd.style.display='none';
+  const _mDetBtn=document.getElementById('mDetallesBtn'); if(_mDetBtn) _mDetBtn.textContent='▼ Más detalles';
+  document.getElementById('dayFormBackdrop').classList.remove('open'); document.getElementById('dayFormPanel').classList.remove('open');
+  _dayFormM=0; _dayFormD=0; // los guardados pendientes ya se enviaron con flushPendingSaves()
+  closeCondModal(); closeLightbox(); closeFriends(); closeFjDay(); closeFriendJournal(); closeCalRetirosModal(); closeConfirm(); closeDelData(); closeAvatarCrop();
+  invClosePerdidasModal(); invCloseEntryModal(); invCloseGananciaModal(); invClosePCatModal(); invCloseConfirmPerdida(); invCloseConfirmGanancia(); closeInversiones();
+  renderAll(); // limpiar del DOM los datos del usuario saliente
   closeProfile();
   document.querySelector('.app').style.display = 'none';
   showLogin();
@@ -1209,28 +1236,34 @@ async function _jFetchGet(path) {
 async function loadJournalSupabase() {
   if(!currentUser || !_cachedToken) return;
   const requestedYear = YEAR; // stamp — si YEAR cambia durante el await, descartamos la respuesta
+  const requestedUserId = currentUser.id; // stamp — si se cierra sesión o cambia el usuario durante el await, descartamos
+  const _loadStartedAt = Date.now(); // guardados que terminen a partir de aquí pueden no estar reflejados en la respuesta
+  // Si la carga falla tras cambiar de año, `journal` aún contiene el año anterior: quitar esas claves
+  // para que las estadísticas anuales no muestren datos de otro año bajo la etiqueta del nuevo.
+  const _dropOtherYears = () => { Object.keys(journal).forEach(k => { if(parseInt(k.split('-')[0]) !== requestedYear) delete journal[k]; }); };
 
   let data;
   try {
     const res = await _sbFetch(SUPABASE_URL + `/rest/v1/journal_entries?user_id=eq.${currentUser.id}&year=eq.${requestedYear}&select=*`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + _cachedToken }
     });
-    if(requestedYear !== YEAR) return; // YEAR cambió mientras esperábamos — descartar
+    if(requestedYear !== YEAR || !currentUser || currentUser.id !== requestedUserId) return; // YEAR o usuario cambió mientras esperábamos — descartar
     if(!res.ok) {
       const txt = await res.text().catch(()=>'');
       console.error('[loadJournal]', res.status, txt);
       // 401 tras refresco = sesión realmente inválida, no mostrar toast de red
       if(res.status !== 401) showToast('⚠️ Error cargando datos (' + res.status + ')', 'err');
-      _syncYearLabels(); renderAll(); return;
+      _dropOtherYears(); _syncYearLabels(); renderAll(); return;
     }
     data = await res.json();
   } catch(e) {
     console.error('[loadJournal exception]', e);
     showToast('⚠️ Sin conexión — no se pudieron cargar los datos', 'err');
-    _syncYearLabels(); renderAll(); return;
+    if(requestedYear !== YEAR || !currentUser || currentUser.id !== requestedUserId) return; // YEAR o usuario cambió mientras esperábamos — descartar
+    _dropOtherYears(); _syncYearLabels(); renderAll(); return;
   }
 
-  if(requestedYear !== YEAR) return; // YEAR cambió mientras procesábamos — descartar
+  if(requestedYear !== YEAR || !currentUser || currentUser.id !== requestedUserId) return; // YEAR o usuario cambió mientras procesábamos — descartar
 
   const newJournal = {};
   data.forEach(e => {
@@ -1251,6 +1284,12 @@ async function loadJournalSupabase() {
     };
   });
 
+  // Conservar la versión local de los días con guardado pendiente (debounce) o en curso:
+  // es más reciente que la respuesta del servidor y, si se sustituyera, el guardado
+  // posterior subiría el estado antiguo y se perdería la última edición del usuario.
+  Object.keys(_saveTimers).concat(Object.keys(_saveInFlight), Object.keys(_saveDoneAt).filter(k => _saveDoneAt[k] >= _loadStartedAt)).forEach(k => {
+    if(journal[k] && parseInt(k.split('-')[0]) === requestedYear) newJournal[k] = journal[k];
+  });
   journal = newJournal;
   _syncYearLabels();
   renderAll();
@@ -1387,6 +1426,7 @@ async function _upsertEntry(k) {
 // obligar al usuario a repetir la acción por un error transitorio.
 let _saveInFlight = {}; // k -> Promise del guardado en curso
 let _saveRerun = {};    // k -> true si llegó un cambio nuevo mientras se guardaba
+let _saveDoneAt = {};   // k -> instante en que terminó el último guardado (para no pisarlo con una carga iniciada antes)
 
 async function _performSave(k) {
   if (_saveInFlight[k]) {
@@ -1404,6 +1444,7 @@ async function _performSave(k) {
   })();
   _saveInFlight[k] = run;
   const result = await run;
+  _saveDoneAt[k] = Date.now();
   delete _saveInFlight[k];
   if (_saveRerun[k]) {
     delete _saveRerun[k];
@@ -1413,7 +1454,7 @@ async function _performSave(k) {
 }
 
 async function smartSave(k) {
-  if(_isGuest()) { _guestSaveJournal(); renderMonthTable(); renderCalendar(); return; }
+  if(_isGuest()) { _guestSaveJournal(); delete _prevSnapshot[k]; renderMonthTable(); renderCalendar(); return; }
   if(!currentUser || !_cachedToken) { showToast('⚠️ Debes iniciar sesión para guardar', 'err'); return; }
   clearTimeout(_saveTimers[k]);
   _saveTimers[k] = setTimeout(async () => {
@@ -1421,7 +1462,7 @@ async function smartSave(k) {
     const { error } = await _performSave(k);
     if(error) {
       if(Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) {
-        if(_prevSnapshot[k] !== null) { journal[k] = _prevSnapshot[k]; } else { delete journal[k]; }
+        if(parseInt(k.split('-')[0]) !== YEAR) { /* journal ya contiene otro año: no reinsertar esta clave */ } else if(_prevSnapshot[k] !== null) { journal[k] = _prevSnapshot[k]; } else { delete journal[k]; }
         delete _prevSnapshot[k];
       }
       // Si no hay snapshot no revertir — no destruir datos que el usuario acaba de introducir
@@ -1440,12 +1481,20 @@ async function smartSave(k) {
 
 async function flushPendingSaves() {
   const keys = Object.keys(_saveTimers);
-  if(!keys.length) return;
-  keys.forEach(k => clearTimeout(_saveTimers[k]));
-  _saveTimers = {};
-  if(_isGuest()) { _guestSaveJournal(); return; }
-  if(!currentUser || !_cachedToken) return;
-  await Promise.all(keys.map(k => _performSave(k)));
+  if(keys.length) {
+    keys.forEach(k => clearTimeout(_saveTimers[k]));
+    _saveTimers = {};
+    if(_isGuest()) { _guestSaveJournal(); return; }
+    if(currentUser && _cachedToken) {
+      const results = await Promise.all(keys.map(k => _performSave(k)));
+      let _flushErr = null;
+      results.forEach((r, i) => { if(r && r.error) { _flushErr = r.error; } else { delete _prevSnapshot[keys[i]]; } });
+      if(_flushErr) showToast('❌ ' + (_flushErr.msg || 'Error al guardar'), 'err');
+    }
+  }
+  // Esperar también a los guardados ya en curso y a sus relanzamientos (_saveRerun): sin esto, un
+  // cierre de sesión justo después ejecuta el relanzamiento sin token, falla, revierte la edición y la pierde.
+  while(Object.keys(_saveInFlight).length) await Promise.all(Object.values(_saveInFlight)).catch(()=>{});
 }
 
 // ── AVATAR SUPABASE ──
@@ -1532,12 +1581,12 @@ function saveAvatarToSupabase(dataUrl) {
 function _waitForTokenThenLoad(attempts) {
   attempts = attempts || 0;
   if(_cachedToken) {
-    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(_hideLoadingSplash);
+    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(() => { renderMonthTable(); renderCalendar(); _hideLoadingSplash(); });
     return;
   }
   if(attempts >= 20) {
     // Tras 2s sin token, intentar igualmente (dejamos que Supabase devuelva el error real)
-    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(_hideLoadingSplash);
+    Promise.allSettled([loadJournalSupabase(), invLoadFromSupabase()]).then(() => { renderMonthTable(); renderCalendar(); _hideLoadingSplash(); });
     return;
   }
   setTimeout(() => _waitForTokenThenLoad(attempts + 1), 100);
@@ -1602,7 +1651,14 @@ let _invDirty = false; // declarado aquí para que onAuthStateChange pueda reset
 
 document.addEventListener('DOMContentLoaded', function() {
   const ok = initSupabase();
-  if(!ok) { showLogin(); return; }
+  if(!ok) {
+    // Sin SDK (p.ej. CDN inaccesible): respetar el modo invitado persistido, igual que INITIAL_SESSION
+    if(localStorage.getItem('tj_guest_mode') === '1') {
+      userProfile = { nickname: 'Invitado', email: '—', created_at: null, guest: true };
+      startApp(null);
+    } else { showLogin(); }
+    return;
+  }
 
   // Detección manual del token de recuperación en el hash de la URL (respaldo)
   const _hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
@@ -1651,7 +1707,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // ══ FLUSH AL SALIR ══
 window.addEventListener('beforeunload', () => {
   // Supabase: enviar keys pendientes via fetch keepalive
-  const pendingKeys = Object.keys(_saveTimers);
+  // Incluir también las claves con relanzamiento pendiente (_saveRerun): su última edición aún no se ha enviado
+  const pendingKeys = Object.keys(_saveTimers).concat(Object.keys(_saveRerun).filter(k => !(k in _saveTimers)));
   if (!currentUser || !_cachedToken || !pendingKeys.length) return;
   pendingKeys.forEach(k => clearTimeout(_saveTimers[k]));
   _saveTimers = {};
@@ -1662,6 +1719,16 @@ window.addEventListener('beforeunload', () => {
       const mon = parseInt(k.split('-')[1]) || 0;
       const pnlVal = (e.pnl!==''&&e.pnl!=null) ? String(e.pnl) : null;
       const condVal = Array.isArray(e.condiciones) ? JSON.stringify(e.condiciones) : null;
+      const _row = {
+        user_id: currentUser.id, day_key: k, year: yr, month: mon,
+        resultado: e.resultado||null, pnl: pnlVal, hora: e.hora||null,
+        condiciones: condVal, score: e.score||null, notas: e.notas||null,
+        img_url: e.img_url || e.img || null,
+        eval: e.eval||false, funded: e.funded||false
+      };
+      // keepalive limita el cuerpo a 64 KB: una imagen base64 (hasta ~480 KB) haría fallar la petición
+      // entera y se perderían los demás campos. Se omite la columna (upsert parcial: el servidor conserva su valor).
+      if (typeof _row.img_url === 'string' && _row.img_url.startsWith('data:')) delete _row.img_url;
       fetch(SUPABASE_URL + '/rest/v1/journal_entries?on_conflict=user_id,day_key', {
         method: 'POST',
         headers: {
@@ -1670,13 +1737,7 @@ window.addEventListener('beforeunload', () => {
           'Authorization': 'Bearer ' + _cachedToken,
           'Prefer': 'resolution=merge-duplicates,return=minimal'
         },
-        body: JSON.stringify([{
-          user_id: currentUser.id, day_key: k, year: yr, month: mon,
-          resultado: e.resultado||null, pnl: pnlVal, hora: e.hora||null,
-          condiciones: condVal, score: e.score||null, notas: e.notas||null,
-          img_url: e.img_url || e.img || null,
-          eval: e.eval||false, funded: e.funded||false
-        }]),
+        body: JSON.stringify([_row]),
         keepalive: true
       }).catch(()=>{});
     });
@@ -1696,6 +1757,7 @@ document.addEventListener("visibilitychange", async function() {
       _lastSyncTs = now;
       loadJournalSupabase();
       invLoadFromSupabase().then(() => {
+        renderMonthTable(); renderCalendar();
         if (document.getElementById("invOverlay").classList.contains("open")) invRenderPerdidas();
       });
     }
@@ -1867,11 +1929,14 @@ function updateAllStats() {
   const wrEl=document.getElementById('mStatWr'); if(wrEl){ wrEl.textContent=wr!==null?wr+'%':'—'; wrEl.className='sv '+wrc; }
   const wBar=document.getElementById('wrBar');   if(wBar) wBar.style.cssText=`width:${wr||0}%;background:${wrbg};`;
   const pnlEl=document.getElementById('mStatPnl');if(pnlEl){ pnlEl.textContent=(pnl>0?'+$':pnl<0?'-$':'$')+Math.abs(pnl).toFixed(0); pnlEl.className='sv '+(pnl>0?'green':pnl<0?'red':'amber'); }
+  const _profTotalsActive = document.getElementById('btnStatTotal')?.dataset.active === '1';
+  if(!_profTotalsActive){
   const pWr=document.getElementById('profWr'); if(pWr){ pWr.textContent=wr!==null?wr+'%':'—'; pWr.className='prof-stat-val '+wrc; }
   const pWrB=document.getElementById('profWrBar'); if(pWrB) pWrB.style.cssText=`width:${wr||0}%;background:${wrbg};`;
   const pTp=document.getElementById('profTp'); if(pTp) pTp.textContent=tp;
   const pSl=document.getElementById('profSl'); if(pSl) pSl.textContent=sl;
   const pp=document.getElementById('profPnl'); if(pp){ pp.textContent=(pnl>0?'+$':pnl<0?'-$':'$')+Math.abs(pnl).toFixed(0); pp.className='prof-stat-val '+(pnl>0?'green':pnl<0?'red':'amber'); }
+  }
   const lbl=document.getElementById('profStatsLabel'); if(lbl&&!lbl.textContent.includes('TOTALES')) lbl.textContent='ESTADÍSTICAS '+YEAR;
   // Mejor / peor trade funded del año
   let yBest=null,yWorst=null;
@@ -1895,6 +1960,7 @@ function updateAllStats() {
   if(bEl) bEl.textContent=showB?'+$'+Math.abs(yBest).toFixed(0):'—';
   if(wEl){ wEl.textContent=showW?'-$'+Math.abs(yWorst).toFixed(0):'—'; wEl.style.color=showW?'#e53935':'#555'; }
   updateStreakUI(calcStreaks(journal), 'mStat');
+  const _mDet=document.getElementById('mDetallesExtra'); if(_mDet && _mDet.style.display!=='none') _renderMPies();
 }
 
 function showProfStats(mode) {
@@ -1926,7 +1992,10 @@ function showProfStats(mode) {
     };
     // Calcular con datos actuales del año en memoria mientras carga
     let _tp=0,_sl=0,_be=0,_pnl=0;
-    Object.values(journal).forEach(e=>{ if(e.resultado==='tp')_tp++; else if(e.resultado==='sl')_sl++; else if(e.resultado==='be')_be++; if(e.pnl&&e.resultado!=='nt')_pnl+=parseFloat(e.pnl)||0; });
+    const _srcs=[journal];
+    // Invitado: los demás años solo existen en localStorage — incluirlos para que "Totales" no sea solo el año actual
+    if(_isGuest()){ Object.keys(localStorage).forEach(lk=>{ if(lk.startsWith(LS_JOURNAL_PREFIX) && lk!==LS_JOURNAL_PREFIX+YEAR) _srcs.push(_guestLoadJournal(lk.slice(LS_JOURNAL_PREFIX.length))); }); }
+    _srcs.forEach(_src=>Object.values(_src).forEach(e=>{ if(e.resultado==='tp')_tp++; else if(e.resultado==='sl')_sl++; else if(e.resultado==='be')_be++; if(e.pnl&&e.resultado&&e.resultado!=='nt')_pnl+=parseFloat(e.pnl)||0; }));
     _applyTotalStats(_tp,_sl,_be,_pnl);
     // Si hay sesión activa, buscar todos los años en Supabase
     if(currentUser && _cachedToken) {
@@ -1938,7 +2007,7 @@ function showProfStats(mode) {
           if(!res.ok) return;
           const rows = await res.json();
           let tp=0,sl=0,be=0,pnl=0;
-          rows.forEach(e=>{ if(e.resultado==='tp')tp++; else if(e.resultado==='sl')sl++; else if(e.resultado==='be')be++; if(e.pnl&&e.resultado!=='nt')pnl+=parseFloat(e.pnl)||0; });
+          rows.forEach(e=>{ if(e.resultado==='tp')tp++; else if(e.resultado==='sl')sl++; else if(e.resultado==='be')be++; if(e.pnl&&e.resultado&&e.resultado!=='nt')pnl+=parseFloat(e.pnl)||0; });
           // Solo aplicar si el botón "Totales" sigue activo
           const btnT2=document.getElementById('btnStatTotal');
           if(btnT2 && btnT2.dataset.active==='1') _applyTotalStats(tp,sl,be,pnl);
@@ -1991,6 +2060,7 @@ function renderMonthTable() {
     const isCur=m===TODAY_MONTH+1&&YEAR===TODAY_YEAR;
     const tr=document.createElement('tr'); if(isCur) tr.classList.add('current-month-row');
     tr.onclick=()=>{ calMonth=m-1; switchTab('calendar'); renderCalendar(); };
+    tr.tabIndex=0; tr.setAttribute('role','button'); tr.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); tr.click(); } };
     const tag=isCur?'<span style="font-size:9px;background:#1b3a1c;color:#4caf50;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:middle;">HOY</span>':'';
     const cb=cierre?`<span class="badge ${cierre}">${cierre==='pos'?'Positivo':cierre==='neg'?'Negativo':'Neutro'}</span>`:'<span style="color:#2a2a2a;">—</span>';
     const pb=cierre?`<span style="font-weight:500;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'}">${pnl>0?'+$':pnl<0?'-$':'$'}${Math.abs(pnl).toFixed(0)}</span>`:'<span style="color:#2a2a2a;">—</span>';
@@ -2051,12 +2121,13 @@ function renderCalBody(src, bodyId, m, isFriend, overrideYear) {
         else if(res==='nt'){td.classList.add('nt-day');mNt++;}
         if(!isFriend && _dayFormM===m+1 && _dayFormD===d && yr===YEAR) td.classList.add('selected-day');
         if(pnl!==null&&res!=='nt'){
-          wPnl+=pnl;wTrades++;mPnl+=pnl;if(e.funded){mFunded=true;mFundedCount++;if(mBest===null||pnl>mBest)mBest=pnl;if(mWorst===null||pnl<mWorst)mWorst=pnl;}
+          if(res){ wPnl+=pnl;wTrades++;mPnl+=pnl;if(e.funded){mFunded=true;mFundedCount++;if(mBest===null||pnl>mBest)mBest=pnl;if(mWorst===null||pnl<mWorst)mWorst=pnl;} }
           const pDiv=document.createElement('div'); pDiv.className='cell-pnl '+(pnl>0?'pos':pnl<0?'neg':'zero'); pDiv.textContent=fmtPnl(pnl); td.appendChild(pDiv);
         }
         if(res){ const rDiv=document.createElement('div'); rDiv.className='cell-res '+res; rDiv.textContent=res==='nt'?'NO TRADE':res.toUpperCase(); td.appendChild(rDiv); }
         if(!isFriend) td.onclick=()=>openDayFromCal(m+1,d);
         else td.onclick=()=>openFjDay(k,m+1,d);
+        td.tabIndex=0; td.setAttribute('role','button'); td.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); td.click(); } };
       }
       tr.appendChild(td);
     });
@@ -2150,10 +2221,12 @@ function renderGallery(){
       if(empty){ empty.textContent='⏳ Cargando imágenes…'; empty.style.display='block'; }
       const _reqGalleryYear = galleryYear;
       const _reqGalleryMonth = galleryMonth;
+      _updateGalleryFooterFromSrc({}, _reqGalleryYear, _reqGalleryMonth+1); // no mostrar WR/mejor/peor del mes anterior mientras carga o si falla
       _jFetchGet(`/rest/v1/journal_entries?user_id=eq.${currentUser.id}&year=eq.${_reqGalleryYear}&select=*`)
         .then(data => {
           if(!data || data._fetchError) {
-            lightboxItems = [];
+            if(galleryYear !== _reqGalleryYear || galleryMonth !== _reqGalleryMonth) return; // respuesta obsoleta
+            if(!document.getElementById('fjOverlay').classList.contains('open')) lightboxItems = [];
             if(empty){ empty.textContent='⚠️ Error al cargar imágenes'; empty.style.display='block'; }
             if(grid) grid.style.display='none';
             return;
@@ -2163,7 +2236,7 @@ function renderGallery(){
           if(empty){ empty.innerHTML='Sin imágenes este mes.<br>Añade charts desde el Calendario.'; }
           const reqYear = _reqGalleryYear;
           const tmpJournal = {};
-          data.forEach(e => { tmpJournal[e.day_key]={...e, img: e.img_url||e.img||null, condiciones: (()=>{try{return e.condiciones?JSON.parse(e.condiciones):[];}catch(_){return [];}})()}; });
+          data.forEach(e => { tmpJournal[e.day_key]={...e, pnl: (e.pnl!==null&&e.pnl!==undefined&&e.pnl!=='') ? String(e.pnl) : '', img: e.img_url||e.img||null, condiciones: (()=>{try{return e.condiciones?JSON.parse(e.condiciones):[];}catch(_){return [];}})()}; });
           // Render inline using tmpJournal directly — do NOT call renderGallery() to avoid
           // an infinite async fetch loop (galleryYear !== YEAR would trigger another fetch)
           // and to avoid polluting the global journal object with entries from another year.
@@ -2172,7 +2245,7 @@ function renderGallery(){
           const it2=[]; for(const k in tmpJournal){ const ev=tmpJournal[k]; if(!ev||(! ev.img&&!ev.img_url)) continue; if(!ev.img) ev.img=ev.img_url; const pp=k.split('-'); if(parseInt(pp[0])!==reqYear) continue; if(parseInt(pp[1])!==galleryMonth+1) continue; it2.push({k,e:ev,m:parseInt(pp[1]),d:parseInt(pp[2])}); }
           // journal is NOT mutated — tmpJournal stays isolated
           it2.sort((a,b)=>a.d-b.d);
-          lightboxItems=[...it2].sort((a,b)=>a.d-b.d);
+          const _ownLbItems2=[...it2].sort((a,b)=>a.d-b.d); if(!document.getElementById('fjOverlay').classList.contains('open')) lightboxItems=_ownLbItems2; // no pisar la lista del journal del amigo abierto
           if(!it2.length){ g2.style.display='none'; if(e2) e2.style.display='block'; _updateGalleryFooterFromSrc(tmpJournal,reqYear,galleryMonth+1); return; }
           if(e2) e2.style.display='none';
           g2.style.display='flex'; g2.style.flexDirection='column';          const daysInMonth2=new Date(reqYear,galleryMonth+1,0).getDate();
@@ -2190,7 +2263,7 @@ function renderGallery(){
             for(let c=0;c<5;c++){
               const cell2=gcells2[r*5+c]; const wrap2=document.createElement('div'); wrap2.style.cssText='height:100%;min-width:0;';
               if(cell2.inMonth&&dayMap2[cell2.d]){
-                const item2=dayMap2[cell2.d]; const lbIdx2=lightboxItems.findIndex(i=>i.d===item2.d);
+                const item2=dayMap2[cell2.d]; const lbIdx2=_ownLbItems2.findIndex(i=>i.d===item2.d);
                 const {e:ev2,m:m2,d:d2}=item2;
                 const isToday2=reqYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&d2===TODAY_DAY;
                 const res2=ev2.resultado||'';
@@ -2203,7 +2276,8 @@ function renderGallery(){
                 const todayBorder2=isToday2?'border:2px solid #4caf50;':'border:1px solid #1e1e1e;';
                 card2.style.cssText=`background:#111;border-radius:10px;overflow:hidden;cursor:pointer;${todayBorder2}transition:border-color .15s;height:100%;display:flex;flex-direction:column;`;
                 card2.onmouseenter=()=>card2.style.borderColor='#4caf50'; card2.onmouseleave=()=>card2.style.borderColor=isToday2?'#4caf50':'#1e1e1e';
-                card2.onclick=()=>openLightbox(lbIdx2);
+                card2.onclick=()=>{ lightboxItems=_ownLbItems2; openLightbox(lbIdx2); };
+                card2.tabIndex=0; card2.setAttribute('role','button'); card2.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card2.click(); } };
                 card2.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(ev2.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res2?`<span style="position:absolute;top:6px;right:6px;background:${resBg2};color:${resColor2};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res2==='nt'?'NT':res2.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday2?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday2?'#4caf50':'#ccc'};">${isToday2?'● ':''} ${dow2b} ${d2} ${MONTHS[m2-1]}</div>${pnlStr2?`<div style="font-size:12px;font-weight:600;color:${pnl2>0?'#4caf50':pnl2<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr2}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
                 wrap2.appendChild(card2);
               } else if(cell2.inMonth){
@@ -2237,8 +2311,8 @@ function renderGallery(){
     items.push({k,e,m:parseInt(parts[1]),d:parseInt(parts[2])});
   }
   items.sort((a,b)=>a.d-b.d);
-  lightboxItems=[...items].sort((a,b)=>a.d-b.d);
-  if(!items.length){ grid.style.display='none'; if(empty) empty.style.display='block'; _updateGalleryFooterFromSrc(galleryJournal,galleryYear,galleryMonth+1); return; }
+  const _ownLbItems=[...items].sort((a,b)=>a.d-b.d); if(!document.getElementById('fjOverlay').classList.contains('open')) lightboxItems=_ownLbItems; // no pisar la lista del journal del amigo abierto
+  if(!items.length){ grid.style.display='none'; if(empty){ empty.innerHTML='Sin imágenes este mes.<br>Añade charts desde el Calendario.'; empty.style.display='block'; } _updateGalleryFooterFromSrc(galleryJournal,galleryYear,galleryMonth+1); return; }
   if(empty) empty.style.display='none';
   grid.innerHTML='';
   grid.style.display='flex';
@@ -2272,7 +2346,7 @@ function renderGallery(){
       wrap.style.cssText='height:100%;min-width:0;';
       if(cell.inMonth&&dayMap[cell.d]){
         const item=dayMap[cell.d];
-        const lbIdx=lightboxItems.findIndex(i=>i.d===item.d);
+        const lbIdx=_ownLbItems.findIndex(i=>i.d===item.d);
         const {e,m,d}=item;
         const isToday=galleryYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&d===TODAY_DAY;
         const res=e.resultado||'';
@@ -2286,7 +2360,8 @@ function renderGallery(){
         card.style.cssText=`background:#111;border-radius:10px;overflow:hidden;cursor:pointer;${todayBorder}transition:border-color .15s;height:100%;display:flex;flex-direction:column;`;
         card.onmouseenter=()=>card.style.borderColor='#4caf50';
         card.onmouseleave=()=>card.style.borderColor=isToday?'#4caf50':'#1e1e1e';
-        card.onclick=()=>openLightbox(lbIdx);
+        card.onclick=()=>{ lightboxItems=_ownLbItems; openLightbox(lbIdx); };
+        card.tabIndex=0; card.setAttribute('role','button'); card.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card.click(); } };
         card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(e.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
@@ -2315,9 +2390,9 @@ function _updateGalleryFooterFromSrc(src, yr, month){
     const pp=k.split('-'); if(parseInt(pp[0])!==yr||parseInt(pp[1])!==month) continue;
     if(e.resultado==='tp'){gTp++;gpnl+=parseFloat(e.pnl||0);}
     else if(e.resultado==='sl'){gSl++;gpnl+=parseFloat(e.pnl||0);}
-    else if(e.resultado==='be') gBe++;
+    else if(e.resultado==='be'){gBe++;gpnl+=parseFloat(e.pnl||0);}
     else if(e.resultado==='nt') gNt++;
-    if(e.funded&&e.pnl&&e.pnl!==''){const v=parseFloat(e.pnl);if(!isNaN(v)){if(v>0&&(gBest===null||v>gBest))gBest=v;if(v<0&&(gWorst===null||v<gWorst))gWorst=v;}}
+    if(e.funded&&e.pnl&&e.pnl!==''&&e.resultado!=='nt'){const v=parseFloat(e.pnl);if(!isNaN(v)){if(v>0&&(gBest===null||v>gBest))gBest=v;if(v<0&&(gWorst===null||v<gWorst))gWorst=v;}}
   }
   const gpnlEl=document.getElementById('galleryPnl');
   if(gpnlEl){gpnlEl.textContent=(gpnl>0?'+$':gpnl<0?'-$':'$')+Math.abs(gpnl).toFixed(0);gpnlEl.className='footer-pnl-val '+(gpnl>0?'green':gpnl<0?'red':'blue');}
@@ -2400,7 +2475,7 @@ function openLightbox(idx){
   document.getElementById('lightboxMeta').innerHTML=`
     <div style="font-size:13px;color:#aaa;">${DAYS_ES[new Date(_lbYear,m-1,d).getDay()]}, ${d} de ${MONTHS[m-1]} de ${_lbYear}</div>
     <div style="display:flex;gap:10px;justify-content:center;align-items:center;margin-top:6px;">
-      ${res?`<span style="font-size:12px;font-weight:600;color:${resColor};background:${res==='tp'?'#1b3a1c':res==='sl'?'#3a1b1b':res==='be'?'#0d2040':'#222'};padding:3px 10px;border-radius:6px;">${res==='nt'?'NO TRADE':res.toUpperCase()}</span>`:''}
+      ${res?`<span style="font-size:12px;font-weight:600;color:${resColor};background:${res==='tp'?'#1b3a1c':res==='sl'?'#3a1b1b':res==='be'?'#0d2040':'#222'};padding:3px 10px;border-radius:6px;">${res==='nt'?'NO TRADE':escHtml(res.toUpperCase())}</span>`:''}
       ${pnlStr?`<span style="font-size:14px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};">${pnlStr}</span>`:''}
     </div>
     <div style="font-size:11px;color:#333;margin-top:4px;">${idx+1} / ${lightboxItems.length}</div>`;
@@ -2435,7 +2510,9 @@ async function closeDayForm(){
   _dayFormM=0; _dayFormD=0; renderCalendar();
   await flushPendingSaves();
 }
+let _dayFormNavBusy=false; // cambio de año en curso desde el formulario: YEAR ya puede haber cambiado pero el formulario aún muestra el día anterior
 async function dayFormNav(dir){
+  if(_dayFormNavBusy) return;
   let m=_dayFormM, d=_dayFormD;
   if(!m||!d) return;
   let date=new Date(YEAR,m-1,d);
@@ -2444,7 +2521,7 @@ async function dayFormNav(dir){
     const dw=date.getDay();
     if(dw!==0&&dw!==6){
       const ny=date.getFullYear(); const nm=date.getMonth()+1; const nd=date.getDate();
-      if(ny!==YEAR){ await flushPendingSaves(); YEAR=ny; galleryYear=ny; calMonth=nm-1; if(sb&&currentUser){ const _reqY=ny; _syncYearLabels(); await loadJournalSupabase(); if(YEAR===_reqY) openDayForm(nm,nd); }else if(_isGuest()){journal=_guestLoadJournal(YEAR);_syncYearLabels();renderAll();openDayForm(nm,nd);}else{journal={};_syncYearLabels();renderAll();openDayForm(nm,nd);} }
+      if(ny!==YEAR){ _dayFormNavBusy=true; try { await flushPendingSaves(); YEAR=ny; galleryYear=ny; calMonth=nm-1; if(sb&&currentUser){ const _reqY=ny; _syncYearLabels(); await loadJournalSupabase(); if(YEAR===_reqY && _dayFormM===m && _dayFormD===d) openDayForm(nm,nd); }else if(_isGuest()){journal=_guestLoadJournal(YEAR);_syncYearLabels();renderAll();openDayForm(nm,nd);}else{journal={};_syncYearLabels();renderAll();openDayForm(nm,nd);} } finally { _dayFormNavBusy=false; } }
       else{ openDayForm(nm,nd); }
       return;
     }
@@ -2456,45 +2533,45 @@ function renderDayFormBody(k,m){
   document.getElementById('dayFormBody').innerHTML=`
     <div><div class="field-label">TIPO</div>
       <div class="chip-group">
-        <div class="chip${isEval?' sel-eval':''}" onclick="toggleFlag('${k}','eval',this)">Eval</div>
-        <div class="chip${isFunded?' sel-funded':''}" onclick="toggleFlag('${k}','funded',this)">Funded</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${isEval?' sel-eval':''}" aria-pressed="${isEval?'true':'false'}" onclick="toggleFlag('${k}','eval',this)">Eval</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${isFunded?' sel-funded':''}" aria-pressed="${isFunded?'true':'false'}" onclick="toggleFlag('${k}','funded',this)">Funded</div>
       </div>
     </div>
     <div><div class="field-label">RESULTADO</div>
       <div class="chip-group">
-        <div class="chip${res==='tp'?' sel-tp':''}" onclick="toggleRes('${k}','tp',this)">TP</div>
-        <div class="chip${res==='sl'?' sel-sl':''}" onclick="toggleRes('${k}','sl',this)">SL</div>
-        <div class="chip${res==='be'?' sel-be':''}" onclick="toggleRes('${k}','be',this)">BE</div>
-        <div class="chip${res==='nt'?' sel-nt':''}" onclick="toggleRes('${k}','nt',this)">NO TRADE</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${res==='tp'?' sel-tp':''}" aria-pressed="${res==='tp'?'true':'false'}" onclick="toggleRes('${k}','tp',this)">TP</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${res==='sl'?' sel-sl':''}" aria-pressed="${res==='sl'?'true':'false'}" onclick="toggleRes('${k}','sl',this)">SL</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${res==='be'?' sel-be':''}" aria-pressed="${res==='be'?'true':'false'}" onclick="toggleRes('${k}','be',this)">BE</div>
+        <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${res==='nt'?' sel-nt':''}" aria-pressed="${res==='nt'?'true':'false'}" onclick="toggleRes('${k}','nt',this)">NO TRADE</div>
       </div>
     </div>
     <div><div class="field-label">P&L (USD)</div>
-      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')"/></div>
+      <div class="pnl-wrap"><span>$</span><input class="field-input" type="number" aria-label="P&L en USD" step="0.01" inputmode="decimal" pattern="[0-9\-\.]*" placeholder="Ej: 350 o -200" value="${e.pnl||''}" id="pnl-${k}" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')"/></div>
     </div>
     <div><div class="field-label">HORA DE ENTRADA</div>
       <div style="display:flex;gap:6px;align-items:center;">
-        <input class="field-input" type="time" value="${e.hora||''}" id="hora-${k}" onchange="onFieldChange('${k}')" style="flex:1;"/>
-        <button onclick="clearHora('${k}')" style="background:#2a2a2a;border:none;color:#888;border-radius:7px;padding:0 12px;height:34px;cursor:pointer;font-size:13px;flex-shrink:0;">✕</button>
+        <input class="field-input" type="time" aria-label="Hora de entrada" value="${e.hora||''}" id="hora-${k}" onchange="onFieldChange('${k}')" style="flex:1;"/>
+        <button aria-label="Borrar hora de entrada" onclick="clearHora('${k}')" style="background:#2a2a2a;border:none;color:#888;border-radius:7px;padding:0 12px;height:34px;cursor:pointer;font-size:13px;flex-shrink:0;">✕</button>
       </div>
     </div>
     <div>
       <div class="field-label"><span>CONDICIONES</span><button class="edit-cond-btn" onclick="openCondModal()">✏ Editar mis condiciones</button></div>
       <div class="chip-group cond-chip-group">
-        ${CONDITIONS.map(c=>`<div class="chip${Array.isArray(e.condiciones)&&e.condiciones.includes(c)?' sel-cond':''}" data-cond="${escHtml(c)}" onclick="toggleCond('${k}',this,this.dataset.cond)">${escHtml(c)}</div>`).join('')}
+        ${CONDITIONS.map(c=>`<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${Array.isArray(e.condiciones)&&e.condiciones.includes(c)?' sel-cond':''}" aria-pressed="${Array.isArray(e.condiciones)&&e.condiciones.includes(c)?'true':'false'}" data-cond="${escHtml(c)}" onclick="toggleCond('${k}',this,this.dataset.cond)">${escHtml(c)}</div>`).join('')}
       </div>
     </div>
     <div><div class="field-label">PUNTUACIÓN TRADE</div>
-      <div class="chip-group">${SCORES.map(s=>`<div class="chip${e.score===s.k?' sel-'+s.k:''}" onclick="toggleScore('${k}','${s.k}',this)">${s.label}</div>`).join('')}</div>
+      <div class="chip-group">${SCORES.map(s=>`<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${e.score===s.k?' sel-'+s.k:''}" aria-pressed="${e.score===s.k?'true':'false'}" onclick="toggleScore('${k}','${s.k}',this)">${s.label}</div>`).join('')}</div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;"><div class="field-label">IMAGEN</div>
-      <div class="img-upload" id="img-upload-${k}" onclick="document.getElementById('img-file-${k}').click()" style="${e.img?'display:none;':'flex:1;min-height:60px;'}"><span id="img-label-${k}">+ Añadir imagen del chart</span></div>
+      <div class="img-upload" id="img-upload-${k}" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="document.getElementById('img-file-${k}').click()" style="${e.img?'display:none;':'flex:1;min-height:60px;'}"><span id="img-label-${k}">+ Añadir imagen del chart</span></div>
       <input type="file" accept="image/*" id="img-file-${k}" style="display:none" onchange="handleImg('${k}',this)"/>
       ${e.img?`<div id="img-loaded-${k}" style="font-size:11px;font-weight:600;color:#4caf50;margin-bottom:4px;">✓ Imagen cargada</div>`:`<div id="img-loaded-${k}" style="display:none;font-size:11px;font-weight:600;color:#4caf50;margin-bottom:4px;">✓ Imagen cargada</div>`}
       <img id="img-preview-${k}" class="img-preview" src="${e.img||''}" alt="Vista previa del gráfico del trade" style="${e.img?'display:block;flex:1;':'display:none;'}object-fit:contain;border-radius:8px;cursor:pointer;" onclick="document.getElementById('img-file-${k}').click()"/>
       <button class="img-del" id="img-del-${k}" onclick="removeImg('${k}')" style="${e.img?'display:inline-block':'display:none'}">Eliminar imagen</button>
     </div>
     <div><div class="field-label">NOTAS</div>
-      <textarea class="field-input" rows="5" placeholder="Observaciones del trade..." id="notas-${k}" style="resize:none;" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')">${String(e.notas||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+      <textarea class="field-input" rows="5" aria-label="Notas" placeholder="Observaciones del trade..." id="notas-${k}" style="resize:none;" oninput="onFieldChange('${k}')" onchange="onFieldChange('${k}')">${String(e.notas||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
     </div>
     <button class="save-btn" onclick="saveDay('${k}')">Guardar</button>`;
 }
@@ -2519,15 +2596,15 @@ function onFieldChange(k){
 }
 function clearHora(k){ const el=document.getElementById('hora-'+k); if(el) el.value=''; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=journal[k]?JSON.parse(JSON.stringify(journal[k])):null; if(!journal[k]) journal[k]={}; journal[k].hora=''; smartSave(k); }
 function toggleDay(k,h){ const b=document.getElementById('body-'+k); b.classList.toggle('open'); h.querySelector('.arr').style.transform=b.classList.contains('open')?'rotate(90deg)':''; }
-function toggleRes(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].resultado===val; journal[k].resultado=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>c.className='chip'); if(!a) el.classList.add('sel-'+val); if(!a&&val==='sl') _applySlSign(k); smartSave(k); }
+function toggleRes(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].resultado===val; journal[k].resultado=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>{c.className='chip';c.setAttribute('aria-pressed','false');}); if(!a){ el.classList.add('sel-'+val); el.setAttribute('aria-pressed','true'); } if(!a&&val==='sl') _applySlSign(k); smartSave(k); }
 // Si se marca SL y ya hay un importe de P&L introducido, forzar que sea negativo automáticamente
 function _applySlSign(k){
   const el=document.getElementById('pnl-'+k); if(!el||el.value==='') return;
   const n=parseFloat(el.value);
   if(!isNaN(n) && n>0){ el.value=String(-n); if(journal[k]) journal[k].pnl=el.value; }
 }
-function toggleFlag(k,flag,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; journal[k][flag]=!journal[k][flag]; el.className='chip'+(journal[k][flag]?' sel-'+flag:''); smartSave(k); }
-function toggleScore(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].score===val; journal[k].score=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>c.className='chip'); if(!a) el.classList.add('sel-'+val); smartSave(k); }
+function toggleFlag(k,flag,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; journal[k][flag]=!journal[k][flag]; el.className='chip'+(journal[k][flag]?' sel-'+flag:''); el.setAttribute('aria-pressed',journal[k][flag]?'true':'false'); smartSave(k); }
+function toggleScore(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].score===val; journal[k].score=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>{c.className='chip';c.setAttribute('aria-pressed','false');}); if(!a){ el.classList.add('sel-'+val); el.setAttribute('aria-pressed','true'); } smartSave(k); }
 function toggleCond(k,el,cond){
   if(!journal[k]) journal[k]={};
   if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null;
@@ -2535,7 +2612,7 @@ function toggleCond(k,el,cond){
   let c=journal[k].condiciones; if(!Array.isArray(c)) c=[];
   journal[k].condiciones=c;
   const i=c.indexOf(condVal);
-  if(i>-1){ c.splice(i,1); el.className='chip'; } else { c.push(condVal); el.classList.add('sel-cond'); }
+  if(i>-1){ c.splice(i,1); el.className='chip'; el.setAttribute('aria-pressed','false'); } else { c.push(condVal); el.classList.add('sel-cond'); el.setAttribute('aria-pressed','true'); }
   smartSave(k);
 }
 function _compressImg(file, maxPx, quality, cb) {
@@ -2637,6 +2714,7 @@ function handleImg(k,input){
           const reader = new FileReader();
           reader.onload = async function(ev) {
             const b64 = ev.target.result;
+            if(parseInt(k.split('-')[0]) !== YEAR){ URL.revokeObjectURL(previewUrl); _commitImgOtherYear(k, b64); return; }
             if(!journal[k]) journal[k]={};
             journal[k].img = b64;
             journal[k].img_url = null;
@@ -2657,10 +2735,13 @@ function handleImg(k,input){
         return;
       }
       const { data: urlData } = sb.storage.from('charts').getPublicUrl(path);
-      const publicUrl = urlData?.publicUrl;
+      // La ruta del objeto es fija por día (k.jpg): sin un parámetro de versión la URL sería idéntica a la de la
+      // imagen anterior y el navegador mostraría la imagen ya cargada en el documento en lugar de la nueva.
+      const publicUrl = urlData?.publicUrl ? urlData.publicUrl + (urlData.publicUrl.includes('?') ? '&' : '?') + 'v=' + Date.now() : null;
       if(!publicUrl) throw new Error('No public URL');
 
       // Success: commit to journal
+      if(parseInt(k.split('-')[0]) !== YEAR){ URL.revokeObjectURL(previewUrl); _commitImgOtherYear(k, publicUrl); return; }
       if(!journal[k]) journal[k]={};
       journal[k].img = publicUrl;
       journal[k].img_url = publicUrl;
@@ -2680,6 +2761,15 @@ function handleImg(k,input){
     }
   });
 }
+// Si durante la subida se cambió de año, `journal` ya no contiene el día `k`: guardar SOLO la
+// columna de imagen (upsert parcial) para no sobrescribir con null el resto del registro en la BD.
+function _commitImgOtherYear(k, src){
+  if(!currentUser || !_cachedToken){ showToast('⚠️ Debes iniciar sesión para guardar','err'); return; }
+  const parts=k.split('-');
+  _jFetch('POST', '/rest/v1/journal_entries?on_conflict=user_id,day_key',
+    [{ user_id: currentUser.id, day_key: k, year: parseInt(parts[0]), month: parseInt(parts[1])||0, img_url: src }]
+  ).then(r => { if(r && r.ok) showToast('☁️ Imagen guardada','ok'); else showToast('❌ Error al guardar la imagen','err'); });
+}
 function removeImg(k){
   if(!journal[k]) journal[k]={};
   if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null;
@@ -2689,7 +2779,7 @@ function removeImg(k){
   const up=document.getElementById('img-upload-'+k); if(up) up.style.display='flex';
   const loaded=document.getElementById('img-loaded-'+k); if(loaded) loaded.style.display='none';
   const del=document.getElementById('img-del-'+k); if(del) del.style.display='none';
-  const lbl=document.getElementById('img-label-'+k); if(lbl){lbl.textContent='+ Añadir imagen del chart';lbl.style.color='';lbl.style.fontSize='';lbl.style.fontWeight='';}
+  const lbl=document.getElementById('img-label-'+k); if(lbl){lbl.textContent='+ Añadir imagen del chart';lbl.style.color='';lbl.style.fontSize='';lbl.style.fontWeight='';lbl.style.display='';}
   const inp=document.getElementById('img-file-'+k); if(inp) inp.value='';
   if(sb && currentUser) sb.storage.from('charts').remove([currentUser.id+'/'+k+'.jpg']).catch(()=>{});
   renderGallery(); renderCalendar();
@@ -2725,7 +2815,7 @@ async function saveDay(k){
   if(_saveTimers[k]){ clearTimeout(_saveTimers[k]); delete _saveTimers[k]; }
   const { error } = await _performSave(k);
   if(error) {
-    if(prev !== undefined) { journal[k] = prev; }
+    if(prev !== undefined && parseInt(k.split('-')[0]) === YEAR) { journal[k] = prev; } // si se cambió de año mientras se guardaba, no reinsertar la clave en el journal del nuevo año
     // Si no hay snapshot previo no revertir — no destruir datos que el usuario acaba de introducir
     const _sde = (error && error.msg) ? error.msg : 'Error al guardar';
     showToast('❌ ' + _sde, 'err');
@@ -2735,6 +2825,7 @@ async function saveDay(k){
     if(_dayFormM && _dayFormD && dKey(_dayFormM,_dayFormD)===k) renderDayFormBody(k,_dayFormM);
     return;
   }
+  delete _prevSnapshot[k];
   showToast('☁️ Guardado en la nube','ok');
   // Close the panel after a successful explicit save
   document.getElementById('dayFormBackdrop').classList.remove('open');
@@ -2746,16 +2837,16 @@ async function saveDay(k){
 // ══════════════════════════════════════════
 // CONDICIONES
 // ══════════════════════════════════════════
-function openCondModal(){ const list=document.getElementById('condList'); list.innerHTML=CONDITIONS.map((c,i)=>`<div class="cond-item"><span>${i+1}.</span><input type="text" class="cond-input" value="${escHtml(c)}" placeholder="Nombre de la condición..."/><button class="cond-del" onclick="this.closest('.cond-item').remove();_renumberConds()">×</button></div>`).join(''); document.getElementById('condModal').classList.add('open'); }
+function openCondModal(){ const list=document.getElementById('condList'); list.innerHTML=CONDITIONS.map((c,i)=>`<div class="cond-item"><span>${i+1}.</span><input type="text" class="cond-input" aria-label="Nombre de la condición" value="${escHtml(c)}" placeholder="Nombre de la condición..."/><button class="cond-del" aria-label="Eliminar condición" onclick="this.closest('.cond-item').remove();_renumberConds()">×</button></div>`).join(''); document.getElementById('condModal').classList.add('open'); }
 function closeCondModal(){ document.getElementById('condModal').classList.remove('open'); }
-function addCondRow(){ const list=document.getElementById('condList'); const uid='c'+Date.now(); const i=list.children.length+1; const div=document.createElement('div'); div.className='cond-item'; div.dataset.uid=uid; div.innerHTML=`<span>${i}.</span><input type="text" class="cond-input" placeholder="Nueva condición..."/><button class="cond-del" onclick="this.closest('.cond-item').remove();_renumberConds()">×</button>`; list.appendChild(div); setTimeout(()=>div.querySelector('input')?.focus(),50); }
+function addCondRow(){ const list=document.getElementById('condList'); const uid='c'+Date.now(); const i=list.children.length+1; const div=document.createElement('div'); div.className='cond-item'; div.dataset.uid=uid; div.innerHTML=`<span>${i}.</span><input type="text" class="cond-input" aria-label="Nombre de la condición" placeholder="Nueva condición..."/><button class="cond-del" aria-label="Eliminar condición" onclick="this.closest('.cond-item').remove();_renumberConds()">×</button>`; list.appendChild(div); setTimeout(()=>div.querySelector('input')?.focus(),50); }
 function _renumberConds(){ document.getElementById('condList').querySelectorAll('.cond-item span:first-child').forEach((s,i)=>s.textContent=(i+1)+'.'); }
 function saveConditions(){ const inputs=document.getElementById('condList').querySelectorAll('.cond-input'); CONDITIONS=[...inputs].map(el=>el.value.trim()).filter(Boolean); if(_isGuest()){ _guestSaveConds(); showToast('💾 Condiciones guardadas','ok'); } else if(currentUser && _cachedToken){ _sbFetch(SUPABASE_URL+'/rest/v1/profiles?id=eq.'+currentUser.id, { method:'PATCH', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+_cachedToken,'Content-Type':'application/json','Prefer':'return=minimal'}, body:JSON.stringify({conditions:JSON.stringify(CONDITIONS)}) }).then(r=>{ if(!r||!r.ok) showToast('❌ Error guardando condiciones','err'); else showToast('☁️ Condiciones guardadas','ok'); }).catch(()=>showToast('❌ Error guardando condiciones','err')); } closeCondModal(); if(_dayFormM&&_dayFormD){ const k=dKey(_dayFormM,_dayFormD); renderDayFormBody(k,_dayFormM); } }
 
 // ══════════════════════════════════════════
 // TABS & PANELES
 // ══════════════════════════════════════════
-function switchTab(id){ const ids=['monthly','calendar','daily']; document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ids[i]===id)); document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+id)); if(id!=='monthly'){ const p=document.getElementById('mDetallesExtra'); if(p&&p.style.display!=='none'){ p.style.display='none'; const bd=document.getElementById('mDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('mDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; } } if(id==='daily') renderGallery(); }
+function switchTab(id){ const ids=['monthly','calendar','daily']; document.querySelectorAll('.tab').forEach((t,i)=>{ t.classList.toggle('active',ids[i]===id); t.setAttribute('aria-pressed',ids[i]===id?'true':'false'); }); document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+id)); if(id!=='monthly'){ const p=document.getElementById('mDetallesExtra'); if(p&&p.style.display!=='none'){ p.style.display='none'; const bd=document.getElementById('mDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('mDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; } } if(id==='daily') renderGallery(); }
 function openFriends(){ document.getElementById('friendsBackdrop').classList.add('open'); document.getElementById('friendsPanel').classList.add('open'); loadFriends(); }
 function updateFriendsCount(){ const list=document.getElementById('friendsList'); const n=list?list.querySelectorAll('.friend-card').length:0; const el=document.getElementById('profFriends'); if(el) el.textContent=n+' amigo'+(n===1?'':'s'); }
 function closeFriends(){ document.getElementById('friendsBackdrop').classList.remove('open'); document.getElementById('friendsPanel').classList.remove('open'); }
@@ -2829,7 +2920,7 @@ async function _getNicksByIds(ids) {
 async function addFriend(){
   const input=document.getElementById('friendSearchInput');
   const msg=document.getElementById('friendSearchResult');
-  const nick=input.value.trim().toLowerCase().replace(/^@/,'');
+  const nick=input.value.trim().toLowerCase().replace(/^@/,'').replace(/\s+/g,'_');
   if(!nick){ msg.style.color='#e53935'; msg.textContent='Escribe un nickname'; return; }
   if(!currentUser || !_cachedToken){ msg.style.color='#e53935'; msg.textContent='Necesitas cuenta para añadir amigos'; return; }
 
@@ -2890,6 +2981,7 @@ async function loadFriends(){
   const friendIds = friendEntries.map(f => f.otherId);
   const allIds = [...new Set([...reqIds, ...friendIds])];
   const nickMap = allIds.length ? await _getNicksByIds(allIds) : {};
+  if(!currentUser || currentUser.id !== myId) return; // sesión cerrada o usuario distinto durante la carga: no pintar datos del usuario anterior
   const reqNicks = reqs.map(r => (nickMap[r.from_id] && nickMap[r.from_id].nickname) || '?');
   const reqAvatars = reqs.map(r => (nickMap[r.from_id] && nickMap[r.from_id].avatar_url) || null);
   const friendNicks = friendEntries.map(f => (nickMap[f.otherId] && nickMap[f.otherId].nickname) || '?');
@@ -2963,6 +3055,7 @@ async function _pollFriendsNow(){
   if(!currentUser || !_cachedToken) return;
   const myId = currentUser.id;
   const rows = await _frGet(`/rest/v1/friend_requests?to_id=eq.${myId}&status=eq.pending&select=id`);
+  if(!currentUser || currentUser.id !== myId) return; // sesión cerrada o usuario distinto durante la petición
   const n = rows ? rows.length : 0;
   const dot = document.getElementById('notifDot');
   const badge = document.getElementById('reqBadge');
@@ -2997,12 +3090,13 @@ async function openFriendJournal(name,initial,bg,color,userId,avatarUrl){
   closeFriends(); fjYear=TODAY_YEAR; fjCalMonth=TODAY_MONTH; _fjGalleryMonth=TODAY_MONTH;
   _fjUserId=userId; _fjNick=name; _fjLoadError=false;
   _fjLoadedGanancias=[]; _fjMostrarRetiros=false;
+  const fjTot=document.getElementById('fjRetirosTotal'); if(fjTot) fjTot.style.display='none';
   const fjBtn=document.getElementById('fjMostrarRetirosBtn');
   if(fjBtn){fjBtn.textContent='Mostrar retiros';fjBtn.style.opacity='.4';fjBtn.style.borderColor='#2a2a2a';fjBtn.style.color='#fff';}
   FRIEND_JOURNAL={};
   const av=document.getElementById('fjAvatar');
   if(avatarUrl){
-    av.innerHTML=`<img src="${escHtml(avatarUrl)}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${escHtml(initial)}';this.parentElement.style.background='${bg}';this.parentElement.style.color='${color}';"/>`;
+    av.innerHTML=`<img src="${escHtml(avatarUrl)}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.style.background='${bg}';this.parentElement.style.color='${color}';this.parentElement.textContent=${escHtml(JSON.stringify(String(initial)))};"/>`;
     av.style.background='transparent'; av.style.color='transparent';
   } else {
     av.textContent=initial; av.style.background=bg; av.style.color=color;
@@ -3015,7 +3109,7 @@ async function openFriendJournal(name,initial,bg,color,userId,avatarUrl){
   await _loadFriendJournalYear();
   _loadFriendGanancias(userId);
 }
-function closeFriendJournal(){ document.getElementById('fjOverlay').classList.remove('open'); FRIEND_JOURNAL={}; _fjUserId=null; _fjLoadError=false; const b=document.getElementById('fjRlsErrorBanner'); if(b) b.style.display='none'; const p=document.getElementById('fjDetallesExtra'); if(p&&p.style.display!=='none'){p.style.display='none';} const bd=document.getElementById('fjDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('fjDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; }
+function closeFriendJournal(){ document.getElementById('fjOverlay').classList.remove('open'); FRIEND_JOURNAL={}; _fjUserId=null; _fjLoadError=false; if(document.getElementById('view-daily')?.classList.contains('active')) renderGallery(); const b=document.getElementById('fjRlsErrorBanner'); if(b) b.style.display='none'; const p=document.getElementById('fjDetallesExtra'); if(p&&p.style.display!=='none'){p.style.display='none';} const bd=document.getElementById('fjDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('fjDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; }
 
 let _fjLoadedGanancias = [];
 let _fjMostrarRetiros = false;
@@ -3037,6 +3131,7 @@ function toggleFjRetiros() {
 async function _loadFriendGanancias(userId) {
   try {
     const rows = await _frGet(`/rest/v1/inversiones?user_id=eq.${encodeURIComponent(userId)}&select=ganancias,gcats&limit=1`);
+    if (_fjUserId !== userId) return; // se cerró o se abrió otro amigo mientras esperábamos
     const data = rows && rows.length > 0 ? rows[0] : null;
     if (!data) { return; }
     const parse = (v, d) => { try { return v ? JSON.parse(v) : d; } catch(e) { return d; } };
@@ -3050,7 +3145,7 @@ async function _loadFriendGanancias(userId) {
 function openFjMonth(m){ fjCalMonth=m-1; switchFjTab('cal'); }
 function switchFjTab(id){
   const tabs=['summary','cal','daily'];
-  document.querySelectorAll('.fj-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===id));
+  document.querySelectorAll('.fj-tab').forEach((t,i)=>{ t.classList.toggle('active',tabs[i]===id); t.setAttribute('aria-pressed',tabs[i]===id?'true':'false'); });
   document.querySelectorAll('.fj-view').forEach(v=>v.classList.toggle('active',v.id==='fj-'+id));
   if(id!=='summary'){ const p=document.getElementById('fjDetallesExtra'); if(p&&p.style.display!=='none'){ p.style.display='none'; const bd=document.getElementById('fjDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('fjDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; } }
   if(id==='cal') renderCalBody(FRIEND_JOURNAL,'fjCalBody',fjCalMonth,true,fjYear);
@@ -3149,7 +3244,18 @@ function renderFriendJournalForYear(){
   const calTitleEl=document.getElementById('fjCalTitle');
   if(calTitleEl){ calTitleEl.textContent=MONTHS[fjCalMonth]+' '+fjYear; calTitleEl.className=(fjCalMonth===TODAY_MONTH&&fjYear===TODAY_YEAR)?'is-current-month':''; }
   // Si hay error de carga activo, solo actualizar labels, no reconstruir la tabla
-  if(_fjLoadError) return;
+  const fjYrLbl=document.getElementById('fjYearNavLabel'); if(fjYrLbl){fjYrLbl.textContent=fjYear;fjYrLbl.style.color=fjYear===TODAY_YEAR?'#4caf50':'#aaa';}
+  if(_fjLoadError){
+    // Sin datos válidos del año mostrado: no dejar las estadísticas del año anterior bajo la nueva etiqueta
+    const _w=document.getElementById('fjStatWr'); if(_w){_w.textContent='—';_w.className='sv purple';}
+    const _wb=document.getElementById('fjWrBar'); if(_wb) _wb.style.cssText='width:0%;';
+    const _p=document.getElementById('fjStatPnl'); if(_p){_p.textContent='—';_p.className='sv green';}
+    ['fjStatPos','fjStatNeg'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent='0'; });
+    ['fjStatBest','fjStatWorst'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent='—'; });
+    updateStreakUI({best:null,worst:null}, 'fjStat');
+    const _fjDetE=document.getElementById('fjDetallesExtra'); if(_fjDetE && _fjDetE.style.display!=='none') _renderFjPies();
+    return;
+  }
   const tbl=document.getElementById('fjMonthTable');
   const _fjRet = typeof _fjMostrarRetiros !== 'undefined' ? _fjMostrarRetiros : false;
   const pad=n=>String(n).padStart(2,'0');
@@ -3171,6 +3277,7 @@ function renderFriendJournalForYear(){
     const retColor=_fjRet?(tot>0?'#4caf50':'#333'):'transparent';
     tr.innerHTML=`<td class="month-name">${MONTHS[m-1]}${tag}</td><td>${cb}</td><td style="text-align:right;">${pb}</td><td class="fj-retiros-cell" data-pos="${tot>0?1:0}" style="font-size:12px;font-weight:500;color:${retColor};text-align:right;padding-right:8px;">${tot>0?invFmtEur(tot):'—'}</td>`;
     (function(month){ tr.addEventListener('click',()=>openFjMonth(month)); })(m);
+    tr.tabIndex=0; tr.setAttribute('role','button'); tr.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); tr.click(); } };
     tbody.appendChild(tr);
   }
   tbl.appendChild(tbody);
@@ -3188,7 +3295,6 @@ function renderFriendJournalForYear(){
   const fjPnlEl=document.getElementById('fjStatPnl'); if(fjPnlEl){fjPnlEl.textContent=(totalPnl>0?'+$':totalPnl<0?'-$':'$')+Math.abs(totalPnl).toFixed(0);fjPnlEl.className='sv '+(totalPnl>0?'green':totalPnl<0?'red':'amber');}
   const fjPosEl=document.getElementById('fjStatPos'); if(fjPosEl) fjPosEl.textContent=pos;
   const fjNegEl=document.getElementById('fjStatNeg'); if(fjNegEl) fjNegEl.textContent=neg;
-  const fjYrLbl=document.getElementById('fjYearNavLabel'); if(fjYrLbl){fjYrLbl.textContent=fjYear;fjYrLbl.style.color=fjYear===TODAY_YEAR?'#4caf50':'#aaa';}
   // Mejor / peor trade funded del amigo
   let fjBest=null,fjWorst=null;
   Object.values(FRIEND_JOURNAL).forEach(e=>{
@@ -3203,6 +3309,8 @@ function renderFriendJournalForYear(){
   const fjWorstCard=document.getElementById('fjStatWorstCard'); if(fjWorstCard) fjWorstCard.style.display='flex';
   updateStreakUI(calcStreaks(FRIEND_JOURNAL), 'fjStat');
   renderCalBody(FRIEND_JOURNAL,'fjCalBody',fjCalMonth,true,fjYear);
+  const _fjDet=document.getElementById('fjDetallesExtra'); if(_fjDet && _fjDet.style.display!=='none') _renderFjPies();
+  if(document.getElementById('fjOverlay').classList.contains('open') && document.getElementById('fj-daily')?.classList.contains('active')) _renderFjGallery(); // datos cargados estando ya en la pestaña Galería
 }
 
 // ══════════════════════════════════════════
@@ -3300,8 +3408,9 @@ function _renderFjGallery(){
         card.onmouseenter=()=>card.style.borderColor='#4caf50';
         card.onmouseleave=()=>card.style.borderColor=isToday?'#4caf50':'#1e1e1e';
         card.onclick=()=>openLightbox(lbIdx);
+        card.tabIndex=0; card.setAttribute('role','button'); card.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card.click(); } };
         const src=e.img_url||e.img||'';
-        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':escHtml(res.toUpperCase())}</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
         const isToday=fjYear===TODAY_YEAR&&_fjGalleryMonth===TODAY_MONTH&&cell.d===TODAY_DAY;
@@ -3363,7 +3472,7 @@ function fjGalleryMonthPrev(){
     const _reqY = fjYear;
     _loadFriendJournalYear().then(ok => {
       if(fjYear !== _reqY) return;
-      if(ok === false && !Object.keys(FRIEND_JOURNAL).length){ fjYear++; _fjGalleryMonth = 0; } // rollback
+      if(ok === false && !Object.keys(FRIEND_JOURNAL).length){ fjYear++; _fjGalleryMonth = 0; renderFriendJournalForYear(); } // rollback (resincronizar etiqueta/estadísticas del Resumen con el año restaurado)
       _renderFjGallery();
     }).catch(() => { fjYear++; _fjGalleryMonth = 0; _renderFjGallery(); });
   } else { _fjGalleryMonth--; _renderFjGallery(); }
@@ -3374,7 +3483,7 @@ function fjGalleryMonthNext(){
     const _reqY = fjYear;
     _loadFriendJournalYear().then(ok => {
       if(fjYear !== _reqY) return;
-      if(ok === false && !Object.keys(FRIEND_JOURNAL).length){ fjYear--; _fjGalleryMonth = 11; } // rollback
+      if(ok === false && !Object.keys(FRIEND_JOURNAL).length){ fjYear--; _fjGalleryMonth = 11; renderFriendJournalForYear(); } // rollback (resincronizar etiqueta/estadísticas del Resumen con el año restaurado)
       _renderFjGallery();
     }).catch(() => { fjYear--; _fjGalleryMonth = 11; _renderFjGallery(); });
   } else { _fjGalleryMonth++; _renderFjGallery(); }
@@ -3395,17 +3504,17 @@ function openFjDay(k,m,d){
   if(res){
     const resColor=res==='tp'?'#4caf50':res==='sl'?'#e53935':res==='be'?'#2196f3':'#aaa';
     const resBg=res==='tp'?'#1b3a1c':res==='sl'?'#3a1b1b':res==='be'?'#0d2040':'#2a2a2a';
-    html+=`<div class="fj-field-block"><div class="fj-field-lbl">RESULTADO</div><span style="padding:4px 12px;border-radius:7px;font-size:12px;font-weight:600;background:${resBg};color:${resColor}">${res==='nt'?'NO TRADE':res.toUpperCase()}</span></div>`;
+    html+=`<div class="fj-field-block"><div class="fj-field-lbl">RESULTADO</div><span style="padding:4px 12px;border-radius:7px;font-size:12px;font-weight:600;background:${resBg};color:${resColor}">${res==='nt'?'NO TRADE':escHtml(res.toUpperCase())}</span></div>`;
   }
   if(pnl!==null&&res!=='nt'){
     html+=`<div class="fj-field-block"><div class="fj-field-lbl">P&L</div><div class="fj-field-val" style="font-size:20px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'}">${pnl>0?'+$':pnl<0?'-$':'$'}${Math.abs(pnl).toFixed(0)}</div></div>`;
   }
   if(e.hora){
-    html+=`<div class="fj-field-block"><div class="fj-field-lbl">HORA DE ENTRADA</div><div class="fj-field-val">${e.hora}</div></div>`;
+    html+=`<div class="fj-field-block"><div class="fj-field-lbl">HORA DE ENTRADA</div><div class="fj-field-val">${escHtml(e.hora)}</div></div>`;
   }
   if(e.score){
     const scoreLabel={ap:'A+ (10)',a:'A (9)',bp:'B+ (8)',b:'B (7)'}[e.score]||e.score;
-    html+=`<div class="fj-field-block"><div class="fj-field-lbl">PUNTUACIÓN</div><div class="fj-field-val">${scoreLabel}</div></div>`;
+    html+=`<div class="fj-field-block"><div class="fj-field-lbl">PUNTUACIÓN</div><div class="fj-field-val">${escHtml(scoreLabel)}</div></div>`;
   }
   if(Array.isArray(e.condiciones)&&e.condiciones.length){
     html+=`<div class="fj-field-block"><div class="fj-field-lbl">CONDICIONES</div><div class="fj-cond-list">${e.condiciones.map(c=>`<span class="fj-cond-chip">${escHtml(c)}</span>`).join('')}</div></div>`;
@@ -3432,7 +3541,7 @@ function execDelData(){
   // Cancelar cualquier guardado pendiente antes de borrar
   Object.keys(_saveTimers).forEach(k => clearTimeout(_saveTimers[k]));
   _saveTimers = {};
-  localStorage.removeItem('tj_guest_mode');
+  if(!_isGuest()) localStorage.removeItem('tj_guest_mode');
   // Limpiar localStorage de invitado
   Object.keys(localStorage).forEach(k => {
     if(k.startsWith(LS_JOURNAL_PREFIX) || k === LS_INV_KEY || k === LS_CONDS_KEY) localStorage.removeItem(k);
@@ -3444,8 +3553,8 @@ function execDelData(){
   invGanancias=[]; invGcats=JSON.parse(JSON.stringify(INV_DEF_GCATS)); invGNextId=1;
   // Eliminar inversiones en Supabase + Storage
   if (sb && currentUser) {
-    sb.from('inversiones').delete().eq('user_id', currentUser.id).catch(()=>{});
-    sb.from('journal_entries').delete().eq('user_id', currentUser.id).catch(()=>{});
+    sb.from('inversiones').delete().eq('user_id', currentUser.id).then(()=>{}, ()=>{});
+    sb.from('journal_entries').delete().eq('user_id', currentUser.id).then(()=>{}, ()=>{});
     // Resetear condiciones y avatar en el perfil
     if(_cachedToken) _sbFetch(SUPABASE_URL+'/rest/v1/profiles?id=eq.'+currentUser.id, { method:'PATCH', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+_cachedToken,'Content-Type':'application/json','Prefer':'return=minimal'}, body:JSON.stringify({conditions:null, avatar_url:null}) }).catch(()=>{});
     sb.storage.from('charts').list(currentUser.id+'/').then(({data})=>{ if(data&&data.length) sb.storage.from('charts').remove(data.map(f=>currentUser.id+'/'+f.name)).catch(()=>{}); }).catch(()=>{});
@@ -3465,10 +3574,10 @@ function execDelData(){
 // AVATAR
 // ══════════════════════════════════════════
 let _avatarRawSrc='';
-function handleAvatarChange(input){ const f=input.files[0]; if(!f) return; const r=new FileReader(); r.onload=function(ev){ _avatarRawSrc=ev.target.result; document.getElementById('avatarCropImg').src=ev.target.result; document.getElementById('avatarZoom').value=100; document.getElementById('avatarX').value=0; document.getElementById('avatarY').value=0; updateAvatarCrop(); document.getElementById('avatarCropOverlay').classList.add('open'); }; r.readAsDataURL(f); }
+function handleAvatarChange(input){ const f=input.files[0]; if(!f) return; input.value=''; const r=new FileReader(); r.onload=function(ev){ _avatarRawSrc=ev.target.result; document.getElementById('avatarCropImg').src=ev.target.result; document.getElementById('avatarZoom').value=100; document.getElementById('avatarX').value=0; document.getElementById('avatarY').value=0; updateAvatarCrop(); document.getElementById('avatarCropOverlay').classList.add('open'); }; r.readAsDataURL(f); }
 function updateAvatarCrop(){ const zoom=parseFloat(document.getElementById('avatarZoom').value); const x=parseFloat(document.getElementById('avatarX').value); const y=parseFloat(document.getElementById('avatarY').value); const img=document.getElementById('avatarCropImg'); if(img){ img.style.position='absolute'; img.style.width=zoom+'%'; img.style.height=zoom+'%'; img.style.left=(50-zoom/2+x)+'%'; img.style.top=(50-zoom/2+y)+'%'; img.style.objectFit='cover'; img.style.transform='none'; } }
 function closeAvatarCrop(){ document.getElementById('avatarCropOverlay').classList.remove('open'); }
-function saveAvatarCrop(){ const canvas=document.createElement('canvas'); canvas.width=300; canvas.height=300; const ctx=canvas.getContext('2d'); ctx.beginPath(); ctx.arc(150,150,150,0,Math.PI*2); ctx.clip(); const img=new Image(); img.onload=function(){ const zoom=parseFloat(document.getElementById('avatarZoom').value)/100; const ox=parseFloat(document.getElementById('avatarX').value); const oy=parseFloat(document.getElementById('avatarY').value); const scale=Math.max(300/img.naturalWidth,300/img.naturalHeight)*zoom; const w=img.naturalWidth*scale; const h=img.naturalHeight*scale; const dx=(300-w)/2+ox*2; const dy=(300-h)/2+oy*2; ctx.drawImage(img,dx,dy,w,h); const dataUrl=canvas.toDataURL('image/jpeg',0.92); applyAvatar(dataUrl); closeAvatarCrop(); saveAvatarToSupabase(dataUrl); }; img.src=_avatarRawSrc; }
+function saveAvatarCrop(){ const canvas=document.createElement('canvas'); canvas.width=300; canvas.height=300; const ctx=canvas.getContext('2d'); ctx.beginPath(); ctx.arc(150,150,150,0,Math.PI*2); ctx.clip(); const img=new Image(); img.onload=function(){ const zoom=parseFloat(document.getElementById('avatarZoom').value)/100; const ox=parseFloat(document.getElementById('avatarX').value); const oy=parseFloat(document.getElementById('avatarY').value); const scale=Math.max(300/img.naturalWidth,300/img.naturalHeight)*zoom; const w=img.naturalWidth*scale; const h=img.naturalHeight*scale; const box=300*zoom; const bx=(300-box)/2+ox*3; const by=(300-box)/2+oy*3; ctx.beginPath(); ctx.rect(bx,by,box,box); ctx.clip(); const dx=bx+(box-w)/2; const dy=by+(box-h)/2; ctx.drawImage(img,dx,dy,w,h); const dataUrl=canvas.toDataURL('image/jpeg',0.92); applyAvatar(dataUrl); closeAvatarCrop(); saveAvatarToSupabase(dataUrl); }; img.src=_avatarRawSrc; }
 function applyAvatar(src){ const img=document.getElementById('profAvatarImg'); const letter=document.getElementById('profAvatarLetter'); const btn=document.getElementById('removeAvatarBtn'); if(img){img.src=src;img.style.display='block';} if(letter) letter.style.display='none'; if(btn) btn.style.display='inline-block'; }
 function loadAvatar(){ /* avatar se carga desde Supabase en loadProfile */ }
 function removeAvatar(){
@@ -3831,6 +3940,7 @@ let invGanancias   = [];
 let invGcats       = JSON.parse(JSON.stringify(INV_DEF_GCATS));
 let invGNextId     = 1;
 // _invDirty declarado en el primer bloque de script (ver arriba)
+let _invPersistSeq = 0;
 let invPEditingId  = null;
 let invPDeletingId = null;
 let invGEditingId  = null;
@@ -3853,6 +3963,7 @@ function _invRevert() {
   invGanancias=_invSnapshot.ganancias; invGcats=_invSnapshot.gcats; invGNextId=_invSnapshot.gnid;
   _invSnapshot=null;
   _invDirty=false; // permitir que el próximo invLoadFromSupabase cargue datos frescos
+  setTimeout(() => { renderMonthTable(); renderCalendar(); }, 0); // reflejar el revert en la columna/botón de retiros
 }
 function invPersist() {
   if (_isGuest()) {
@@ -3862,6 +3973,7 @@ function invPersist() {
     const el = document.getElementById('invLastUpdated'); if(el) el.textContent = 'Guardado · ' + now;
     showToast('💾 Guardado localmente','ok');
     setTimeout(invRenderPerdidas, 0);
+    setTimeout(() => { renderMonthTable(); renderCalendar(); }, 0);
     return;
   }
   if (!currentUser || !_cachedToken) {
@@ -3869,6 +3981,7 @@ function invPersist() {
     _invRevert(); setTimeout(invRenderPerdidas, 0); return;
   }
   _invDirty = true; // marcar sucio ANTES del call async para que invLoadFromSupabase no sobreescriba
+  _invPersistSeq++; // invalida cualquier carga iniciada antes de este guardado
   const payload = {
     user_id: currentUser.id,
     perdidas: JSON.stringify(invPerdidas), pcats: JSON.stringify(invPcats), pnid: invPNextId,
@@ -3901,10 +4014,13 @@ function invPersist() {
 async function invLoadFromSupabase() {
   if (!currentUser || !_cachedToken) return false;
   try {
-    const rows = await _jFetchGet(`/rest/v1/inversiones?user_id=eq.${currentUser.id}&select=*&limit=1`);
+    const requestedUserId = currentUser.id;
+    const seqAtStart = _invPersistSeq, dirtyAtStart = _invDirty; // si hubo un guardado durante la carga, la respuesta puede ser anterior a él
+    const rows = await _jFetchGet(`/rest/v1/inversiones?user_id=eq.${requestedUserId}&select=*&limit=1`);
+    if (!currentUser || currentUser.id !== requestedUserId) return false; // sesión cerrada o usuario distinto: descartar
     const data = rows && rows.length > 0 ? rows[0] : null;
     if (!data) return false;
-    if (_invDirty) return false;
+    if (_invDirty || dirtyAtStart || _invPersistSeq !== seqAtStart) return false;
     const parse = (val, def) => { try { return val ? JSON.parse(val) : def; } catch(e) { return def; } };
     invPerdidas  = parse(data.perdidas,  []);
     invPcats     = parse(data.pcats,     JSON.parse(JSON.stringify(INV_DEF_PCATS)));
@@ -3942,10 +4058,16 @@ function openInversiones() {
     const el = document.getElementById('invLastUpdated'); if(el) el.textContent = 'Local (sin cuenta)';
     return;
   }
-  document.getElementById('invLastUpdated').textContent = 'Sincronizando…';
+  const _invLblEl = document.getElementById('invLastUpdated');
+  const _invLblPrev = _invLblEl.textContent;
+  _invLblEl.textContent = 'Sincronizando…';
+  // Si la carga no actualiza la etiqueta (sin fila aún, error o guardado en curso), no dejarla en "Sincronizando…"
+  const _invLblRestore = () => { if(_invLblEl.textContent === 'Sincronizando…') _invLblEl.textContent = _invLblPrev; };
   invLoadFromSupabase().then(() => {
+    _invLblRestore();
     invRenderPerdidas();
   }).catch(() => {
+    _invLblRestore();
     invRenderPerdidas();
   });
 }
@@ -3993,7 +4115,7 @@ function invRenderPerdidas() {
     const tradingItems = invPerdidas.filter(p => p.cat === tradingId);
     const tradingTotal = tradingItems.reduce((s,p) => s+p.amount, 0);
     if (tradingItems.length) {
-      rightHtml += `<div class="inv-cat-header" style="margin-top:0;"><span class="inv-cat-title">Trading</span><span class="inv-cat-total-red">${invFmtEur(tradingTotal)}</span></div>`;
+      rightHtml += `<div class="inv-cat-header" style="margin-top:0;"><span class="inv-cat-title">${invEsc(tradingCat.label)}</span><span class="inv-cat-total-red">${invFmtEur(tradingTotal)}</span></div>`;
       tradingItems.forEach(item => { rightHtml += invPerdidasItemHtml(item, true); });
     }
   }
@@ -4066,7 +4188,7 @@ function openCalRetirosModal() {
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:600;color:#f0f0f2;">${invEsc(g.name)}${mulBadge}</div>
         ${breakdown}
-        <div style="font-size:10px;color:#ccc;margin-top:3px;">${catLabel}${catLabel&&dateStr?' · ':''}${dateStr}</div>
+        <div style="font-size:10px;color:#ccc;margin-top:3px;">${invEsc(catLabel)}${catLabel&&dateStr?' · ':''}${dateStr}</div>
       </div>
       <div style="font-size:14px;font-weight:700;color:#4caf50;white-space:nowrap;">${invFmtEur(g.amount||0)}</div>
     </div>`;
@@ -4181,7 +4303,8 @@ function invPopulateGCatSelect(sel) {
 }
 function invOpenGananciaModal(id) {
   invGEditingId = id !== undefined ? id : null;
-  const todayStr = new Date().toISOString().slice(0,10);
+  const _nowD = new Date();
+  const todayStr = _nowD.getFullYear()+'-'+String(_nowD.getMonth()+1).padStart(2,'0')+'-'+String(_nowD.getDate()).padStart(2,'0');
   if (id !== undefined) {
     const g = invGanancias.find(x => x.id===id);
     if (!g) { invGEditingId = null; return; }
@@ -4216,7 +4339,8 @@ function invSaveGanancia() { _invTakeSnapshot();
   if (!name) { document.getElementById('invGName').focus(); return; }
   const baseAmount = parseFloat(document.getElementById('invGAmount').value)||0;
   const multiplier = parseInt(document.getElementById('invGMultiplier').value)||1;
-  const date = document.getElementById('invGDate').value || new Date().toISOString().slice(0,10);
+  const _nowD = new Date();
+  const date = document.getElementById('invGDate').value || (_nowD.getFullYear()+'-'+String(_nowD.getMonth()+1).padStart(2,'0')+'-'+String(_nowD.getDate()).padStart(2,'0'));
   const g = { id: invGEditingId!==null ? invGEditingId : invGNextId++, name, baseAmount, multiplier, amount: baseAmount*multiplier, cat: document.getElementById('invGCat').value, date };
   invGanancias = invGEditingId!==null ? invGanancias.map(x => x.id===invGEditingId?g:x) : [...invGanancias,g];
   invCloseGananciaModal(); setTimeout(() => { renderMonthTable(); renderCalendar(); }, 0); invPersist();
@@ -4263,9 +4387,9 @@ function invRenderPCatList() {
   list.innerHTML = '';
   draft.forEach((c,i) => {
     const row = document.createElement('div'); row.className='inv-pm-row';
-    const inp = document.createElement('input'); inp.className='inv-pm-input'; inp.type='text'; inp.value=c.label; inp.placeholder='Nombre de categoría';
+    const inp = document.createElement('input'); inp.className='inv-pm-input'; inp.type='text'; inp.value=c.label; inp.placeholder='Nombre de categoría'; inp.setAttribute('aria-label','Nombre de categoría');
     inp.addEventListener('input', function(){ if(invPcatActiveTab==='perdidas') invPcatDraft[i].label=this.value; else invGcatDraft[i].label=this.value; });
-    const del = document.createElement('button'); del.className='inv-pm-del'; del.textContent='✕';
+    const del = document.createElement('button'); del.className='inv-pm-del'; del.textContent='✕'; del.setAttribute('aria-label','Eliminar categoría');
     del.addEventListener('click', function(){ invRemovePCatRow(i); });
     row.appendChild(inp); row.appendChild(del); list.appendChild(row);
   });
@@ -4348,7 +4472,9 @@ function _renderMPies() {
 }
 function _renderFjPies() {
   let tp = 0, be = 0, sl = 0;
-  Object.values(FRIEND_JOURNAL).forEach(e => {
+  Object.keys(FRIEND_JOURNAL).forEach(k => {
+    if (parseInt(k.split('-')[0]) !== fjYear) return; // tras un fallo de carga FRIEND_JOURNAL puede contener otro año
+    const e = FRIEND_JOURNAL[k];
     if (e.resultado === 'tp') tp++;
     else if (e.resultado === 'be') be++;
     else if (e.resultado === 'sl') sl++;
@@ -4443,9 +4569,6 @@ document.addEventListener('keydown', e => {
     // Lightbox
     if (_isOpen('lightboxOverlay')) { closeLightbox(); return; }
 
-    // Panel "Más detalles" (Resumen Anual)
-    if (_isOpen('mDetallesExtra')) { const p=document.getElementById('mDetallesExtra'); p.style.display='none'; const bd=document.getElementById('mDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('mDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; return; }
-
     // Avatar crop
     if (_isOpen('avatarCropOverlay')) { closeAvatarCrop(); return; }
 
@@ -4483,6 +4606,9 @@ document.addEventListener('keydown', e => {
     // Paneles laterales
     if (_isOpen('friendsPanel')) { closeFriends(); return; }
     if (_isOpen('profilePanel')) { closeProfile(); return; }
+
+    // Panel "Más detalles" (Resumen Anual) — z-index 50: es la capa más baja, se comprueba la última
+    if (_isOpen('mDetallesExtra')) { const p=document.getElementById('mDetallesExtra'); p.style.display='none'; const bd=document.getElementById('mDetallesBackdrop'); if(bd) bd.style.display='none'; const btn=document.getElementById('mDetallesBtn'); if(btn) btn.textContent='▼ Más detalles'; return; }
   }
 });
 </script>
