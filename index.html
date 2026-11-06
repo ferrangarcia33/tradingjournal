@@ -102,6 +102,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 .cal-nav button{background:#1e1e1e;border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;}
 .cal-nav h2{font-size:14px;font-weight:500;flex:1;text-align:center;}
 .cal-nav h2.is-current-month{color:#4caf50;}
+.cal-sesion-filter{background:#1e1e1e;border:1px solid #2a2a2a;color:#aaa;border-radius:6px;padding:3px 6px;font-size:12px;font-family:inherit;cursor:pointer;max-width:42vw;}
+.cal-sesion-filter.active{border-color:#ffa000;color:#ffa000;background:#2a2010;}
+.chip.sel-ses{background:#2a2010;color:#ffa000;border-color:#ffa000;}
 .cal-retiros-btn{background:transparent!important;border:1px solid #2a5a2a!important;color:#4caf50!important;width:auto!important;height:auto!important;padding:3px 10px!important;font-size:12px!important;font-weight:600!important;line-height:1.6!important;white-space:nowrap!important;flex:none!important;}
 .cal-table{width:100%;border-collapse:collapse;table-layout:fixed;height:100%;}
 .cal-table th{font-size:10px;padding:6px 0;text-align:center;border-bottom:1px solid #1e1e1e;letter-spacing:.5px;}
@@ -465,6 +468,12 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
       <button id="mDetallesBtn" onclick="toggleMDetalles()" style="background:none;border:1px solid #2a2a2a;border-radius:6px;color:#aaa;font-size:10px;cursor:pointer;padding:3px 10px;opacity:.6;">▼ Más detalles</button>
     </div>
     <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:6px;">
+    <select id="mSesionFilter" class="cal-sesion-filter" aria-label="Filtrar resumen anual por sesión" onchange="setCalSesionFilter(this.value)" style="margin-right:auto;">
+      <option value="">Todas las sesiones</option>
+      <option value="londres">Londres</option>
+      <option value="ny">NY</option>
+      <option value="asia">Asia</option>
+    </select>
     <span id="retirosTotal" style="font-size:12px;font-weight:600;color:#4caf50;display:none;"></span>
     <button id="mostrarRetirosBtn" onclick="toggleMostrarRetiros()" style="background:none;border:1px solid #2a2a2a;border-radius:6px;color:#fff;font-size:10px;cursor:pointer;padding:3px 10px;opacity:.4;">Mostrar retiros</button>
     </div>
@@ -476,6 +485,12 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
   <div class="view" id="view-calendar">
     <div class="cal-nav" id="calNav" style="display:flex;align-items:center;position:relative;">
       <button aria-label="Mes anterior" onclick="calPrev()">‹</button>
+      <select id="calSesionFilter" class="cal-sesion-filter" aria-label="Filtrar calendario por sesión" onchange="setCalSesionFilter(this.value)" style="position:absolute;left:25%;transform:translateX(-50%);">
+        <option value="">Todas las sesiones</option>
+        <option value="londres">Londres</option>
+        <option value="ny">NY</option>
+        <option value="asia">Asia</option>
+      </select>
       <h2 id="calTitle" style="flex:1;text-align:center;margin:0;"></h2>
       <button aria-label="Mes siguiente" onclick="calNext()">›</button>
       <button id="calRetirosBtn" class="cal-retiros-btn" onclick="openCalRetirosModal()" style="display:none;position:absolute;left:75%;transform:translateX(-50%);">Retiros</button>
@@ -517,8 +532,14 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
   </div>
 
   <div class="view" id="view-daily" style="flex-direction:column;min-height:0;">
-    <div class="cal-nav" style="flex-shrink:0;">
+    <div class="cal-nav" style="flex-shrink:0;position:relative;">
       <button aria-label="Mes anterior" onclick="galleryMonthPrev()">‹</button>
+      <select id="gSesionFilter" class="cal-sesion-filter" aria-label="Filtrar galería por sesión" onchange="setCalSesionFilter(this.value)" style="position:absolute;left:25%;transform:translateX(-50%);">
+        <option value="">Todas las sesiones</option>
+        <option value="londres">Londres</option>
+        <option value="ny">NY</option>
+        <option value="asia">Asia</option>
+      </select>
       <h2 id="galleryMonthLabel" style="flex:1;text-align:center;margin:0;font-size:15px;"></h2>
       <button aria-label="Mes siguiente" onclick="galleryMonthNext()">›</button>
     </div>
@@ -747,7 +768,14 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
     <div class="prof-field"><label>AMIGOS ACTIVOS</label><span id="profFriends">0 amigos</span></div>
     <button class="ghost-btn" id="nav-perdidas-btn" onclick="openInversiones()">Pérdidas / Ganancias</button>
     <button id="logoutBtn" class="btn-danger" onclick="doLogout()">Cerrar sesión</button>
-    <div style="height:80px;"></div>
+    <div style="margin-top:22px;">
+      <button id="exportBtn" class="ghost-btn" onclick="toggleExportMenu()" aria-expanded="false" aria-controls="exportMenu" style="padding:10px 13px;font-size:12px;color:#8fb8e8;border-color:#1a3a5a;background:#0d1a2e;">⬇ Exportar datos</button>
+      <div id="exportMenu" style="display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+        <button class="ghost-btn" onclick="exportData('csv')" style="padding:8px 6px;">CSV (Excel)</button>
+        <button class="ghost-btn" onclick="exportData('json')" style="padding:8px 6px;">JSON (copia completa)</button>
+      </div>
+    </div>
+    <div style="height:22px;"></div>
     <button class="btn-danger" style="margin-top:8px;background:#2a0d0d;color:#c62828;" onclick="openDelData()">🗑 Eliminar todos mis datos</button>
   </div>
 </div>
@@ -815,6 +843,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
         <button id="fjDetallesBtn" onclick="toggleFjDetalles()" style="background:none;border:1px solid #2a2a2a;border-radius:6px;color:#aaa;font-size:10px;cursor:pointer;padding:3px 10px;opacity:.6;">▼ Más detalles</button>
       </div>
       <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:6px;">
+        <select id="fjSesionFilterM" class="cal-sesion-filter" aria-label="Filtrar resumen del amigo por sesión" onchange="setFjSesionFilter(this.value)" style="margin-right:auto;"><option value="">Todas las sesiones</option><option value="londres">Londres</option><option value="ny">NY</option><option value="asia">Asia</option></select>
         <span id="fjRetirosTotal" style="font-size:12px;font-weight:600;color:#4caf50;display:none;"></span>
         <button id="fjMostrarRetirosBtn" onclick="toggleFjRetiros()" style="background:none;border:1px solid #2a2a2a;border-radius:6px;color:#fff;font-size:10px;cursor:pointer;padding:3px 10px;opacity:.4;">Mostrar retiros</button>
       </div>
@@ -824,7 +853,7 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 
     </div>
     <div class="fj-view" id="fj-cal">
-            <div class="cal-nav"><button aria-label="Mes anterior" onclick="fjCalPrev()">‹</button><h2 id="fjCalTitle" style="font-size:14px;font-weight:500;"></h2><button aria-label="Mes siguiente" onclick="fjCalNext()">›</button></div>
+            <div class="cal-nav" style="position:relative;"><button aria-label="Mes anterior" onclick="fjCalPrev()">‹</button><select id="fjSesionFilterC" class="cal-sesion-filter" aria-label="Filtrar calendario del amigo por sesión" onchange="setFjSesionFilter(this.value)" style="position:absolute;left:25%;transform:translateX(-50%);"><option value="">Todas las sesiones</option><option value="londres">Londres</option><option value="ny">NY</option><option value="asia">Asia</option></select><h2 id="fjCalTitle" style="font-size:14px;font-weight:500;"></h2><button aria-label="Mes siguiente" onclick="fjCalNext()">›</button></div>
       <div style="overflow-y:auto;flex:1;min-height:0;">
         <table class="cal-table" style="height:100%;">
           <thead><tr id="fjCalDowRow"><th class="dow-normal">L</th><th class="dow-normal">M</th><th class="dow-normal">X</th><th class="dow-normal">J</th><th class="dow-normal">V</th><th class="dow-normal">S</th><th class="dow-normal">D</th><th class="weekly-h">SEM</th></tr></thead>
@@ -861,7 +890,8 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
     </div>
     </div>
     <div class="fj-view" id="fj-daily">
-      <div class="cal-nav" style="flex-shrink:0;">
+      <div class="cal-nav" style="flex-shrink:0;position:relative;">
+        <select id="fjSesionFilterG" class="cal-sesion-filter" aria-label="Filtrar galería del amigo por sesión" onchange="setFjSesionFilter(this.value)" style="position:absolute;left:25%;transform:translateX(-50%);"><option value="">Todas las sesiones</option><option value="londres">Londres</option><option value="ny">NY</option><option value="asia">Asia</option></select>
         <button aria-label="Mes anterior" onclick="fjGalleryMonthPrev()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8249;</button>
         <span id="fjGalleryMonthLabel" style="font-size:14px;font-weight:500;color:#aaa;flex:1;text-align:center;"></span>
         <button aria-label="Mes siguiente" onclick="fjGalleryMonthNext()" style="background:#1e1e1e;border:none;color:#888;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;">&#8250;</button>
@@ -964,6 +994,9 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 // create policy "own rows" on inversiones for all using (auth.uid()=user_id);
 //
 // alter table profiles add column if not exists conditions text;
+//
+// -- Sesión de trading (Londres / NY / Asia):
+// alter table journal_entries add column if not exists sesion text;
 //
 // ── POLÍTICA RLS para que un usuario pueda leer el journal de sus amigos ──
 // (ejecutar en SQL Editor; requerido para que "Ver journal de amigo" funcione)
@@ -1274,6 +1307,7 @@ async function loadJournalSupabase() {
     newJournal[e.day_key] = {
       resultado: e.resultado||null,
       eval: e.eval||false, funded: e.funded||false,
+      sesion: e.sesion||null,
       pnl: (e.pnl!==null&&e.pnl!==undefined&&e.pnl!=='') ? String(e.pnl) : '',
       hora: e.hora||'',
       condiciones: conds,
@@ -1368,6 +1402,7 @@ async function _sbFetch(url, opts, retried) {
   return res;
 }
 
+let _noSesionCol = false; // true si la tabla journal_entries no tiene la columna `sesion`
 async function _upsertEntry(k) {
   if(!currentUser || !_cachedToken) return { error: { msg: 'Sin sesión activa' } };
   const e = journal[k];
@@ -1379,8 +1414,16 @@ async function _upsertEntry(k) {
   let condVal = null;
   if(Array.isArray(e.condiciones)) condVal = JSON.stringify(e.condiciones);
   else if(typeof e.condiciones === 'string' && e.condiciones) { try { JSON.parse(e.condiciones); condVal = e.condiciones; } catch(_){} }
+  const _row = {
+    user_id: currentUser.id, day_key: k, year: yr, month: mon,
+    resultado: e.resultado||null, pnl: pnlVal, hora: e.hora||null,
+    condiciones: condVal, score: e.score||null, notas: e.notas||null,
+    img_url: e.img_url || e.img || null,
+    eval: e.eval||false, funded: e.funded||false
+  };
+  if(!_noSesionCol) _row.sesion = e.sesion||null;
   try {
-    const res = await _sbFetch(SUPABASE_URL + '/rest/v1/journal_entries?on_conflict=user_id,day_key', {
+    const _post = () => _sbFetch(SUPABASE_URL + '/rest/v1/journal_entries?on_conflict=user_id,day_key', {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -1388,14 +1431,18 @@ async function _upsertEntry(k) {
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates,return=minimal'
       },
-      body: JSON.stringify([{
-        user_id: currentUser.id, day_key: k, year: yr, month: mon,
-        resultado: e.resultado||null, pnl: pnlVal, hora: e.hora||null,
-        condiciones: condVal, score: e.score||null, notas: e.notas||null,
-        img_url: e.img_url || e.img || null,
-        eval: e.eval||false, funded: e.funded||false
-      }])
+      body: JSON.stringify([_row])
     });
+    let res = await _post();
+    if(!res.ok && ('sesion' in _row)) {
+      // Si la columna `sesion` aún no existe en la BD, guardar el resto del registro sin ella
+      const _t = await res.clone().text().catch(()=>'');
+      if(/sesion/i.test(_t)) {
+        _noSesionCol = true; delete _row.sesion;
+        showToast('⚠️ Falta la columna "sesion" en Supabase — la sesión no se guarda en la nube', 'err');
+        res = await _post();
+      }
+    }
     if(!res.ok) {
       const txt = await res.text().catch(()=>'');
       let msg = 'Error ' + res.status;
@@ -1622,6 +1669,7 @@ function startApp(user) {
 // ══════════════════════════════════════════
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DAYS_ES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const SESIONES = [{k:'londres',label:'Londres'},{k:'ny',label:'NY'},{k:'asia',label:'Asia'}];
 const SCORES = [{k:'ap',label:'A+ (10)'},{k:'a',label:'A (9)'},{k:'bp',label:'B+ (8)'},{k:'b',label:'B (7)'}];
 
 const TODAY = new Date();
@@ -1726,6 +1774,7 @@ window.addEventListener('beforeunload', () => {
         img_url: e.img_url || e.img || null,
         eval: e.eval||false, funded: e.funded||false
       };
+      if (!_noSesionCol) _row.sesion = e.sesion||null;
       // keepalive limita el cuerpo a 64 KB: una imagen base64 (hasta ~480 KB) haría fallar la petición
       // entera y se perderían los demás campos. Se omite la columna (upsert parcial: el servidor conserva su valor).
       if (typeof _row.img_url === 'string' && _row.img_url.startsWith('data:')) delete _row.img_url;
@@ -1910,9 +1959,14 @@ function toggleBestPeorPanel(pfx) {
 }
 
 
-function calcStats() {
+// Devuelve solo los días de la sesión elegida en el filtro (sin filtro: el origen completo)
+function _sesionSrc(src){
+  if(!_calSesionFilter) return src;
+  const f={}; for(const k in src){ if(src[k] && src[k].sesion===_calSesionFilter) f[k]=src[k]; } return f;
+}
+function calcStats(src) {
   let tp=0,sl=0,be=0,pnl=0;
-  Object.values(journal).forEach(e=>{
+  Object.values(src||journal).forEach(e=>{
     if(e.resultado==='tp') tp++;
     else if(e.resultado==='sl') sl++;
     else if(e.resultado==='be') be++;
@@ -1923,7 +1977,8 @@ function calcStats() {
 }
 
 function updateAllStats() {
-  const {tp,sl,pnl,wr} = calcStats();
+  const _yrSrc = _sesionSrc(journal); // Resumen Anual: respeta el filtro de sesión
+  const {tp,sl,pnl,wr} = calcStats(_yrSrc);
   const wrc  = wr===null?'purple':wr>=60?'green':wr>=40?'amber':'red';
   const wrbg = wr===null?'#9c27b0':wr>=60?'#4caf50':wr>=40?'#ffa000':'#e53935';
   const wrEl=document.getElementById('mStatWr'); if(wrEl){ wrEl.textContent=wr!==null?wr+'%':'—'; wrEl.className='sv '+wrc; }
@@ -1931,6 +1986,10 @@ function updateAllStats() {
   const pnlEl=document.getElementById('mStatPnl');if(pnlEl){ pnlEl.textContent=(pnl>0?'+$':pnl<0?'-$':'$')+Math.abs(pnl).toFixed(0); pnlEl.className='sv '+(pnl>0?'green':pnl<0?'red':'amber'); }
   const _profTotalsActive = document.getElementById('btnStatTotal')?.dataset.active === '1';
   if(!_profTotalsActive){
+  // Perfil: siempre todas las sesiones
+  const {tp,sl,pnl,wr} = calcStats(journal);
+  const wrc  = wr===null?'purple':wr>=60?'green':wr>=40?'amber':'red';
+  const wrbg = wr===null?'#9c27b0':wr>=60?'#4caf50':wr>=40?'#ffa000':'#e53935';
   const pWr=document.getElementById('profWr'); if(pWr){ pWr.textContent=wr!==null?wr+'%':'—'; pWr.className='prof-stat-val '+wrc; }
   const pWrB=document.getElementById('profWrBar'); if(pWrB) pWrB.style.cssText=`width:${wr||0}%;background:${wrbg};`;
   const pTp=document.getElementById('profTp'); if(pTp) pTp.textContent=tp;
@@ -1940,7 +1999,7 @@ function updateAllStats() {
   const lbl=document.getElementById('profStatsLabel'); if(lbl&&!lbl.textContent.includes('TOTALES')) lbl.textContent='ESTADÍSTICAS '+YEAR;
   // Mejor / peor trade funded del año
   let yBest=null,yWorst=null;
-  Object.values(journal).forEach(e=>{
+  Object.values(_yrSrc).forEach(e=>{
     if(!e.funded||!e.pnl||e.pnl===''||e.resultado==='nt') return;
     const v=parseFloat(e.pnl); if(isNaN(v)) return;
     if(v>0&&(yBest===null||v>yBest)) yBest=v;
@@ -1959,7 +2018,7 @@ function updateAllStats() {
   if(wCardEmpty) wCardEmpty.style.display='none';
   if(bEl) bEl.textContent=showB?'+$'+Math.abs(yBest).toFixed(0):'—';
   if(wEl){ wEl.textContent=showW?'-$'+Math.abs(yWorst).toFixed(0):'—'; wEl.style.color=showW?'#e53935':'#555'; }
-  updateStreakUI(calcStreaks(journal), 'mStat');
+  updateStreakUI(calcStreaks(_yrSrc), 'mStat');
   const _mDet=document.getElementById('mDetallesExtra'); if(_mDet && _mDet.style.display!=='none') _renderMPies();
 }
 
@@ -2018,7 +2077,7 @@ function showProfStats(mode) {
 }
 
 function getMonthSummary(m, src, overrideYear) {
-  src = src || journal;
+  src = src || _sesionSrc(journal);
   const yr = overrideYear || YEAR;
   const days=new Date(yr,m,0).getDate(); let pnl=0, has=false;
   for(let d=1;d<=days;d++){
@@ -2079,8 +2138,18 @@ function renderMonthTable() {
 }
 
 
+let _calSesionFilter = ''; // '' = todas; 'londres' | 'ny' | 'asia'
+function setCalSesionFilter(v){
+  _calSesionFilter = v||'';
+  ['calSesionFilter','mSesionFilter','gSesionFilter'].forEach(id=>{ const sel=document.getElementById(id); if(sel){ sel.value=_calSesionFilter; sel.classList.toggle('active', !!_calSesionFilter); } });
+  renderMonthTable(); renderCalendar();
+  if(document.getElementById('view-daily')?.classList.contains('active')) renderGallery(); // al entrar en Galería se repinta igualmente
+}
 function renderCalBody(src, bodyId, m, isFriend, overrideYear) {
   src=src||journal;
+  // Filtro de sesión (solo calendario propio): los días de otra sesión se muestran vacíos y no cuentan en el pie
+  const _sesF = isFriend ? _fjSesionFilter : _calSesionFilter;
+  if(_sesF){ const f={}; for(const _k in src){ if(src[_k] && src[_k].sesion===_sesF) f[_k]=src[_k]; } src=f; }
   const yr=overrideYear||(isFriend?fjYear:YEAR);
   const isCurMonth=m===TODAY_MONTH&&yr===TODAY_YEAR;
   const titleId=isFriend?'fjCalTitle':'calTitle';
@@ -2195,7 +2264,7 @@ function renderGallery(){
   // Calcular P&L y contadores del mes visible en la galería
   (function(){
     const gpnlEl=document.getElementById('galleryPnl'); if(!gpnlEl) return;
-    const src=galleryYear===YEAR?journal:{};
+    const src=galleryYear===YEAR?_sesionSrc(journal):{};
     let gpnl=0,gTp=0,gSl=0,gBe=0,gNt=0;
     for(const k in src){ const e=src[k]; if(!e||!e.resultado) continue; const pp=k.split('-'); if(parseInt(pp[0])!==galleryYear||parseInt(pp[1])!==galleryMonth+1) continue; if(e.resultado==='tp'){gTp++;gpnl+=parseFloat(e.pnl||0);} else if(e.resultado==='sl'){gSl++;gpnl+=parseFloat(e.pnl||0);} else if(e.resultado==='be'){gBe++;} else if(e.resultado==='nt'){gNt++;} }
     gpnlEl.textContent=(gpnl>0?'+$':gpnl<0?'-$':'$')+Math.abs(gpnl).toFixed(0);
@@ -2235,8 +2304,9 @@ function renderGallery(){
           if(galleryYear !== _reqGalleryYear || galleryMonth !== _reqGalleryMonth) return;
           if(empty){ empty.innerHTML='Sin imágenes este mes.<br>Añade charts desde el Calendario.'; }
           const reqYear = _reqGalleryYear;
-          const tmpJournal = {};
+          let tmpJournal = {};
           data.forEach(e => { tmpJournal[e.day_key]={...e, pnl: (e.pnl!==null&&e.pnl!==undefined&&e.pnl!=='') ? String(e.pnl) : '', img: e.img_url||e.img||null, condiciones: (()=>{try{return e.condiciones?JSON.parse(e.condiciones):[];}catch(_){return [];}})()}; });
+          tmpJournal = _sesionSrc(tmpJournal); // filtro de sesión
           // Render inline using tmpJournal directly — do NOT call renderGallery() to avoid
           // an infinite async fetch loop (galleryYear !== YEAR would trigger another fetch)
           // and to avoid polluting the global journal object with entries from another year.
@@ -2300,6 +2370,7 @@ function renderGallery(){
     }
     } // end else (not guest)
   }
+  galleryJournal=_sesionSrc(galleryJournal); // filtro de sesión (imágenes y pie)
   const items=[];
   for(const k in galleryJournal){
     const e=galleryJournal[k];
@@ -2521,7 +2592,7 @@ async function dayFormNav(dir){
     const dw=date.getDay();
     if(dw!==0&&dw!==6){
       const ny=date.getFullYear(); const nm=date.getMonth()+1; const nd=date.getDate();
-      if(ny!==YEAR){ _dayFormNavBusy=true; try { await flushPendingSaves(); YEAR=ny; galleryYear=ny; calMonth=nm-1; if(sb&&currentUser){ const _reqY=ny; _syncYearLabels(); await loadJournalSupabase(); if(YEAR===_reqY && _dayFormM===m && _dayFormD===d) openDayForm(nm,nd); }else if(_isGuest()){journal=_guestLoadJournal(YEAR);_syncYearLabels();renderAll();openDayForm(nm,nd);}else{journal={};_syncYearLabels();renderAll();openDayForm(nm,nd);} } finally { _dayFormNavBusy=false; } }
+      if(ny!==YEAR){ _dayFormNavBusy=true; const _dfb=document.getElementById('dayFormBody'); if(_dfb) _dfb.inert=true; /* el formulario del día anterior no debe editarse mientras se cambia de año: sus cambios quedarían en el journal que se va a reemplazar y su guardado diferido no encontraría la entrada */ try { await flushPendingSaves(); YEAR=ny; galleryYear=ny; calMonth=nm-1; if(sb&&currentUser){ const _reqY=ny; _syncYearLabels(); await loadJournalSupabase(); if(YEAR===_reqY && _dayFormM===m && _dayFormD===d) openDayForm(nm,nd); }else if(_isGuest()){journal=_guestLoadJournal(YEAR);_syncYearLabels();renderAll();openDayForm(nm,nd);}else{journal={};_syncYearLabels();renderAll();openDayForm(nm,nd);} } finally { _dayFormNavBusy=false; if(_dfb) _dfb.inert=false; } }
       else{ openDayForm(nm,nd); }
       return;
     }
@@ -2530,7 +2601,11 @@ async function dayFormNav(dir){
 function renderDayFormBody(k,m){
   const panel=document.getElementById('dayFormPanel'); if(panel) panel.dataset.key=k;
   const e=journal[k]||{}; const res=e.resultado||''; const isEval=e.eval||false; const isFunded=e.funded||false;
+  const ses=e.sesion||'';
   document.getElementById('dayFormBody').innerHTML=`
+    <div><div class="field-label">SESIÓN</div>
+      <div class="chip-group">${SESIONES.map(s=>`<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${ses===s.k?' sel-ses':''}" aria-pressed="${ses===s.k?'true':'false'}" onclick="toggleSesion('${k}','${s.k}',this)">${s.label}</div>`).join('')}</div>
+    </div>
     <div><div class="field-label">TIPO</div>
       <div class="chip-group">
         <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" class="chip${isEval?' sel-eval':''}" aria-pressed="${isEval?'true':'false'}" onclick="toggleFlag('${k}','eval',this)">Eval</div>
@@ -2604,6 +2679,7 @@ function _applySlSign(k){
   if(!isNaN(n) && n>0){ el.value=String(-n); if(journal[k]) journal[k].pnl=el.value; }
 }
 function toggleFlag(k,flag,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; journal[k][flag]=!journal[k][flag]; el.className='chip'+(journal[k][flag]?' sel-'+flag:''); el.setAttribute('aria-pressed',journal[k][flag]?'true':'false'); smartSave(k); }
+function toggleSesion(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].sesion===val; journal[k].sesion=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>{c.className='chip';c.setAttribute('aria-pressed','false');}); if(!a){ el.classList.add('sel-ses'); el.setAttribute('aria-pressed','true'); } smartSave(k); }
 function toggleScore(k,val,el){ if(!journal[k]) journal[k]={}; if(!Object.prototype.hasOwnProperty.call(_prevSnapshot,k)) _prevSnapshot[k]=Object.keys(journal[k]).length?JSON.parse(JSON.stringify(journal[k])):null; const a=journal[k].score===val; journal[k].score=a?null:val; el.closest('.chip-group').querySelectorAll('.chip').forEach(c=>{c.className='chip';c.setAttribute('aria-pressed','false');}); if(!a){ el.classList.add('sel-'+val); el.setAttribute('aria-pressed','true'); } smartSave(k); }
 function toggleCond(k,el,cond){
   if(!journal[k]) journal[k]={};
@@ -3084,12 +3160,24 @@ function closeConfirm(){ document.getElementById('confirmOverlay').classList.rem
 // ══════════════════════════════════════════
 let FRIEND_JOURNAL={}, fjYear=TODAY_YEAR, _fjUserId=null, _fjNick='';
 let _fjLoadError = false;
+let _fjSesionFilter = ''; // filtro de sesión del journal del amigo ('' = todas), independiente del propio
+function _fjSrc(){
+  if(!_fjSesionFilter) return FRIEND_JOURNAL;
+  const f={}; for(const k in FRIEND_JOURNAL){ if(FRIEND_JOURNAL[k] && FRIEND_JOURNAL[k].sesion===_fjSesionFilter) f[k]=FRIEND_JOURNAL[k]; } return f;
+}
+function setFjSesionFilter(v){
+  _fjSesionFilter = v||'';
+  ['fjSesionFilterM','fjSesionFilterC','fjSesionFilterG'].forEach(id=>{ const sel=document.getElementById(id); if(sel){ sel.value=_fjSesionFilter; sel.classList.toggle('active', !!_fjSesionFilter); } });
+  renderFriendJournalForYear(); // repinta resumen, calendario, pies y galería (si está activa)
+  if(_fjLoadError) renderCalBody(FRIEND_JOURNAL,'fjCalBody',fjCalMonth,true,fjYear);
+}
 let _fjLoadSeq = 0; // contador para descartar respuestas de requests anteriores
 
 async function openFriendJournal(name,initial,bg,color,userId,avatarUrl){
   closeFriends(); fjYear=TODAY_YEAR; fjCalMonth=TODAY_MONTH; _fjGalleryMonth=TODAY_MONTH;
   _fjUserId=userId; _fjNick=name; _fjLoadError=false;
   _fjLoadedGanancias=[]; _fjMostrarRetiros=false;
+  _fjSesionFilter=''; ['fjSesionFilterM','fjSesionFilterC','fjSesionFilterG'].forEach(id=>{ const sel=document.getElementById(id); if(sel){ sel.value=''; sel.classList.remove('active'); } });
   const fjTot=document.getElementById('fjRetirosTotal'); if(fjTot) fjTot.style.display='none';
   const fjBtn=document.getElementById('fjMostrarRetirosBtn');
   if(fjBtn){fjBtn.textContent='Mostrar retiros';fjBtn.style.opacity='.4';fjBtn.style.borderColor='#2a2a2a';fjBtn.style.color='#fff';}
@@ -3207,7 +3295,8 @@ async function _loadFriendJournalYear(){
           img_url:e.img_url||null,
           img:e.img_url||null,
           eval:e.eval||false,
-          funded:e.funded||false
+          funded:e.funded||false,
+          sesion:e.sesion||null
         };
       });
     }
@@ -3256,6 +3345,7 @@ function renderFriendJournalForYear(){
     const _fjDetE=document.getElementById('fjDetallesExtra'); if(_fjDetE && _fjDetE.style.display!=='none') _renderFjPies();
     return;
   }
+  const _fjS=_fjSrc(); // filtro de sesión
   const tbl=document.getElementById('fjMonthTable');
   const _fjRet = typeof _fjMostrarRetiros !== 'undefined' ? _fjMostrarRetiros : false;
   const pad=n=>String(n).padStart(2,'0');
@@ -3263,7 +3353,7 @@ function renderFriendJournalForYear(){
   const tbody=document.createElement('tbody'); let totalPnl=0,pos=0,neg=0,tp=0,sl=0;
   for(let m=1;m<=12;m++){
     const days=new Date(fjYear,m,0).getDate(); let pnl=0,has=false;
-    for(let d=1;d<=days;d++){ const e=FRIEND_JOURNAL[dKeyY(fjYear,m,d)]; if(!e||!e.resultado||e.resultado==='nt') continue; has=true; pnl+=parseFloat(e.pnl||0); }
+    for(let d=1;d<=days;d++){ const e=_fjS[dKeyY(fjYear,m,d)]; if(!e||!e.resultado||e.resultado==='nt') continue; has=true; pnl+=parseFloat(e.pnl||0); }
     const cierre=has?(pnl>0?'pos':pnl<0?'neg':'neu'):null;
     if(cierre==='pos')pos++; if(cierre==='neg')neg++; totalPnl+=pnl;
     const isCur=m===TODAY_MONTH+1&&fjYear===TODAY_YEAR;
@@ -3286,7 +3376,7 @@ function renderFriendJournalForYear(){
   const fjTotalEl = document.getElementById('fjRetirosTotal'); if(fjTotalEl) fjTotalEl.textContent='Total retiros: '+invFmtEur(totalRetirosAnio);
   // WR del año cargado
   tp=0; sl=0; let be=0;
-  Object.values(FRIEND_JOURNAL).forEach(e=>{ if(e.resultado==='tp')tp++; else if(e.resultado==='sl')sl++; else if(e.resultado==='be')be++; });
+  Object.values(_fjS).forEach(e=>{ if(e.resultado==='tp')tp++; else if(e.resultado==='sl')sl++; else if(e.resultado==='be')be++; });
   const wr=tp+sl+be>0?Math.round((tp/(tp+sl+be))*100):null;
   const wrColor=wr===null?'purple':wr>=60?'green':wr>=40?'amber':'red';
   const wrBg=wr===null?'#9c27b0':wr>=60?'#4caf50':wr>=40?'#ffa000':'#e53935';
@@ -3297,7 +3387,7 @@ function renderFriendJournalForYear(){
   const fjNegEl=document.getElementById('fjStatNeg'); if(fjNegEl) fjNegEl.textContent=neg;
   // Mejor / peor trade funded del amigo
   let fjBest=null,fjWorst=null;
-  Object.values(FRIEND_JOURNAL).forEach(e=>{
+  Object.values(_fjS).forEach(e=>{
     if(!e.funded||!e.pnl||e.pnl===''||e.resultado==='nt') return;
     const v=parseFloat(e.pnl); if(isNaN(v)) return;
     if(v>0&&(fjBest===null||v>fjBest)) fjBest=v;
@@ -3307,7 +3397,7 @@ function renderFriendJournalForYear(){
   const fjWorstEl=document.getElementById('fjStatWorst'); if(fjWorstEl) fjWorstEl.textContent=fjWorst!==null?'-$'+Math.abs(fjWorst).toFixed(0):'—';
   const fjBestCard=document.getElementById('fjStatBestCard'); if(fjBestCard) fjBestCard.style.display='flex';
   const fjWorstCard=document.getElementById('fjStatWorstCard'); if(fjWorstCard) fjWorstCard.style.display='flex';
-  updateStreakUI(calcStreaks(FRIEND_JOURNAL), 'fjStat');
+  updateStreakUI(calcStreaks(_fjS), 'fjStat');
   renderCalBody(FRIEND_JOURNAL,'fjCalBody',fjCalMonth,true,fjYear);
   const _fjDet=document.getElementById('fjDetallesExtra'); if(_fjDet && _fjDet.style.display!=='none') _renderFjPies();
   if(document.getElementById('fjOverlay').classList.contains('open') && document.getElementById('fj-daily')?.classList.contains('active')) _renderFjGallery(); // datos cargados estando ya en la pestaña Galería
@@ -3334,7 +3424,7 @@ function _renderFjGallery(){
   (function(){
     const fjgpnl=document.getElementById('fjGalleryPnl'); if(!fjgpnl) return;
     let gpnl=0;
-    for(const k in FRIEND_JOURNAL){ const e=FRIEND_JOURNAL[k]; if(!e||!e.resultado||e.resultado==='nt') continue; const pp=k.split('-'); if(parseInt(pp[0])!==fjYear||parseInt(pp[1])!==_fjGalleryMonth+1) continue; gpnl+=parseFloat(e.pnl||0); }
+    const _s=_fjSrc(); for(const k in _s){ const e=_s[k]; if(!e||!e.resultado||e.resultado==='nt') continue; const pp=k.split('-'); if(parseInt(pp[0])!==fjYear||parseInt(pp[1])!==_fjGalleryMonth+1) continue; gpnl+=parseFloat(e.pnl||0); }
     fjgpnl.textContent=(gpnl>0?'+$':gpnl<0?'-$':'$')+Math.abs(gpnl).toFixed(0);
     fjgpnl.className='footer-pnl-val '+(gpnl>0?'green':gpnl<0?'red':'blue');
   })();
@@ -3343,8 +3433,9 @@ function _renderFjGallery(){
   if(!grid) return;
   grid.innerHTML = '';
   const items = [];
-  for(const k in FRIEND_JOURNAL){
-    const e = FRIEND_JOURNAL[k];
+  const _fjS=_fjSrc(); // filtro de sesión
+  for(const k in _fjS){
+    const e = _fjS[k];
     if(!e || !(e.img_url || e.img)) continue;
     const parts = k.split('-');
     if(parseInt(parts[0]) !== fjYear) continue;
@@ -3433,8 +3524,9 @@ function _renderFjGallery(){
 function _updateFjGalFooter(){
   // Update footer — same logic as calendar
   let fTp=0,fSl=0,fBe=0,fNt=0,fPnl=0,fBest=null,fWorst=null;
-  for(const k in FRIEND_JOURNAL){
-    const e=FRIEND_JOURNAL[k]; if(!e||!e.resultado) continue;
+  const _fjS=_fjSrc(); // filtro de sesión
+  for(const k in _fjS){
+    const e=_fjS[k]; if(!e||!e.resultado) continue;
     const pp=k.split('-'); if(parseInt(pp[0])!==fjYear||parseInt(pp[1])!==_fjGalleryMonth+1) continue;
     const res=e.resultado;
     const pnl=e.pnl!==undefined&&e.pnl!==''?parseFloat(e.pnl):null;
@@ -3500,6 +3592,10 @@ function openFjDay(k,m,d){
   if(e.eval||e.funded){
     const flags=[e.eval?'<span style="padding:4px 12px;border-radius:7px;font-size:12px;font-weight:600;background:#1a1e2e;color:#6495ed;border:1px solid #4060aa;">Eval</span>':'', e.funded?'<span style="padding:4px 12px;border-radius:7px;font-size:12px;font-weight:600;background:#1a1e2e;color:#6495ed;border:1px solid #4060aa;">Funded</span>':''].filter(Boolean).join(' ');
     html+=`<div class="fj-field-block"><div class="fj-field-lbl">TIPO</div><div style="display:flex;gap:6px;">${flags}</div></div>`;
+  }
+  if(e.sesion){
+    const sesLabel=(SESIONES.find(s=>s.k===e.sesion)||{label:e.sesion}).label;
+    html+=`<div class="fj-field-block"><div class="fj-field-lbl">SESIÓN</div><span style="padding:4px 12px;border-radius:7px;font-size:12px;font-weight:600;background:#2a2010;color:#ffa000;border:1px solid #ffa000;">${escHtml(sesLabel)}</span></div>`;
   }
   if(res){
     const resColor=res==='tp'?'#4caf50':res==='sl'?'#e53935':res==='be'?'#2196f3':'#aaa';
@@ -3568,6 +3664,109 @@ function execDelData(){
   // Cerrar overlay de inversiones si está abierto (datos ya borrados)
   const invOv = document.getElementById('invOverlay');
   if (invOv && invOv.classList.contains('open')) closeInversiones();
+}
+
+// ══════════════════════════════════════════
+// EXPORTAR DATOS
+// ══════════════════════════════════════════
+function toggleExportMenu(){
+  const m=document.getElementById('exportMenu'); const b=document.getElementById('exportBtn'); if(!m) return;
+  const open=m.style.display!=='none';
+  m.style.display=open?'none':'grid';
+  if(b) b.setAttribute('aria-expanded', open?'false':'true');
+}
+// Normaliza una fila (de Supabase o de memoria) al formato del journal
+function _exportNormEntry(e){
+  let conds=[];
+  if(Array.isArray(e.condiciones)) conds=e.condiciones;
+  else if(typeof e.condiciones==='string'&&e.condiciones){ try{ conds=JSON.parse(e.condiciones); }catch(_){} }
+  return {
+    resultado:e.resultado||null, eval:!!e.eval, funded:!!e.funded, sesion:e.sesion||null,
+    pnl:(e.pnl!==null&&e.pnl!==undefined&&e.pnl!=='')?String(e.pnl):'',
+    hora:e.hora||'', condiciones:conds, score:e.score||null, notas:e.notas||'',
+    img_url:e.img_url||e.img||null
+  };
+}
+// Reúne todas las entradas de todos los años: { 'Y-M-D': entry }
+async function _exportCollectJournal(){
+  const all={};
+  if(currentUser && _cachedToken){
+    await flushPendingSaves().catch(()=>{});
+    const PAGE=1000;
+    for(let off=0; ; off+=PAGE){
+      const rows=await _jFetchGet(`/rest/v1/journal_entries?user_id=eq.${currentUser.id}&select=*&order=year.asc,month.asc&limit=${PAGE}&offset=${off}`);
+      if(!rows || rows._fetchError) throw new Error('No se pudieron leer los datos ('+(rows&&rows.status||'sin conexión')+')');
+      rows.forEach(r=>{ all[r.day_key]=_exportNormEntry(r); });
+      if(rows.length<PAGE) break;
+    }
+  } else if(_isGuest()){
+    Object.keys(localStorage).forEach(lk=>{
+      if(!lk.startsWith(LS_JOURNAL_PREFIX)) return;
+      const j=_guestLoadJournal(lk.slice(LS_JOURNAL_PREFIX.length));
+      for(const k in j) all[k]=_exportNormEntry(j[k]);
+    });
+  }
+  // El año en memoria es lo más reciente (incluye cambios aún no subidos)
+  for(const k in journal) all[k]=_exportNormEntry(journal[k]);
+  return all;
+}
+function _exportSortedKeys(obj){
+  return Object.keys(obj).sort((a,b)=>{ const pa=a.split('-').map(Number), pb=b.split('-').map(Number); return (pa[0]-pb[0])||(pa[1]-pb[1])||(pa[2]-pb[2]); });
+}
+function _exportDownload(content, filename, mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.style.display='none';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+let _exportBusy=false;
+async function exportData(format){
+  if(_exportBusy) return;
+  if(!currentUser && !_isGuest()){ showToast('⚠️ No hay datos que exportar','err'); return; }
+  _exportBusy=true;
+  const btn=document.getElementById('exportBtn'); const prevTxt=btn?btn.textContent:'';
+  if(btn) btn.textContent='⏳ Preparando exportación…';
+  try{
+    const all=await _exportCollectJournal();
+    if(currentUser && _cachedToken) await invLoadFromSupabase().catch(()=>{});
+    const keys=_exportSortedKeys(all).filter(k=>{ const e=all[k]; return e.resultado||e.pnl!==''||e.hora||e.notas||e.condiciones.length||e.score||e.sesion||e.img_url||e.eval||e.funded; });
+    const pad=n=>String(n).padStart(2,'0');
+    const stamp=(()=>{ const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); })();
+    if(format==='csv'){
+      const sesLbl=v=>(SESIONES.find(s=>s.k===v)||{label:v||''}).label;
+      const scoreLbl=v=>(SCORES.find(s=>s.k===v)||{label:v||''}).label;
+      const resLbl={tp:'TP',sl:'SL',be:'BE',nt:'NO TRADE'};
+      const q=v=>{ const t=String(v==null?'':v); return /[";\n\r]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t; };
+      const head=['Fecha','Día','Sesión','Tipo','Resultado','P&L (USD)','Hora entrada','Condiciones','Puntuación','Notas','Imagen'];
+      const lines=[head.join(';')];
+      keys.forEach(k=>{
+        const e=all[k]; const [y,m,d]=k.split('-').map(Number);
+        const tipo=[e.eval?'Eval':'',e.funded?'Funded':''].filter(Boolean).join(' + ');
+        const img=e.img_url && !String(e.img_url).startsWith('data:') ? e.img_url : (e.img_url?'(imagen local)':'');
+        lines.push([y+'-'+pad(m)+'-'+pad(d), DAYS_ES[new Date(y,m-1,d).getDay()], sesLbl(e.sesion), tipo, resLbl[e.resultado]||'', e.pnl, e.hora, e.condiciones.join(', '), scoreLbl(e.score), e.notas, img].map(q).join(';'));
+      });
+      // BOM para que Excel lea bien los acentos
+      _exportDownload('\uFEFF'+lines.join('\r\n'), `trading-journal_${stamp}.csv`, 'text/csv;charset=utf-8');
+    } else {
+      const journalOut={}; keys.forEach(k=>{ journalOut[k]=all[k]; });
+      const data={
+        app:'Trading Journal', version:1, exportado:new Date().toISOString(),
+        usuario: userProfile ? { nickname:userProfile.nickname||null, email:userProfile.email||null } : null,
+        journal: journalOut,
+        condiciones: CONDITIONS,
+        inversiones: { perdidas:invPerdidas, categorias_perdidas:invPcats, ganancias:invGanancias, categorias_ganancias:invGcats }
+      };
+      _exportDownload(JSON.stringify(data,null,2), `trading-journal_${stamp}.json`, 'application/json');
+    }
+    showToast(`⬇ Exportados ${keys.length} día${keys.length===1?'':'s'}`,'ok');
+  } catch(err){
+    console.error('[export]', err);
+    showToast('❌ Error al exportar: '+(err&&err.message||'desconocido'),'err');
+  } finally {
+    _exportBusy=false;
+    if(btn) btn.textContent=prevTxt||'⬇ Exportar datos';
+  }
 }
 
 // ══════════════════════════════════════════
@@ -4462,7 +4661,7 @@ function _drawPie(canvasId, legendId, tp, be, sl) {
 }
 function _renderMPies() {
   let tp = 0, be = 0, sl = 0;
-  Object.values(journal).forEach(e => {
+  Object.values(_sesionSrc(journal)).forEach(e => {
     if (e.resultado === 'tp') tp++;
     else if (e.resultado === 'be') be++;
     else if (e.resultado === 'sl') sl++;
@@ -4472,9 +4671,10 @@ function _renderMPies() {
 }
 function _renderFjPies() {
   let tp = 0, be = 0, sl = 0;
-  Object.keys(FRIEND_JOURNAL).forEach(k => {
+  const _fjS = _fjSrc(); // filtro de sesión
+  Object.keys(_fjS).forEach(k => {
     if (parseInt(k.split('-')[0]) !== fjYear) return; // tras un fallo de carga FRIEND_JOURNAL puede contener otro año
-    const e = FRIEND_JOURNAL[k];
+    const e = _fjS[k];
     if (e.resultado === 'tp') tp++;
     else if (e.resultado === 'be') be++;
     else if (e.resultado === 'sl') sl++;
