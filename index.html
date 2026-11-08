@@ -1551,7 +1551,13 @@ async function smartSave(k) {
       // Si no hay snapshot no revertir — no destruir datos que el usuario acaba de introducir
       renderMonthTable(); renderCalendar();
       // Re-renderizar el formulario si está abierto para reflejar el revert
-      if(_dayFormM && _dayFormD && _baseKey(k)===dKey(_dayFormM,_dayFormD)) renderDayFormBody(_dayFormKey(),_dayFormM);
+      if(_dayFormM && _dayFormD && _baseKey(k)===dKey(_dayFormM,_dayFormD)){
+        // El campo con foco se destruye al re-renderizar: Chromium dispara su 'change' en ese momento y onFieldChange
+        // volvería a escribir en journal el valor que se acaba de revertir. Sus pulsaciones ya se procesaron con 'input'.
+        const _ae=document.activeElement, _dfb=document.getElementById('dayFormBody');
+        if(_ae && _dfb && _dfb.contains(_ae)) _ae.onchange=null;
+        renderDayFormBody(_dayFormKey(),_dayFormM);
+      }
       const _em = (error && error.msg) ? error.msg : 'Error al guardar';
       showToast('❌ ' + _em, 'err');
       console.error('[smartSave]', k, error);
