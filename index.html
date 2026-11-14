@@ -4278,17 +4278,24 @@ function removeAvatar(){
 .inv-tip .inv-tip-co > span:first-child { white-space:nowrap; }
 .inv-tip .inv-tip-co > span:last-child { margin-left:auto; text-align:right; white-space:nowrap; }
 .inv-fx-short { display:none; }
+.inv-fb-row { display:contents; }
+.inv-export-btn { display:inline-flex; align-items:center; gap:6px; color:var(--inv-text); order:3; }
+.inv-page-header > .inv-header-actions { margin-left:auto; }
+.inv-export-btn svg { color:var(--inv-green); flex-shrink:0; }
 @media(max-width:700px){
   .inv-app { padding:1.25rem 16px 4rem; }
   .inv-app .inv-page-header { margin-bottom:1.1rem; gap:12px; }
   .inv-app .inv-page-title { font-size:21px; }
-  .inv-app .inv-page-header > div:first-child { flex:1 1 100%; }
+  .inv-app .inv-page-header { position:relative; }
+  .inv-app .inv-page-header > div:first-child { flex:1 1 100%; padding-right:118px; }
+  .inv-app .inv-export-btn { position:absolute; top:2px; right:0; height:32px; padding:0 11px; font-size:12px; }
+  .inv-app .inv-filter-bar { flex-direction:column; align-items:stretch; overflow:visible; margin:0 0 .7rem; padding:0; gap:8px; }
+  .inv-app .inv-fb-row { display:flex; flex-wrap:wrap; gap:6px; }
   .inv-app .inv-header-actions { width:100%; flex-wrap:nowrap; gap:6px; }
   .inv-app .inv-cur-seg { margin-right:auto; }
   .inv-app .inv-cur-seg button { padding:6px 12px; font-size:12px; }
   .inv-app .inv-btn-lbl { display:none; }
   .inv-app .inv-header-actions .inv-ghost-btn { width:36px; height:34px; padding:0; font-size:15px; display:inline-flex; align-items:center; justify-content:center; }
-  .inv-app .inv-filter-bar { flex-wrap:nowrap; overflow-x:auto; margin:0 -16px .7rem; padding:0 16px 2px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
   .inv-app .inv-filter-bar::-webkit-scrollbar { display:none; }
   .inv-app .inv-filter-chip { flex-shrink:0; padding:6px 13px; font-size:12.5px; }
   .inv-app .inv-fx-note { margin:0 0 1rem; font-size:10.5px; }
@@ -4406,9 +4413,9 @@ function removeAvatar(){
         <div class="inv-page-title"><span style="color:var(--inv-red)">Pérdidas</span> <span style="color:#fff">/ </span><span>Ganancias</span></div>
         <div class="inv-page-sub" id="invLastUpdated">—</div>
       </div>
+      <button class="inv-ghost-btn inv-export-btn" onclick="invExportCsv()" title="Descargar todos los movimientos en un archivo para Excel (CSV)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="m9 15 3 3 3-3"/></svg><span>Exportar Excel</span></button>
       <div class="inv-header-actions">
         <div class="inv-seg inv-cur-seg" role="group" aria-label="Moneda" id="invCurSeg"></div>
-        <button class="inv-ghost-btn" onclick="invExportCsv()" title="Descargar todos los movimientos en CSV (Excel)" aria-label="Exportar">↓<span class="inv-btn-lbl"> Exportar</span></button>
         <button class="inv-ghost-btn" onclick="invOpenPCatModal()" title="Categorías" aria-label="Categorías">⚙&#xFE0E;<span class="inv-btn-lbl"> Categorías</span></button>
         <button class="inv-ghost-btn" onclick="closeInversiones()" title="Volver" aria-label="Volver">←<span class="inv-btn-lbl"> Volver</span></button>
       </div>
@@ -4799,8 +4806,8 @@ function invRenderPerdidas() {
   const P = invFilter ? invPerdidas.filter(x => _catLbl(invPcats, x.cat) === invFilter) : invPerdidas;
   const G = invFilter ? invGanancias.filter(x => _catLbl(invGcats, x.cat) === invFilter) : invGanancias;
   const fb = document.getElementById('invFilterBar');
-  if (fb) fb.innerHTML = _avail.length < 2 ? '' : [{ k:'', label:'Todo' }, ..._avail].map(f =>
-    `<button type="button" class="inv-filter-chip${f.k===invFilter?' active':''}" aria-pressed="${f.k===invFilter?'true':'false'}" data-k="${invEsc(f.k)}" onclick="invSetFilter(this.dataset.k)">${invEsc(f.label)}</button>`).join('');
+  const _chip = f => `<button type="button" class="inv-filter-chip${f.k===invFilter?' active':''}" aria-pressed="${f.k===invFilter?'true':'false'}" data-k="${invEsc(f.k)}" onclick="invSetFilter(this.dataset.k)">${invEsc(f.label)}</button>`;
+  if (fb) fb.innerHTML = _avail.length < 2 ? '' : `<div class="inv-fb-row inv-fb-all">${_chip({ k:'', label:'Todo' })}</div><div class="inv-fb-row inv-fb-cats">${_avail.map(_chip).join('')}</div>`;
 
   const totalP = P.reduce((s,p) => s+invPVal(p), 0);
   const totalG = G.reduce((s,g) => s+invGVal(g), 0);
