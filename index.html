@@ -353,6 +353,15 @@ body{background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSyst
 .ses-confirm-btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-del-trade{background:transparent;border:1px solid #5a2a2a;color:#e53935;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;width:100%;font-family:inherit;}
 .cell-res{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Galería: fecha de cada tarjeta en una sola línea (sin mes); en móvil día abreviado */
+.gal-card-date,.gal-card-pnl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gd-short{display:none;}
+@media(max-width:600px){
+  .gd-full{display:none;} .gd-short{display:inline;}
+  .gal-card-info{padding:5px 6px!important;}
+  .gal-card-date{font-size:10px!important;}
+  .gal-card-pnl{font-size:11px!important;}
+}
 /* Móvil: el selector de sesión iba en posición absoluta y tapaba el título del mes → en pantallas estrechas pasa a ocupar su sitio en la fila */
 @media(max-width:600px){
   .cal-nav{gap:6px;padding:10px;}
@@ -2422,7 +2431,7 @@ function renderGallery(){
                 card2.onmouseenter=()=>card2.style.borderColor='#4caf50'; card2.onmouseleave=()=>card2.style.borderColor=isToday2?'#4caf50':'#1e1e1e';
                 card2.onclick=()=>{ lightboxItems=_ownLbItems2; openLightbox(lbIdx2); };
                 card2.tabIndex=0; card2.setAttribute('role','button'); card2.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card2.click(); } };
-                card2.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(ev2.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res2?`<span style="position:absolute;top:6px;right:6px;background:${resBg2};color:${resColor2};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res2==='nt'?'NT':res2.toUpperCase()}</span>`:''}${dayCnt2[d2]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt2[d2]} trades</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday2?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday2?'#4caf50':'#ccc'};">${isToday2?'● ':''} ${dow2b} ${d2} ${MONTHS[m2-1]}</div>${pnlStr2?`<div style="font-size:12px;font-weight:600;color:${pnl2>0?'#4caf50':pnl2<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr2}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+                card2.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(ev2.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res2?`<span style="position:absolute;top:6px;right:6px;background:${resBg2};color:${resColor2};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res2==='nt'?'NT':res2.toUpperCase()}</span>`:''}${dayCnt2[d2]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt2[d2]} trades</span>`:''}</div><div class="gal-card-info" style="padding:7px 9px;flex-shrink:0;min-width:0;${isToday2?'background:#0a1a0a;':''}"><div class="gal-card-date" style="font-size:11px;font-weight:500;color:${isToday2?'#4caf50':'#ccc'};">${isToday2?'● ':''}<span class="gd-full">${dow2b}</span><span class="gd-short">${dow2b.slice(0,3)}</span> ${d2}</div>${pnlStr2?`<div class="gal-card-pnl" style="font-size:12px;font-weight:600;color:${pnl2>0?'#4caf50':pnl2<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr2}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
                 wrap2.appendChild(card2);
               } else if(cell2.inMonth){
                 const isToday2=reqYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&cell2.d===TODAY_DAY;
@@ -2508,7 +2517,7 @@ function renderGallery(){
         card.onmouseleave=()=>card.style.borderColor=isToday?'#4caf50':'#1e1e1e';
         card.onclick=()=>{ lightboxItems=_ownLbItems; openLightbox(lbIdx); };
         card.tabIndex=0; card.setAttribute('role','button'); card.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card.click(); } };
-        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(e.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}${dayCnt[d]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt[d]} trades</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(e.img||'')}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':res.toUpperCase()}</span>`:''}${dayCnt[d]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt[d]} trades</span>`:''}</div><div class="gal-card-info" style="padding:7px 9px;flex-shrink:0;min-width:0;${isToday?'background:#0a1a0a;':''}"><div class="gal-card-date" style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''}<span class="gd-full">${dow2}</span><span class="gd-short">${dow2.slice(0,3)}</span> ${d}</div>${pnlStr?`<div class="gal-card-pnl" style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
         const isToday=galleryYear===TODAY_YEAR&&galleryMonth===TODAY_MONTH&&cell.d===TODAY_DAY;
@@ -3409,17 +3418,22 @@ function toggleFjRetiros() {
 }
 
 async function _loadFriendGanancias(userId) {
+  // Privacidad: los amigos solo reciben fecha e importe de los RETIROS, mediante la función friend_retiros de Supabase.
+  // El resto de Pérdidas/Ganancias no es accesible para ellos.
   try {
-    const rows = await _frGet(`/rest/v1/inversiones?user_id=eq.${encodeURIComponent(userId)}&select=ganancias,gcats&limit=1`);
+    const res = await _sbFetch(SUPABASE_URL + '/rest/v1/rpc/friend_retiros', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + _cachedToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friend: userId })
+    });
+    if (!res || !res.ok) return;
+    const rows = await res.json();
     if (_fjUserId !== userId) return; // se cerró o se abrió otro amigo mientras esperábamos
-    const data = rows && rows.length > 0 ? rows[0] : null;
-    if (!data) { return; }
-    const parse = (v, d) => { try { return v ? JSON.parse(v) : d; } catch(e) { return d; } };
-    const ganancias = parse(data.ganancias, []);
-    _fjLoadedGanancias = ganancias;
-    renderFriendJournalForYear(); // re-render with ganancias data available
+    if (!Array.isArray(rows) || !rows.length) return;
+    _fjLoadedGanancias = rows.map(x => ({ date: x.date, amount: Number(x.amount) || 0 }));
+    renderFriendJournalForYear(); // re-render con los retiros
   } catch(e) {
-    // Fallo silencioso: _fjLoadedGanancias queda vacío, la tabla no mostrará retiros del amigo
+    // Fallo silencioso: la tabla no mostrará retiros del amigo
   }
 }
 function openFjMonth(m){ fjCalMonth=m-1; switchFjTab('cal'); }
@@ -3696,7 +3710,7 @@ function _renderFjGallery(){
         card.onclick=()=>openLightbox(lbIdx);
         card.tabIndex=0; card.setAttribute('role','button'); card.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card.click(); } };
         const src=e.img_url||e.img||'';
-        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':escHtml(res.toUpperCase())}</span>`:''}${dayCnt[d]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt[d]} trades</span>`:''}</div><div style="padding:7px 9px;flex-shrink:0;overflow-wrap:break-word;min-width:0;${isToday?'background:#0a1a0a;':''}"><div style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''} ${dow2} ${d} ${MONTHS[m-1]}</div>${pnlStr?`<div style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
+        card.innerHTML=`<div style="position:relative;flex:1;overflow:hidden;background:#0a0a0a;min-height:0;"><img src="${escHtml(src)}" alt="Gráfico del trade" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy"/>${res?`<span style="position:absolute;top:6px;right:6px;background:${resBg};color:${resColor};font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${res==='nt'?'NT':escHtml(res.toUpperCase())}</span>`:''}${dayCnt[d]>1?`<span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.75);color:var(--ses);font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;">${dayCnt[d]} trades</span>`:''}</div><div class="gal-card-info" style="padding:7px 9px;flex-shrink:0;min-width:0;${isToday?'background:#0a1a0a;':''}"><div class="gal-card-date" style="font-size:11px;font-weight:500;color:${isToday?'#4caf50':'#ccc'};">${isToday?'● ':''}<span class="gd-full">${dow2}</span><span class="gd-short">${dow2.slice(0,3)}</span> ${d}</div>${pnlStr?`<div class="gal-card-pnl" style="font-size:12px;font-weight:600;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'};margin-top:2px;">${pnlStr}</div>`:'<div style="font-size:11px;color:#444;margin-top:2px;">Sin P&L</div>'}</div>`;
         wrap.appendChild(card);
       } else if(cell.inMonth){
         const isToday=fjYear===TODAY_YEAR&&_fjGalleryMonth===TODAY_MONTH&&cell.d===TODAY_DAY;
@@ -4133,6 +4147,144 @@ function removeAvatar(){
 .inv-header-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 .inv-ghost-btn { background:rgba(255,255,255,.08); border:1px solid var(--inv-border2); border-radius:var(--inv-radius-sm); padding:6px 13px; font-size:11px; font-family:'Inter',sans-serif; color:var(--inv-text2); cursor:pointer; transition:all .15s; white-space:nowrap; font-weight:500; }
 .inv-ghost-btn:hover { background:var(--inv-surface3); color:var(--inv-text); }
+.inv-stat-card { position:relative; overflow:hidden; }
+.inv-stat-dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:7px; vertical-align:1px; }
+.inv-stat-sub { font-size:11.5px; color:var(--inv-text3); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.inv-stat-sub b { color:var(--inv-text2); font-weight:600; }
+.inv-stat-value { font-variant-numeric:tabular-nums; }
+.inv-stat-net.neg { border-color:rgba(239,68,68,.3); background:linear-gradient(180deg, rgba(239,68,68,.06), transparent 70%), var(--inv-surface); }
+.inv-stat-net.pos { border-color:rgba(34,197,94,.3); background:linear-gradient(180deg, rgba(34,197,94,.06), transparent 70%), var(--inv-surface); }
+.inv-meter { position:relative; height:4px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; }
+.inv-meter span { position:absolute; left:0; top:0; bottom:0; border-radius:99px; }
+.inv-chart-eyebrow { font-size:10px; color:var(--inv-text3); text-transform:uppercase; letter-spacing:.12em; font-weight:600; margin-bottom:3px; }
+.inv-chart .inv-chart-title { font-size:17px; font-weight:700; letter-spacing:-.3px; }
+.inv-kpis.inv-kpis-4 { grid-template-columns:repeat(4,1fr); }
+.inv-kpi-s { font-size:10.5px; color:var(--inv-text3); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.inv-kpi .inv-meter { margin-top:8px; }
+.inv-kpi-v { font-variant-numeric:tabular-nums; }
+.inv-legend-hint { margin-left:auto; color:var(--inv-text3); }
+.inv-tip-sec { margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,.1); }
+.inv-tip .inv-tip-co { font-size:11px; color:var(--inv-text2); }
+.inv-tip-co i { display:inline-block; width:7px; height:7px; border-radius:2px; margin-right:6px; }
+.inv-tip-co em { font-style:normal; }
+.inv-tip-hint { font-size:10px; color:#71717a; margin-top:6px; text-align:center; display:block!important; }
+.inv-co { margin-top:18px; border-top:1px solid var(--inv-border); padding-top:12px; }
+.inv-co-head { display:flex; justify-content:space-between; font-size:10px; color:var(--inv-text3); text-transform:uppercase; letter-spacing:.1em; font-weight:600; margin-bottom:6px; }
+.inv-co-head-r { display:flex; gap:24px; }
+.inv-co-row { display:grid; grid-template-columns:minmax(120px,1.1fr) 1.4fr auto 100px; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid var(--inv-border); }
+.inv-co-row:last-child { border-bottom:none; }
+.inv-co-id { display:flex; align-items:center; gap:10px; min-width:0; }
+.inv-co-id > i { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+.inv-co-name { font-size:13.5px; font-weight:600; color:var(--inv-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.inv-co-meta { font-size:10.5px; color:var(--inv-text3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.inv-co-bars { display:flex; flex-direction:column; gap:4px; }
+.inv-co-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.04); overflow:hidden; }
+.inv-co-bar span { display:block; height:100%; border-radius:99px; }
+.inv-co-bar .r { background:linear-gradient(90deg,#dc2626,#f87171); }
+.inv-co-bar .g { background:linear-gradient(90deg,#16a34a,#4ade80); }
+.inv-co-nums { display:flex; flex-direction:column; align-items:flex-end; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; gap:1px; }
+.inv-co-nums .r { color:#f87171; } .inv-co-nums .g { color:#4ade80; }
+.inv-co-net { text-align:right; font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.inv-co-net.pos { color:var(--inv-green); } .inv-co-net.neg { color:var(--inv-red); }
+.inv-ov-split { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+.inv-ov-comp { background:var(--inv-surface2); border:1px solid var(--inv-border); border-radius:10px; padding:12px 14px; min-width:0; }
+.inv-ov-comp-h { display:flex; justify-content:space-between; gap:10px; font-size:12px; color:var(--inv-text2); margin-bottom:10px; }
+.inv-ov-comp-h b { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.inv-stack { display:flex; height:10px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,.05); gap:2px; }
+.inv-stack span { height:100%; }
+.inv-stack-legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:10px; font-size:11px; color:var(--inv-text2); }
+.inv-stack-legend i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:6px; }
+.inv-stack-legend b { color:var(--inv-text); font-weight:600; margin-left:2px; }
+.inv-ov-table { border-top:1px solid var(--inv-border); }
+.inv-ov-row { display:grid; grid-template-columns:minmax(130px,1.3fr) 1fr 1fr 1.1fr 1fr; align-items:center; gap:12px; padding:11px 8px; border-bottom:1px solid var(--inv-border); border-radius:8px; }
+.inv-ov-row.clickable { cursor:pointer; transition:background .15s; }
+.inv-ov-row.clickable:hover, .inv-ov-row.clickable:focus-visible { background:rgba(255,255,255,.03); outline:none; }
+.inv-ov-th { font-size:10px; color:var(--inv-text3); text-transform:uppercase; letter-spacing:.1em; font-weight:600; padding-top:10px; padding-bottom:8px; }
+.inv-ov-row.inv-ov-th > div { font-size:10px; font-weight:600; color:var(--inv-text3); letter-spacing:.1em; }
+.inv-ov-th .inv-ov-num { text-align:right; }
+.inv-ov-num { text-align:right; font-size:13px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.inv-ov-num.r { color:#f87171; } .inv-ov-num.g { color:#4ade80; }
+.inv-ov-rec { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--inv-text2); font-variant-numeric:tabular-nums; }
+.inv-ov-rec .inv-meter { flex:1; }
+.inv-ov-muted { color:var(--inv-text3); }
+@media(max-width:700px){
+  .inv-kpis.inv-kpis-4 { grid-template-columns:1fr 1fr; }
+  .inv-co-row { grid-template-columns:1fr auto; gap:6px 12px; }
+  .inv-co-bars { grid-column:1 / -1; order:3; }
+  .inv-co-nums { display:none; }
+  .inv-co-head-r span:first-child { display:none; }
+  .inv-ov-split { grid-template-columns:1fr; }
+  .inv-ov-row { grid-template-columns:1fr auto auto; gap:4px 12px; padding:10px 4px; }
+  .inv-ov-row > .inv-co-id { grid-column:1; grid-row:1 / span 2; }
+  .inv-ov-row .inv-ov-rec { grid-column:1 / -1; grid-row:3; }
+  .inv-ov-row .inv-co-net { grid-column:3; grid-row:1 / span 2; align-self:center; }
+  .inv-ov-row .inv-ov-num.r { grid-column:2; grid-row:1; }
+  .inv-ov-row .inv-ov-num.g { grid-column:2; grid-row:2; }
+  .inv-ov-th { display:none; }
+  .inv-chart .inv-chart-title { font-size:15px; }
+  .inv-seg button { padding:5px 10px; }
+}
+.inv-chart { background:var(--inv-surface); border:1px solid var(--inv-border); border-radius:var(--inv-radius); padding:18px 20px 14px; margin-bottom:2rem; position:relative; }
+.inv-chart-top { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.inv-chart-title { font-size:13px; font-weight:600; color:var(--inv-text); letter-spacing:-.1px; }
+.inv-chart-sub { font-size:11px; color:var(--inv-text3); margin-top:2px; }
+.inv-seg { display:inline-flex; background:var(--inv-surface2); border:1px solid var(--inv-border2); border-radius:99px; padding:3px; }
+.inv-seg button { background:none; border:none; color:var(--inv-text2); font:inherit; font-size:12px; font-weight:500; padding:5px 13px; border-radius:99px; cursor:pointer; }
+.inv-seg button.active { background:var(--inv-text); color:var(--inv-bg); font-weight:600; }
+.inv-chart-ctrl { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.inv-chart-ctrl .inv-nav { background:var(--inv-surface2); border:1px solid var(--inv-border2); color:var(--inv-text2); width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:15px; }
+.inv-chart-ctrl .inv-nav:hover { color:var(--inv-text); }
+.inv-chart-ctrl .inv-year.is-current { color:var(--inv-green); }
+.inv-chart .inv-chart-title.is-current { color:var(--inv-green); }
+.inv-chart-ctrl.is-current .inv-nav { border-color:rgba(34,197,94,.3); }
+.inv-cur-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--inv-green); background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.35); border-radius:99px; padding:3px 10px; margin-left:4px; }
+.inv-live-dot { width:6px; height:6px; border-radius:50%; background:var(--inv-green); box-shadow:0 0 0 0 rgba(34,197,94,.6); animation:invPulse 1.8s infinite; }
+@keyframes invPulse { 0%{box-shadow:0 0 0 0 rgba(34,197,94,.55);} 70%{box-shadow:0 0 0 6px rgba(34,197,94,0);} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0);} }
+@media (prefers-reduced-motion:reduce){ .inv-live-dot{animation:none;} }
+.inv-chart-ctrl .inv-year { font-size:14px; font-weight:600; color:var(--inv-text); min-width:44px; text-align:center; }
+.inv-chart-ctrl input[type=month] { background:var(--inv-surface2); border:1px solid var(--inv-border2); border-radius:8px; color:var(--inv-text); font:inherit; font-size:14px; padding:5px 8px; color-scheme:dark; }
+.inv-chart-ctrl .inv-sep { color:var(--inv-text3); font-size:12px; }
+.inv-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.inv-kpi { background:var(--inv-surface2); border:1px solid var(--inv-border); border-radius:10px; padding:9px 12px; min-width:0; }
+.inv-kpi-l { font-size:10px; color:var(--inv-text3); text-transform:uppercase; letter-spacing:.08em; }
+.inv-kpi-v { font-size:16px; font-weight:700; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-.3px; }
+.inv-legend { display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--inv-text2); margin:6px 0 2px; }
+.inv-legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+.inv-legend i.ln { height:2px; border-radius:0; vertical-align:3px; width:14px; }
+.inv-svg-wrap { position:relative; width:100%; }
+.inv-svg-wrap svg { display:block; width:100%; }
+.inv-tip { position:absolute; pointer-events:none; background:#0b0b0e; border:1px solid var(--inv-border2); border-radius:10px; padding:9px 11px; font-size:12px; color:var(--inv-text); box-shadow:0 8px 24px rgba(0,0,0,.5); white-space:nowrap; z-index:2; display:none; }
+.inv-tip b { display:block; font-size:11px; color:var(--inv-text2); font-weight:600; margin-bottom:5px; text-transform:uppercase; letter-spacing:.06em; }
+.inv-tip div { display:flex; justify-content:space-between; gap:16px; }
+.inv-chart-note { font-size:11px; color:var(--inv-text3); margin-top:8px; }
+.inv-chart-empty { text-align:center; color:var(--inv-text3); font-size:12px; padding:40px 0; }
+.inv-pagos-count { text-transform:none; letter-spacing:0; color:var(--inv-text2); }
+.inv-pagos-list { max-height:260px; overflow-y:auto; border:1px solid var(--inv-border2); border-radius:var(--inv-radius-xs); }
+.inv-pago-row { display:flex; align-items:center; gap:8px; padding:7px 10px; border-bottom:1px solid var(--inv-border); font-size:13px; }
+.inv-pago-row:last-child { border-bottom:none; }
+.inv-pago-date { flex:1; color:var(--inv-text2); min-width:0; }
+.inv-pago-amt { color:var(--inv-red); font-weight:600; white-space:nowrap; }
+.inv-pago-row input { background:var(--inv-surface2); border:1px solid var(--inv-border2); border-radius:6px; color:var(--inv-text); font:inherit; font-size:16px; padding:4px 6px; min-width:0; color-scheme:dark; }
+.inv-pago-row input[type=date] { flex:1; }
+.inv-pago-row input[type=number] { width:90px; }
+.inv-pago-ok { color:var(--inv-green)!important; }
+.inv-pagos-note { font-size:11px; color:var(--inv-text3); margin-top:6px; }
+@media(max-width:700px){ .inv-chart{padding:14px 12px 10px;} .inv-kpi-v{font-size:14px;} .inv-kpi{padding:8px 9px;} }
+.inv-cur-seg button { padding:6px 11px; }
+.inv-header-actions { flex-wrap:wrap; align-items:center; }
+.inv-fx-note { font-size:11px; color:var(--inv-text3); margin:-0.6rem 0 1.2rem; }
+.inv-fx-note:empty { display:none; }
+.inv-pago-amt { display:flex; flex-direction:column; align-items:flex-end; line-height:1.25; }
+.inv-pago-conv { font-size:10.5px; color:var(--inv-text3); font-weight:500; }
+.inv-pago-add { background:rgba(255,255,255,.02); }
+.inv-pago-add-btn { flex-shrink:0; background:var(--inv-red-dim); border:1px solid rgba(239,68,68,.35); color:var(--inv-red); border-radius:6px; padding:6px 10px; font:inherit; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.inv-pago-add-btn:hover { background:var(--inv-red-soft); }
+@media(max-width:700px){ .inv-pago-add { flex-wrap:wrap; } .inv-pago-add-btn { width:100%; } }
+.inv-filter-bar { display:flex; flex-wrap:wrap; gap:6px; margin:-1.2rem 0 1.2rem; }
+.inv-filter-bar:empty { display:none; }
+.inv-filter-chip { background:var(--inv-surface); border:1px solid var(--inv-border2); border-radius:99px; padding:6px 14px; font-size:12px; font-weight:500; font-family:inherit; color:var(--inv-text2); cursor:pointer; transition:all .15s; }
+.inv-filter-chip:hover { color:var(--inv-text); border-color:rgba(255,255,255,.25); }
+.inv-filter-chip.active { background:var(--inv-text); color:var(--inv-bg); border-color:var(--inv-text); font-weight:600; }
 .inv-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:2rem; }
 .inv-stat-card { background:var(--inv-surface); border:1px solid var(--inv-border); border-radius:var(--inv-radius); padding:18px 20px; transition:border-color .2s,transform .15s; }
 .inv-stat-card:hover { border-color:var(--inv-border2); transform:translateY(-1px); }
@@ -4148,6 +4300,14 @@ function removeAvatar(){
 .inv-add-btn-green:hover { background:var(--inv-green-dim); }
 .inv-cat-header { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--inv-border2); margin-bottom:6px; margin-top:14px; }
 .inv-cat-header:first-child { margin-top:0; }
+.inv-cat-section:first-child .inv-cat-header { margin-top:0; }
+.inv-cat-toggle { width:100%; background:none; border:none; border-bottom:1px solid var(--inv-border2); color:inherit; font-family:inherit; cursor:pointer; text-align:left; align-items:center; }
+.inv-cat-toggle:hover .inv-cat-title { color:var(--inv-text); }
+.inv-cat-chev { display:inline-block; width:14px; color:var(--inv-text2); }
+.inv-cat-count { display:inline-block; margin-left:8px; font-size:10px; font-weight:600; letter-spacing:0; color:var(--inv-text2); background:var(--inv-surface2); border:1px solid var(--inv-border2); border-radius:99px; padding:1px 7px; }
+.inv-emp-del { flex-shrink:0; width:44px; background:var(--inv-red-dim); border:1px solid rgba(239,68,68,.35); border-radius:var(--inv-radius-xs); color:var(--inv-red); font-size:15px; cursor:pointer; }
+.inv-emp-del:hover { background:var(--inv-red-soft); }
+.inv-emp-del:disabled { opacity:.3; cursor:not-allowed; }
 .inv-cat-title { font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--inv-text2); }
 .inv-cat-total-red { font-size:13px; color:var(--inv-red); font-weight:600; }
 .inv-cat-total-green { font-size:13px; color:var(--inv-green); font-weight:600; }
@@ -4198,6 +4358,13 @@ function removeAvatar(){
 .inv-pm-del:hover { color:var(--inv-red); }
 .inv-pm-add { background:transparent; border:1px dashed var(--inv-border2); border-radius:var(--inv-radius-xs); padding:8px; font-size:11px; font-family:'Inter',sans-serif; color:var(--inv-text3); cursor:pointer; width:100%; margin-bottom:4px; }
 .inv-pm-add:hover { border-color:var(--inv-border2); color:var(--inv-text); }
+/* Grupos de retiros por empresa */
+.inv-g-group { margin-bottom:4px; }
+.inv-g-group-head { width:100%; display:flex; align-items:center; gap:8px; padding:10px 12px; background:var(--inv-green-dim); border:1px solid rgba(34,197,94,.22); border-radius:var(--inv-radius-sm); color:var(--inv-text); font-family:inherit; font-size:13px; cursor:pointer; text-align:left; }
+.inv-g-group-head:hover { border-color:rgba(34,197,94,.4); }
+.inv-g-chev { color:var(--inv-green); width:12px; flex-shrink:0; }
+.inv-g-count { font-size:11px; font-weight:600; color:var(--inv-green); background:rgba(34,197,94,.14); border:1px solid rgba(34,197,94,.3); border-radius:99px; padding:2px 9px; white-space:nowrap; flex-shrink:0; }
+.inv-g-group-body { padding:4px 0 0 14px; border-left:1px solid rgba(34,197,94,.18); margin:4px 0 0 6px; }
 @media(max-width:700px){ .inv-cols{grid-template-columns:1fr!important;} .inv-stats{grid-template-columns:1fr!important;} }
 </style>
 
@@ -4209,13 +4376,18 @@ function removeAvatar(){
         <div class="inv-page-sub" id="invLastUpdated">—</div>
       </div>
       <div class="inv-header-actions">
+        <div class="inv-seg inv-cur-seg" role="group" aria-label="Moneda" id="invCurSeg"></div>
+        <button class="inv-ghost-btn" onclick="invExportCsv()" title="Descargar todos los movimientos en CSV (Excel)">⬇ Exportar</button>
         <button class="inv-ghost-btn" onclick="closeInversiones()">← Volver</button>
         <button class="inv-ghost-btn" onclick="invOpenPCatModal()">⚙ Categorías</button>
       </div>
     </div>
 
     <!-- Stats -->
+    <div class="inv-filter-bar" id="invFilterBar" role="group" aria-label="Filtrar por categoría"></div>
+    <div class="inv-fx-note" id="invFxNote"></div>
     <div class="inv-stats" id="invStats"></div>
+    <div class="inv-chart" id="invChartWrap" style="display:none;"></div>
 
     <!-- Cols -->
     <div class="inv-cols">
@@ -4243,8 +4415,13 @@ function removeAvatar(){
   <div class="inv-modal">
     <div class="inv-modal-title" id="invPerdidasModalTitle">Nueva pérdida</div>
     <div class="inv-field"><label for="invPName">Nombre</label><input type="text" id="invPName" placeholder=""></div>
-    <div class="inv-field"><label for="invPAmount">Importe (€)</label><input type="number" id="invPAmount" placeholder="" step="0.01" min="0" inputmode="decimal"></div>
-    <div class="inv-field"><label for="invPCat">Categoría</label><select id="invPCat"></select></div>
+    <div class="inv-field"><label for="invPAmount" id="invPAmountLbl">Importe (€)</label><input type="number" id="invPAmount" placeholder="" step="0.01" min="0" inputmode="decimal"></div>
+    <div class="inv-field"><label for="invPCat">Categoría</label><select id="invPCat" onchange="invUpdatePAmountLbl()"></select></div>
+    <div class="inv-field" id="invPPagosWrap" style="display:none;">
+      <label>Pagos con fecha <span id="invPPagosCount" class="inv-pagos-count"></span></label>
+      <div class="inv-pagos-list" id="invPPagosList"></div>
+      <div id="invPPagosNote" class="inv-pagos-note"></div>
+    </div>
     <div class="inv-modal-actions">
       <button class="inv-btn-cancel" onclick="invClosePerdidasModal()">Cancelar</button>
       <button class="inv-btn-save" style="background:var(--inv-red);" onclick="invSavePerdida()">Guardar</button>
@@ -4257,9 +4434,10 @@ function removeAvatar(){
   <div class="inv-modal" style="max-width:340px;">
     <div class="inv-modal-title">Añadir a <span id="invEntryModalName" style="color:var(--inv-red);"></span></div>
     <div class="inv-two-col">
-      <div class="inv-field"><label for="invEAmount">Importe (€)</label><input type="number" id="invEAmount" placeholder="" step="0.01" min="0" inputmode="decimal" oninput="invUpdateEntryPreview()"></div>
+      <div class="inv-field"><label for="invEAmount" id="invEAmountLbl">Importe (€)</label><input type="number" id="invEAmount" placeholder="" step="0.01" min="0" inputmode="decimal" oninput="invUpdateEntryPreview()"></div>
       <div class="inv-field"><label for="invEQty">Cantidad</label><input type="number" id="invEQty" placeholder="1" min="1" value="1" inputmode="numeric" oninput="invUpdateEntryPreview()"></div>
     </div>
+    <div class="inv-field"><label for="invEDate">Fecha del pago 📅</label><input type="date" id="invEDate" style="color-scheme:dark;"></div>
     <div style="background:var(--inv-surface2);border:1px solid var(--inv-border);border-radius:var(--inv-radius-sm);padding:10px 14px;font-size:13px;color:var(--inv-text);margin-bottom:14px;">
       Añade: <span id="invEPreview" style="color:var(--inv-red);font-weight:600;">0,00 €</span>
       &nbsp;→&nbsp; Total: <span id="invETotalPreview" style="color:var(--inv-red);font-weight:600;">0,00 €</span>
@@ -4275,7 +4453,8 @@ function removeAvatar(){
 <div class="inv-modal-overlay" id="invGananciaModal">
   <div class="inv-modal" style="max-width:360px;">
     <div class="inv-modal-title" id="invGananciaModalTitle">Nueva ganancia</div>
-    <div class="inv-field"><label for="invGName">Descripción</label><input type="text" id="invGName" placeholder=""></div>
+    <div class="inv-field" id="invGNameWrap"><label for="invGName">Descripción</label><input type="text" id="invGName" placeholder=""></div>
+    <div class="inv-field" id="invGEmpresaWrap" style="display:none;"><label for="invGEmpresa">Empresa</label><div style="display:flex;gap:8px;align-items:stretch;"><select id="invGEmpresa" onchange="invOnEmpresaChange()" style="flex:1;min-width:0;"></select><button type="button" id="invGEmpresaDel" class="inv-emp-del" onclick="invAskDeleteEmpresa()" aria-label="Eliminar esta empresa de la lista" title="Eliminar esta empresa de la lista">🗑</button></div><input type="text" id="invGEmpresaNew" placeholder="Nombre de la empresa" aria-label="Nombre de la nueva empresa" style="display:none;margin-top:8px;"></div>
     <div class="inv-two-col">
       <div class="inv-field"><label for="invGAmount">Importe (€)</label><input type="number" id="invGAmount" placeholder="" step="0.01" min="0" inputmode="decimal" oninput="invUpdateGananciaPreview()"></div>
       <div class="inv-field"><label for="invGMultiplier">Multiplicador</label><input type="number" id="invGMultiplier" value="1" min="1" step="1" inputmode="numeric" oninput="invUpdateGananciaPreview()"></div>
@@ -4283,7 +4462,7 @@ function removeAvatar(){
     <div id="invGPreviewRow" style="display:none;background:var(--inv-surface2);border:1px solid var(--inv-border);border-radius:var(--inv-radius-sm);padding:9px 14px;font-size:13px;color:var(--inv-text);margin-bottom:14px;">
       Total: <span id="invGPreview" style="color:var(--inv-green);font-weight:600;">0,00 €</span>
     </div>
-    <div class="inv-field"><label for="invGCat">Categoría</label><select id="invGCat"></select></div>
+    <div class="inv-field"><label for="invGCat">Categoría</label><select id="invGCat" onchange="invOnGCatChange()"></select></div>
     <div class="inv-field"><label for="invGDate">Fecha 📅</label><input type="date" id="invGDate" style="color-scheme:dark;"></div>
     <div class="inv-modal-actions">
       <button class="inv-btn-cancel" onclick="invCloseGananciaModal()">Cancelar</button>
@@ -4317,6 +4496,30 @@ function removeAvatar(){
     <div class="inv-confirm-actions">
       <button class="inv-btn-cancel" onclick="invCloseConfirmPerdida()">Cancelar</button>
       <button class="inv-btn-danger" onclick="invConfirmDeletePerdida()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm editar/eliminar pago -->
+<div class="inv-confirm-overlay" id="invConfirmPago" role="dialog" aria-modal="true" aria-labelledby="invConfirmPagoTitle">
+  <div class="inv-confirm-box">
+    <h3 id="invConfirmPagoTitle">¿Confirmar?</h3>
+    <p id="invConfirmPagoText"></p>
+    <div class="inv-confirm-actions">
+      <button class="inv-btn-cancel" onclick="invCloseConfirmPago()">Cancelar</button>
+      <button class="inv-btn-danger" id="invConfirmPagoBtn" onclick="invDoConfirmPago()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm eliminar empresa de la lista -->
+<div class="inv-confirm-overlay" id="invConfirmEmpresa" role="dialog" aria-modal="true" aria-labelledby="invConfirmEmpresaTitle">
+  <div class="inv-confirm-box">
+    <h3 id="invConfirmEmpresaTitle">¿Eliminar empresa?</h3>
+    <p id="invConfirmEmpresaName"></p>
+    <div class="inv-confirm-actions">
+      <button class="inv-btn-cancel" onclick="invCloseConfirmEmpresa()">Cancelar</button>
+      <button class="inv-btn-danger" onclick="invConfirmDeleteEmpresa()">Eliminar</button>
     </div>
   </div>
 </div>
@@ -4453,6 +4656,63 @@ async function invLoadFromSupabase() {
   } catch(e) { console.warn('[inv load]', e); return false; }
 }
 
+// ── MONEDA ── Pagos de Trading en USD; resto (Inversiones, Cursos, ganancias) en EUR.
+// Se muestra todo en la moneda elegida, convirtiendo con el cambio oficial del BCE del día de cada movimiento.
+let invCur = (() => { try { return localStorage.getItem('inv_cur') === 'USD' ? 'USD' : 'EUR'; } catch(e) { return 'EUR'; } })();
+const INV_FX_KEY = 'inv_fx_usd_eur_v1', INV_FX_FALLBACK = 0.92;
+let invFx = (() => { try { const o = JSON.parse(localStorage.getItem(INV_FX_KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; } catch(e) { return {}; } })(); // fecha -> € por 1 $
+let invFxDates = Object.keys(invFx).sort();
+let invFxLoading = false, invFxTried = false;
+function invFmtMoney(n, cur) { const t = invFmtEur(n); return cur === 'USD' ? t.replace(' €', ' $') : t; }
+function invFmt(n) { return invFmtMoney(n, invCur); }
+function invRateOn(date) {
+  if (!invFxDates.length) return INV_FX_FALLBACK;
+  if (!date) return invFx[invFxDates[invFxDates.length-1]];
+  let lo = 0, hi = invFxDates.length - 1, best = -1;           // último día hábil <= fecha
+  while (lo <= hi) { const mid = (lo+hi) >> 1; if (invFxDates[mid] <= date) { best = mid; lo = mid+1; } else hi = mid-1; }
+  return invFx[invFxDates[best < 0 ? 0 : best]];
+}
+function invConv(v, from, date) { v = v || 0; if (from === invCur) return v; const r = invRateOn(date); return from === 'USD' ? v * r : v / r; }
+function invIsUsdP(p) { const c = invPcats.find(x => x.id === p.cat); return !!c && String(c.label||'').trim().toLowerCase() === 'trading'; }
+function invCurOfP(p) { return invIsUsdP(p) ? 'USD' : 'EUR'; }
+function invPagoVal(p, x) { return invConv(x.amount, invCurOfP(p), x.date); }
+function invPVal(p) {
+  const cur = invCurOfP(p), pagos = Array.isArray(p.pagos) ? p.pagos : [];
+  const rest = Math.max(0, (p.amount||0) - invPagosSum(p));
+  return pagos.reduce((s,x) => s + invConv(x.amount, cur, x.date), 0) + invConv(rest, cur, null);
+}
+function invGVal(g) { return invConv(g.amount, 'EUR', g.date || null); }
+function invSetCur(c) {
+  invCur = c === 'USD' ? 'USD' : 'EUR';
+  try { localStorage.setItem('inv_cur', invCur); } catch(e) {}
+  invRenderPerdidas();
+}
+// Descarga (una vez por sesión) los cambios diarios USD→EUR del BCE que falten y los guarda en este dispositivo
+async function invEnsureFx() {
+  if (invFxLoading || invFxTried) return;
+  const dates = [];
+  invPerdidas.forEach(p => (Array.isArray(p.pagos) ? p.pagos : []).forEach(x => x.date && dates.push(x.date)));
+  invGanancias.forEach(g => g.date && dates.push(g.date));
+  const today = invTodayStr();
+  const from = dates.length ? dates.sort()[0] : today;
+  const yest = (() => { const d = new Date(); d.setDate(d.getDate()-4); return invYm(d)+'-'+String(d.getDate()).padStart(2,'0'); })();
+  if (invFxDates.length && invFxDates[0] <= from && invFxDates[invFxDates.length-1] >= yest) return; // ya cubierto
+  invFxLoading = true; invFxTried = true;
+  const start = (() => { const d = new Date(from); d.setDate(d.getDate()-7); return d.toISOString().slice(0,10); })(); // margen para fines de semana
+  const urls = [`https://api.frankfurter.dev/v1/${start}..${today}?base=USD&symbols=EUR`, `https://api.frankfurter.app/${start}..${today}?from=USD&to=EUR`];
+  for (const u of urls) {
+    try {
+      const r = await fetch(u); if (!r.ok) continue;
+      const j = await r.json(); if (!j || !j.rates) continue;
+      Object.entries(j.rates).forEach(([d, o]) => { if (o && typeof o.EUR === 'number') invFx[d] = o.EUR; });
+      invFxDates = Object.keys(invFx).sort();
+      try { localStorage.setItem(INV_FX_KEY, JSON.stringify(invFx)); } catch(e) {}
+      break;
+    } catch(e) {}
+  }
+  invFxLoading = false;
+  if (document.getElementById('invOverlay')?.classList.contains('open')) invRenderPerdidas();
+}
 function invFmtEur(n) {
   if (isNaN(n)||n===null||n===undefined) n=0;
   if (Object.is(n,-0)) n=0;
@@ -4472,6 +4732,7 @@ function openInversiones() {
   if (_isGuest()) {
     _guestLoadInv();
     invRenderPerdidas();
+    invEnsureFx();
     const el = document.getElementById('invLastUpdated'); if(el) el.textContent = 'Local (sin cuenta)';
     return;
   }
@@ -4480,12 +4741,14 @@ function openInversiones() {
   _invLblEl.textContent = 'Sincronizando…';
   // Si la carga no actualiza la etiqueta (sin fila aún, error o guardado en curso), no dejarla en "Sincronizando…"
   const _invLblRestore = () => { if(_invLblEl.textContent === 'Sincronizando…') _invLblEl.textContent = _invLblPrev; };
-  invLoadFromSupabase().then(() => {
+  invLoadFromSupabase().then(ok => {
     _invLblRestore();
     invRenderPerdidas();
+    invEnsureFx();
   }).catch(() => {
     _invLblRestore();
     invRenderPerdidas();
+    invEnsureFx();
   });
 }
 function closeInversiones() {
@@ -4494,82 +4757,420 @@ function closeInversiones() {
 
 // ── RENDER ────────────────────────────────────────────────────
 function invRenderPerdidas() {
-  const totalP = invPerdidas.reduce((s,p) => s+(p.amount||0), 0);
-  const totalG = invGanancias.reduce((s,g) => s+(g.amount||0), 0);
+  // Filtro por categoría (Trading, Inversiones, …): agrupa por nombre en pérdidas y ganancias
+  const _catLbl = (cats, id) => { const c = cats.find(x => x.id === id); return c ? String(c.label||'').trim().toLowerCase() : ''; };
+  const _avail = [], _seen = new Set();
+  [[invPcats, invPerdidas], [invGcats, invGanancias]].forEach(([cats, arr]) => cats.forEach(c => {
+    const k = String(c.label||'').trim().toLowerCase();
+    if (k && !_seen.has(k) && arr.some(x => x.cat === c.id)) { _seen.add(k); _avail.push({ k, label: String(c.label).trim() }); }
+  }));
+  if (invFilter && !_seen.has(invFilter)) invFilter = ''; // la categoría filtrada ya no existe o no tiene datos
+  const P = invFilter ? invPerdidas.filter(x => _catLbl(invPcats, x.cat) === invFilter) : invPerdidas;
+  const G = invFilter ? invGanancias.filter(x => _catLbl(invGcats, x.cat) === invFilter) : invGanancias;
+  const fb = document.getElementById('invFilterBar');
+  if (fb) fb.innerHTML = _avail.length < 2 ? '' : [{ k:'', label:'Todo' }, ..._avail].map(f =>
+    `<button type="button" class="inv-filter-chip${f.k===invFilter?' active':''}" aria-pressed="${f.k===invFilter?'true':'false'}" data-k="${invEsc(f.k)}" onclick="invSetFilter(this.dataset.k)">${invEsc(f.label)}</button>`).join('');
+
+  const totalP = P.reduce((s,p) => s+invPVal(p), 0);
+  const totalG = G.reduce((s,g) => s+invGVal(g), 0);
+  invRenderCurUi();
   const neto   = Math.round((totalG - totalP)*100)/100; // eliminar residuo de coma flotante (evita "+0,00 €" / "-0,00 €")
   const pos    = neto >= 0;
 
+  const recup = totalP > 0 ? totalG / totalP * 100 : null;
+  const nCatsP = new Set(P.map(x => x.cat)).size, nCatsG = new Set(G.map(x => x.cat)).size;
   document.getElementById('invStats').innerHTML = `
-    <div class="inv-stat-card"><div class="inv-stat-label">Total pérdidas</div><div class="inv-stat-value" style="color:var(--inv-red);">${invFmtEur(totalP)}</div></div>
-    <div class="inv-stat-card"><div class="inv-stat-label">Total ganancias</div><div class="inv-stat-value" style="color:var(--inv-green);">${invFmtEur(totalG)}</div></div>
-    <div class="inv-stat-card" style="border-color:${pos?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};">
-      <div class="inv-stat-label">Resultado neto</div>
-      <div class="inv-stat-value" style="color:${pos?'var(--inv-green)':'var(--inv-red)'};">${neto>0?'+'+invFmtEur(neto):invFmtEur(neto)}</div>
+    <div class="inv-stat-card"><div class="inv-stat-label"><span class="inv-stat-dot" style="background:var(--inv-red);"></span>Total pérdidas</div><div class="inv-stat-value" style="color:var(--inv-red);">${invFmt(totalP)}</div><div class="inv-stat-sub">${P.length} entrada${P.length===1?'':'s'} · ${nCatsP} categoría${nCatsP===1?'':'s'}</div></div>
+    <div class="inv-stat-card"><div class="inv-stat-label"><span class="inv-stat-dot" style="background:var(--inv-green);"></span>Total ganancias</div><div class="inv-stat-value" style="color:var(--inv-green);">${invFmt(totalG)}</div><div class="inv-stat-sub">${G.length} entrada${G.length===1?'':'s'} · ${nCatsG} categoría${nCatsG===1?'':'s'}</div></div>
+    <div class="inv-stat-card inv-stat-net ${pos?'pos':'neg'}">
+      <div class="inv-stat-label"><span class="inv-stat-dot" style="background:${pos?'var(--inv-green)':'var(--inv-red)'};"></span>Resultado neto</div>
+      <div class="inv-stat-value" style="color:${pos?'var(--inv-green)':'var(--inv-red)'};">${neto>0?'+'+invFmt(neto):invFmt(neto)}</div>
+      <div class="inv-stat-sub">${recup === null ? 'Sin pérdidas' : 'Recuperado el <b>'+Math.round(recup)+'%</b> de lo gastado'}</div>
+      <div class="inv-meter" style="margin-top:8px;"><span style="width:${recup === null ? 0 : Math.min(100, recup)}%;background:${recup !== null && recup >= 100 ? 'var(--inv-green)' : '#f59e0b'};"></span></div>
     </div>
   `;
 
   // Pérdidas: categoría con id 'pcat_trading' en la derecha, el resto a la izquierda
   const tradingCat = invPcats.find(c => c.id === 'pcat_trading');
   const tradingId  = tradingCat?.id;
-  const leftCats   = invPcats.filter(c => c.id !== tradingId && invPerdidas.some(p => p.cat === c.id));
-  const unknown    = invPerdidas.filter(p => !invPcats.find(c => c.id === p.cat));
+  const leftCats   = invPcats.filter(c => c.id !== tradingId && P.some(p => p.cat === c.id));
+  const unknown    = P.filter(p => !invPcats.find(c => c.id === p.cat));
 
   let leftHtml = '';
   leftCats.forEach(c => {
-    const items = invPerdidas.filter(p => p.cat === c.id);
-    const catTotal = items.reduce((s,p) => s+p.amount, 0);
-    leftHtml += `<div class="inv-cat-header"><span class="inv-cat-title">${invEsc(c.label)}</span><span class="inv-cat-total-red">${invFmtEur(catTotal)}</span></div>`;
-    items.forEach(item => { leftHtml += invPerdidasItemHtml(item, false); });
+    const items = P.filter(p => p.cat === c.id);
+    const catTotal = items.reduce((s,p) => s+invPVal(p), 0);
+    leftHtml += invCatSectionHtml('p:'+c.id, c.label, 'red', catTotal, items.length, items.map(item => invPerdidasItemHtml(item, false)).join(''));
   });
   if (unknown.length) {
-    const uTotal = unknown.reduce((s,p) => s+p.amount, 0);
-    leftHtml += `<div class="inv-cat-header"><span class="inv-cat-title">Sin categoría</span><span class="inv-cat-total-red">${invFmtEur(uTotal)}</span></div>`;
-    unknown.forEach(item => { leftHtml += invPerdidasItemHtml(item, false); });
+    const uTotal = unknown.reduce((s,p) => s+invPVal(p), 0);
+    leftHtml += invCatSectionHtml('p:__sincat', 'Sin categoría', 'red', uTotal, unknown.length, unknown.map(item => invPerdidasItemHtml(item, false)).join(''));
   }
 
   let rightHtml = '';
   if (tradingCat) {
-    const tradingItems = invPerdidas.filter(p => p.cat === tradingId);
-    const tradingTotal = tradingItems.reduce((s,p) => s+p.amount, 0);
+    const tradingItems = P.filter(p => p.cat === tradingId);
+    const tradingTotal = tradingItems.reduce((s,p) => s+invPVal(p), 0);
     if (tradingItems.length) {
-      rightHtml += `<div class="inv-cat-header" style="margin-top:0;"><span class="inv-cat-title">${invEsc(tradingCat.label)}</span><span class="inv-cat-total-red">${invFmtEur(tradingTotal)}</span></div>`;
-      tradingItems.forEach(item => { rightHtml += invPerdidasItemHtml(item, true); });
+      rightHtml += invCatSectionHtml('p:'+tradingId, tradingCat.label, 'red', tradingTotal, tradingItems.length, tradingItems.map(item => invPerdidasItemHtml(item, true)).join(''));
     }
   }
   const noRightItems = !rightHtml;
-  document.getElementById('invPerdidasIzq').innerHTML = leftHtml || (noRightItems ? '<div class="inv-empty">Sin pérdidas registradas</div>' : '<div class="inv-empty" style="font-size:10px;color:var(--inv-text3);padding:8px 0;">—</div>');
+  document.getElementById('invPerdidasIzq').innerHTML = leftHtml || (noRightItems ? '<div class="inv-empty">Sin pérdidas registradas</div>' : (invFilter ? '' : '<div class="inv-empty" style="font-size:10px;color:var(--inv-text3);padding:8px 0;">—</div>'));
   document.getElementById('invPerdidasDer').innerHTML = rightHtml;
 
   // Ganancias
   const gEl = document.getElementById('invGananciasList');
-  if (!invGanancias.length) {
+  if (!G.length) {
     gEl.innerHTML = '<div class="inv-empty">Sin ganancias registradas</div>';
   } else {
-    const usedGCats = invGcats.filter(c => invGanancias.some(g => g.cat === c.id));
-    const sinCat    = invGanancias.filter(g => !invGcats.find(c => c.id === g.cat));
+    const usedGCats = invGcats.filter(c => G.some(g => g.cat === c.id));
+    const sinCat    = G.filter(g => !invGcats.find(c => c.id === g.cat));
     let html = '';
     usedGCats.forEach(c => {
-      const items    = invGanancias.filter(g => g.cat === c.id);
-      const catTotal = items.reduce((s,g) => s+(g.amount||0), 0);
-      html += `<div class="inv-cat-header"><span class="inv-cat-title">${invEsc(c.label)}</span><span class="inv-cat-total-green">${invFmtEur(catTotal)}</span></div>`;
-      items.forEach(g => { html += invGananciaItemHtml(g); });
+      const items    = G.filter(g => g.cat === c.id);
+      const catTotal = items.reduce((s,g) => s+invGVal(g), 0);
+      html += invCatSectionHtml('g:'+c.id, c.label, 'green', catTotal, items.length, invIsRetiroCat(c.id) ? invGananciaGroupsHtml(items) : items.map(g => invGananciaItemHtml(g)).join(''));
     });
     if (sinCat.length) {
-      const uTotal = sinCat.reduce((s,g) => s+(g.amount||0), 0);
-      html += `<div class="inv-cat-header"><span class="inv-cat-title">Sin categoría</span><span class="inv-cat-total-green">${invFmtEur(uTotal)}</span></div>`;
-      sinCat.forEach(g => { html += invGananciaItemHtml(g); });
+      const uTotal = sinCat.reduce((s,g) => s+invGVal(g), 0);
+      html += invCatSectionHtml('g:__sincat', 'Sin categoría', 'green', uTotal, sinCat.length, sinCat.map(g => invGananciaItemHtml(g)).join(''));
     }
     gEl.innerHTML = html;
   }
+  invRenderChart(P, G);
+}
+// ── PANEL ANALÍTICO: resumen por categoría (Todo) y gráfica gastado/ganado (Trading) ──
+const INV_MES_C = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const INV_MES_L = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const INV_PALETTE = ['#60a5fa','#a78bfa','#f59e0b','#f472b6','#2dd4bf','#fb923c','#818cf8','#facc15','#34d399','#e879f9'];
+let invChartMode = 'mes';                          // 'mes' | 'anio' | 'anios' | 'rango'
+let invChartYear = new Date().getFullYear();
+let invChartMonth = '';                            // 'YYYY-MM'
+let invChartFrom = '', invChartTo = '';            // 'YYYY-MM'
+let invChartP = [], invChartG = [];
+function invYm(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function invShiftYm(ym, k) { const [y,m] = ym.split('-').map(Number); return invYm(new Date(y, m-1+k, 1)); }
+function invChartSet(k, v) {
+  if (k === 'mode') invChartMode = v;
+  if (k === 'year') invChartYear += v;
+  if (k === 'month') invChartMonth = invShiftYm(invChartMonth, v);
+  if (k === 'monthAbs') { invChartMonth = v; invChartMode = 'mes'; }
+  if (k === 'from') invChartFrom = v;
+  if (k === 'to') invChartTo = v;
+  invRenderChart(invChartP, invChartG);
+}
+function invNiceStep(range) {
+  const raw = range / 4, mag = Math.pow(10, Math.floor(Math.log10(raw || 1))), n = raw / mag;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag;
+}
+function invFmtShort(v) { const a = Math.abs(v); return (v < 0 ? '-' : '') + (a >= 1000 ? (a/1000).toFixed(a >= 10000 ? 0 : 1).replace('.', ',') + 'k' : Math.round(a)) + (invCur === 'USD' ? ' $' : ' €'); }
+function invSigned(v) { return (v > 0 ? '+' : '') + invFmt(v); }
+// Color estable por nombre (empresa o categoría)
+function invColorFor(name, names) { const i = names.indexOf(String(name).trim().toLowerCase()); return INV_PALETTE[(i < 0 ? 0 : i) % INV_PALETTE.length]; }
+
+function invRenderChart(P, G) {
+  const wrap = document.getElementById('invChartWrap'); if (!wrap) return;
+  invChartP = P; invChartG = G;
+  if (invFilter === '') { invRenderOverview(wrap); return; }
+  if (invFilter !== 'trading') { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = '';
+  const now = new Date();
+  if (!invChartMonth) invChartMonth = invYm(now);
+  if (!invChartTo) invChartTo = invYm(now);
+  if (!invChartFrom) invChartFrom = invYm(new Date(now.getFullYear(), now.getMonth()-11, 1));
+  // Movimientos con fecha (empresa = nombre de la pérdida o del retiro)
+  const mov = [];
+  let sinFecha = 0;
+  P.forEach(p => { (Array.isArray(p.pagos) ? p.pagos : []).forEach(x => { if (x.date) mov.push({ d: x.date, v: invPagoVal(p, x), t: 'gasto', co: p.name }); }); sinFecha += invConv(Math.max(0, (p.amount||0) - invPagosSum(p)), invCurOfP(p), null); });
+  G.forEach(g => { if (g.date) mov.push({ d: g.date, v: invGVal(g), t: 'ganado', co: g.name }); });
+  const coNames = [...new Set(mov.map(m => String(m.co||'').trim().toLowerCase()))].sort();
+  const all = mov.map(x => x.d).sort();
+  // Cubos según la vista
+  let buckets = [], keyLen = 7;
+  if (invChartMode === 'mes') {
+    keyLen = 10;
+    const [y, m] = invChartMonth.split('-').map(Number), days = new Date(y, m, 0).getDate();
+    for (let d = 1; d <= days; d++) buckets.push({ k: invChartMonth+'-'+String(d).padStart(2,'0'), label: String(d), full: d+' de '+INV_MES_L[m-1].toLowerCase()+' '+y });
+  } else if (invChartMode === 'anios') {
+    keyLen = 4;
+    const y0 = all.length ? parseInt(all[0]) : now.getFullYear(), y1 = Math.max(all.length ? parseInt(all[all.length-1]) : y0, y0);
+    for (let y = y0; y <= y1; y++) buckets.push({ k: String(y), label: String(y), full: String(y) });
+  } else {
+    let a, b;
+    if (invChartMode === 'anio') { a = invChartYear+'-01'; b = invChartYear+'-12'; }
+    else { a = invChartFrom <= invChartTo ? invChartFrom : invChartTo; b = invChartFrom <= invChartTo ? invChartTo : invChartFrom; }
+    let [y, m] = a.split('-').map(Number); const [yb, mb] = b.split('-').map(Number);
+    while ((y < yb || (y === yb && m <= mb)) && buckets.length < 120) {
+      const k = y+'-'+String(m).padStart(2,'0');
+      buckets.push({ k, label: invChartMode === 'anio' ? INV_MES_C[m-1] : INV_MES_C[m-1]+' '+String(y).slice(2), full: INV_MES_L[m-1]+' '+y });
+      if (++m > 12) { m = 1; y++; }
+    }
+  }
+  const idx = {}; buckets.forEach((bk, i) => { idx[bk.k] = i; bk.gasto = 0; bk.ganado = 0; bk.co = {}; });
+  const byCo = {}; let nPagos = 0, nRet = 0;
+  mov.forEach(x => {
+    const i = idx[x.d.slice(0, keyLen)]; if (i === undefined) return;
+    const bk = buckets[i], ck = String(x.co||'').trim().toLowerCase();
+    bk[x.t] += x.v;
+    (bk.co[ck] = bk.co[ck] || { name: x.co, gasto: 0, ganado: 0 })[x.t] += x.v;
+    (byCo[ck] = byCo[ck] || { name: x.co, gasto: 0, ganado: 0, nG: 0, nW: 0 })[x.t] += x.v;
+    if (x.t === 'gasto') { byCo[ck].nG++; nPagos++; } else { byCo[ck].nW++; nRet++; }
+  });
+  const _todayK = invTodayStr().slice(0, keyLen);
+  let cum = 0; buckets.forEach(bk => { bk.future = bk.k > _todayK; bk.gasto = Math.round(bk.gasto*100)/100; bk.ganado = Math.round(bk.ganado*100)/100; bk.neto = Math.round((bk.ganado - bk.gasto)*100)/100; cum += bk.neto; bk.cum = Math.round(cum*100)/100; });
+  const tG = Math.round(buckets.reduce((s,b) => s+b.gasto, 0)*100)/100, tW = Math.round(buckets.reduce((s,b) => s+b.ganado, 0)*100)/100, tN = Math.round((tW - tG)*100)/100;
+  const roi = tG > 0 ? (tW / tG) * 100 : null;
+  // Mejor y peor periodo
+  const conMov = buckets.filter(b => b.gasto || b.ganado);
+  const best = conMov.length ? conMov.reduce((a,b) => b.neto > a.neto ? b : a) : null;
+  const worst = conMov.length ? conMov.reduce((a,b) => b.neto < a.neto ? b : a) : null;
+  const unidad = invChartMode === 'mes' ? 'día' : invChartMode === 'anios' ? 'año' : 'mes';
+  // Controles
+  const seg = [['mes','Mes'],['anio','Año'],['anios','Histórico'],['rango','Rango']].map(([k,l]) => `<button type="button" class="${invChartMode===k?'active':''}" aria-pressed="${invChartMode===k}" onclick="invChartSet('mode','${k}')">${l}</button>`).join('');
+  const _isCur = (invChartMode === 'mes' && invChartMonth === invYm(now)) || (invChartMode === 'anio' && invChartYear === now.getFullYear());
+  const _curBadge = _isCur ? `<span class="inv-cur-badge"><span class="inv-live-dot"></span>${invChartMode === 'mes' ? 'Mes actual' : 'Año actual'}</span>` : '';
+  let ctrl = '';
+  if (invChartMode === 'mes') { const [y, m] = invChartMonth.split('-').map(Number); ctrl = `<button type="button" class="inv-nav" aria-label="Mes anterior" onclick="invChartSet('month',-1)">‹</button><span class="inv-year${_isCur?' is-current':''}">${INV_MES_L[m-1]} ${y}</span>${_curBadge}<button type="button" class="inv-nav" aria-label="Mes siguiente" onclick="invChartSet('month',1)">›</button>`; }
+  else if (invChartMode === 'anio') ctrl = `<button type="button" class="inv-nav" aria-label="Año anterior" onclick="invChartSet('year',-1)">‹</button><span class="inv-year${_isCur?' is-current':''}">${invChartYear}</span>${_curBadge}<button type="button" class="inv-nav" aria-label="Año siguiente" onclick="invChartSet('year',1)">›</button>`;
+  else if (invChartMode === 'rango') ctrl = `<input type="month" aria-label="Desde" value="${invChartFrom}" onchange="invChartSet('from',this.value)"/><span class="inv-sep">→</span><input type="month" aria-label="Hasta" value="${invChartTo}" onchange="invChartSet('to',this.value)"/>`;
+  const periodo = invChartMode === 'mes' ? (() => { const [y,m] = invChartMonth.split('-').map(Number); return INV_MES_L[m-1]+' '+y; })()
+    : invChartMode === 'anio' ? 'Año '+invChartYear : invChartMode === 'anios' ? 'Todo el histórico' : (buckets.length ? buckets[0].full+' – '+buckets[buckets.length-1].full : '');
+  const hasData = conMov.length > 0;
+  // Desglose por empresa
+  const cos = Object.values(byCo).map(c => ({ ...c, gasto: Math.round(c.gasto*100)/100, ganado: Math.round(c.ganado*100)/100, neto: Math.round((c.ganado - c.gasto)*100)/100 }))
+    .sort((a,b) => (b.gasto + b.ganado) - (a.gasto + a.ganado));
+  const coMax = Math.max(1, ...cos.map(c => Math.max(c.gasto, c.ganado)));
+  const coHtml = cos.map(c => {
+    const col = invColorFor(c.name, coNames);
+    const shareG = tG > 0 ? Math.round(c.gasto / tG * 100) : 0;
+    const meta = [c.nG ? `${c.nG} pago${c.nG>1?'s':''}` : '', c.nW ? `${c.nW} retiro${c.nW>1?'s':''}` : '', c.gasto ? `${shareG}% del gasto` : ''].filter(Boolean).join(' · ');
+    return `<div class="inv-co-row">
+      <div class="inv-co-id"><i style="background:${col};"></i><div style="min-width:0;"><div class="inv-co-name">${invEsc(c.name)}</div><div class="inv-co-meta">${meta}</div></div></div>
+      <div class="inv-co-bars">
+        <div class="inv-co-bar"><span class="r" style="width:${(c.gasto/coMax*100).toFixed(1)}%;"></span></div>
+        <div class="inv-co-bar"><span class="g" style="width:${(c.ganado/coMax*100).toFixed(1)}%;"></span></div>
+      </div>
+      <div class="inv-co-nums"><span class="r">${c.gasto ? '−'+invFmt(c.gasto) : '—'}</span><span class="g">${c.ganado ? '+'+invFmt(c.ganado) : '—'}</span></div>
+      <div class="inv-co-net ${c.neto>=0?'pos':'neg'}">${invSigned(c.neto)}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = `
+    <div class="inv-chart-top">
+      <div><div class="inv-chart-eyebrow">Trading · Rendimiento</div><div class="inv-chart-title${_isCur?' is-current':''}">${periodo}</div></div>
+      <div class="inv-seg" role="group" aria-label="Vista">${seg}</div>
+    </div>
+    ${ctrl ? `<div class="inv-chart-ctrl${_isCur?' is-current':''}">${ctrl}</div>` : ''}
+    <div class="inv-kpis inv-kpis-4">
+      <div class="inv-kpi"><div class="inv-kpi-l">Gastado</div><div class="inv-kpi-v" style="color:var(--inv-red);">${invFmt(tG)}</div><div class="inv-kpi-s">${nPagos} pago${nPagos===1?'':'s'}</div></div>
+      <div class="inv-kpi"><div class="inv-kpi-l">Ganado</div><div class="inv-kpi-v" style="color:var(--inv-green);">${invFmt(tW)}</div><div class="inv-kpi-s">${nRet} retiro${nRet===1?'':'s'}</div></div>
+      <div class="inv-kpi"><div class="inv-kpi-l">Neto</div><div class="inv-kpi-v" style="color:${tN>=0?'var(--inv-green)':'var(--inv-red)'};">${invSigned(tN)}</div><div class="inv-kpi-s">${best && best.neto > 0 ? 'Mejor '+unidad+': '+best.label : worst ? 'Peor '+unidad+': '+worst.label : '—'}</div></div>
+      <div class="inv-kpi"><div class="inv-kpi-l">Recuperado</div><div class="inv-kpi-v">${roi === null ? '—' : Math.round(roi)+'%'}</div><div class="inv-meter"><span style="width:${roi === null ? 0 : Math.min(100, roi)}%;background:${roi !== null && roi >= 100 ? 'var(--inv-green)' : '#f59e0b'};"></span></div></div>
+    </div>
+    ${hasData ? `<div class="inv-svg-wrap" id="invSvgWrap"></div>
+    <div class="inv-legend"><span><i style="background:#ef4444;"></i>Gastado</span><span><i style="background:#22c55e;"></i>Ganado</span><span><i class="ln" style="background:#e5e7eb;"></i>Neto acumulado</span>${invChartMode==='anio'||invChartMode==='rango' ? '<span class="inv-legend-hint">Pulsa un mes para ver su detalle</span>' : ''}</div>`
+      : `<div class="inv-chart-empty"><div style="font-size:22px;margin-bottom:6px;opacity:.5;">∅</div>Sin movimientos en este periodo</div>`}
+    ${cos.length ? `<div class="inv-co">
+      <div class="inv-co-head"><span>Por empresa</span><span class="inv-co-head-r"><span>Gastado / Ganado</span><span>Neto</span></span></div>
+      ${coHtml}
+    </div>` : ''}
+    ${sinFecha > 0.004 ? `<div class="inv-chart-note">${invFmt(sinFecha)} en pérdidas sin fecha no aparecen en la gráfica.</div>` : ''}`;
+  if (hasData) invDrawChartSvg(buckets, coNames);
 }
 
+function invDrawChartSvg(buckets, coNames) {
+  const box = document.getElementById('invSvgWrap'); if (!box) return;
+  const W = Math.max(280, box.clientWidth || 600), narrow = W < 520;
+  const H = narrow ? 230 : 290, padL = narrow ? 44 : 56, padR = 10, padT = 14, padB = 26;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  let vmax = 0, vmin = 0;
+  buckets.forEach(b => { vmax = Math.max(vmax, b.gasto, b.ganado, b.cum); vmin = Math.min(vmin, b.cum); });
+  if (vmax === vmin) vmax = vmin + 100;
+  const step = invNiceStep(vmax - vmin);
+  vmax = Math.ceil(vmax / step) * step; vmin = Math.floor(vmin / step) * step;
+  const y = v => padT + ih - (v - vmin) / (vmax - vmin) * ih;
+  const n = buckets.length, gw = iw / n, bw = Math.max(2, Math.min(22, gw * 0.32)), gap = Math.min(3, bw * 0.2);
+  const drill = invChartMode === 'anio' || invChartMode === 'rango';
+  const _todayKey = invTodayStr().slice(0, buckets[0] ? buckets[0].k.length : 7);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Gráfica de gastado y ganado">`;
+  svg += `<defs><linearGradient id="invGR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/></linearGradient><linearGradient id="invGG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#16a34a"/></linearGradient>
+    <linearGradient id="invGA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e7eb" stop-opacity=".10"/><stop offset="1" stop-color="#e5e7eb" stop-opacity="0"/></linearGradient></defs>`;
+  for (let v = vmin; v <= vmax + step/2; v += step) {
+    const yy = y(v).toFixed(1);
+    svg += `<line x1="${padL}" x2="${W-padR}" y1="${yy}" y2="${yy}" stroke="${Math.abs(v) < 1e-9 ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.06)'}" stroke-width="1" ${Math.abs(v) < 1e-9 ? '' : 'stroke-dasharray="2 4"'}/>`;
+    svg += `<text x="${padL-8}" y="${(+yy+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#71717a" font-variant-numeric="tabular-nums">${invFmtShort(v)}</text>`;
+  }
+  const every = Math.max(1, Math.ceil(n / Math.floor(iw / (narrow ? 30 : 40))));
+  const y0 = y(0);
+  const cx = i => padL + gw * i + gw / 2;
+  // Área bajo el neto acumulado
+  const nL = Math.max(1, buckets.filter(b => !b.future).length); // la línea termina en el periodo actual
+  const pts = buckets.slice(0, nL).map((b, i) => `${cx(i).toFixed(1)},${y(b.cum).toFixed(1)}`);
+  svg += `<polygon points="${cx(0).toFixed(1)},${y0.toFixed(1)} ${pts.join(' ')} ${cx(nL-1).toFixed(1)},${y0.toFixed(1)}" fill="url(#invGA)"/>`;
+  buckets.forEach((b, i) => {
+    const hR = y0 - y(b.gasto), hG = y0 - y(b.ganado), r = Math.min(4, bw/3).toFixed(1);
+    if (b.gasto > 0) svg += `<rect x="${(cx(i) - bw - gap/2).toFixed(1)}" y="${(y0 - hR).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1.5, hR).toFixed(1)}" rx="${r}" fill="url(#invGR)"/>`;
+    if (b.ganado > 0) svg += `<rect x="${(cx(i) + gap/2).toFixed(1)}" y="${(y0 - hG).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1.5, hG).toFixed(1)}" rx="${r}" fill="url(#invGG)"/>`;
+    const _now = b.k === _todayKey;
+    if (_now) svg += `<rect x="${(padL + gw*i + 1).toFixed(1)}" y="${padT}" width="${Math.max(2, gw-2).toFixed(1)}" height="${ih}" rx="6" fill="rgba(34,197,94,.07)" stroke="rgba(34,197,94,.35)" stroke-dasharray="3 3"/>`;
+    if (_now || i % every === 0 || i === n-1 && n <= 12) svg += `<text x="${cx(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10.5" font-weight="${_now?'700':'400'}" fill="${_now?'#4ade80':'#a1a1aa'}">${b.label}</text>`;
+  });
+  svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="#e5e7eb" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity=".85"/>`;
+  if (n <= 40) buckets.slice(0, nL).forEach((b, i) => { svg += `<circle cx="${cx(i).toFixed(1)}" cy="${y(b.cum).toFixed(1)}" r="${n > 24 ? 1.6 : 2.6}" fill="#1e1e24" stroke="#e5e7eb" stroke-width="1.4"/>`; });
+  svg += `<rect id="invHoverBand" x="0" y="${padT}" width="${gw.toFixed(1)}" height="${ih}" fill="rgba(255,255,255,.05)" rx="6" style="display:none"/>`;
+  buckets.forEach((b, i) => { svg += `<rect class="inv-hit" data-i="${i}" x="${(padL + gw*i).toFixed(1)}" y="${padT}" width="${gw.toFixed(1)}" height="${ih}" fill="transparent" style="cursor:${drill?'pointer':'default'}"/>`; });
+  svg += `</svg><div class="inv-tip" id="invTip"></div>`;
+  box.innerHTML = svg;
+  const tip = document.getElementById('invTip'), band = document.getElementById('invHoverBand');
+  let shown = -1;
+  const row = (l, v, c) => `<div><span style="color:${c};">${l}</span><span>${v}</span></div>`;
+  const show = el => {
+    const i = +el.dataset.i, b = buckets[i]; if (!b) return;
+    shown = i;
+    band.setAttribute('x', el.getAttribute('x')); band.style.display = '';
+    const cos = Object.values(b.co).sort((a,c) => (c.gasto+c.ganado) - (a.gasto+a.ganado));
+    const coRows = cos.slice(0, 5).map(c => `<div class="inv-tip-co"><span><i style="background:${invColorFor(c.name, coNames)};"></i>${invEsc(c.name)}</span><span>${c.gasto ? '<em style="color:#f87171;">−'+invFmt(c.gasto)+'</em>' : ''}${c.gasto && c.ganado ? ' ' : ''}${c.ganado ? '<em style="color:#4ade80;">+'+invFmt(c.ganado)+'</em>' : ''}</span></div>`).join('')
+      + (cos.length > 5 ? `<div class="inv-tip-co" style="color:#71717a;">+${cos.length-5} más</div>` : '');
+    tip.innerHTML = `<b>${b.full}</b>${row('Gastado', invFmt(b.gasto), '#f87171')}${row('Ganado', invFmt(b.ganado), '#4ade80')}
+      <div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,255,255,.1);"><span>Neto</span><span style="color:${b.neto>=0?'#4ade80':'#f87171'};font-weight:600;">${invSigned(b.neto)}</span></div>
+      ${row('Acumulado', invSigned(b.cum), '#a1a1aa')}
+      ${coRows ? `<div class="inv-tip-sec">${coRows}</div>` : ''}
+      ${drill ? '<div class="inv-tip-hint">Pulsa para ver el mes</div>' : ''}`;
+    tip.style.display = 'block';
+    const scale = box.clientWidth / W, x = (parseFloat(el.getAttribute('x')) + gw/2) * scale;
+    const tw = tip.offsetWidth; let left = x - tw/2; left = Math.max(0, Math.min(box.clientWidth - tw, left));
+    tip.style.left = left + 'px'; tip.style.top = '4px';
+  };
+  const hide = () => { tip.style.display = 'none'; band.style.display = 'none'; shown = -1; };
+  box.querySelectorAll('.inv-hit').forEach(el => {
+    el.addEventListener('mouseenter', () => show(el));
+    el.addEventListener('click', () => {
+      const i = +el.dataset.i;
+      // En Año/Rango: el primer toque muestra el detalle (móvil) y el siguiente abre ese mes
+      if (drill && shown === i) { invChartSet('monthAbs', buckets[i].k); return; }
+      show(el);
+    });
+  });
+  box.querySelector('svg').addEventListener('mouseleave', hide);
+}
+
+// Vista "Todo": resumen profesional por categoría
+function invRenderOverview(wrap) {
+  const rows = [], seen = {};
+  const add = (cats, arr, t) => arr.forEach(x => {
+    const c = cats.find(q => q.id === x.cat); const label = c ? String(c.label||'').trim() : 'Sin categoría'; const k = label.toLowerCase();
+    if (!seen[k]) { seen[k] = { k: c ? k : '', label, gasto: 0, ganado: 0, nP: 0, nG: 0 }; rows.push(seen[k]); }
+    seen[k][t] += t === 'gasto' ? invPVal(x) : invGVal(x); if (t === 'gasto') seen[k].nP++; else seen[k].nG++;
+  });
+  add(invPcats, invPerdidas, 'gasto'); add(invGcats, invGanancias, 'ganado');
+  if (!rows.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = '';
+  rows.forEach(r => { r.gasto = Math.round(r.gasto*100)/100; r.ganado = Math.round(r.ganado*100)/100; r.neto = Math.round((r.ganado - r.gasto)*100)/100; });
+  rows.sort((a,b) => b.gasto - a.gasto);
+  const names = rows.map(r => r.label.toLowerCase());
+  const tP = rows.reduce((s,r) => s+r.gasto, 0), tW = rows.reduce((s,r) => s+r.ganado, 0);
+  const seg = (key, total) => rows.filter(r => r[key] > 0).map(r => `<span title="${invEsc(r.label)} · ${invFmt(r[key])}" style="width:${(r[key]/total*100).toFixed(2)}%;background:${invColorFor(r.label, names)};"></span>`).join('');
+  const legend = (key, total) => rows.filter(r => r[key] > 0).map(r => `<span><i style="background:${invColorFor(r.label, names)};"></i>${invEsc(r.label)} <b>${Math.round(r[key]/total*100)}%</b></span>`).join('');
+  const body = rows.map(r => {
+    const rec = r.gasto > 0 ? r.ganado / r.gasto * 100 : null;
+    const click = r.k ? `data-k="${invEsc(r.k)}" onclick="invSetFilter(this.dataset.k)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')invSetFilter(this.dataset.k)"` : '';
+    return `<div class="inv-ov-row${r.k ? ' clickable' : ''}" ${click}>
+      <div class="inv-co-id"><i style="background:${invColorFor(r.label, names)};"></i><div style="min-width:0;"><div class="inv-co-name">${invEsc(r.label)}</div><div class="inv-co-meta">${[r.nP ? r.nP+' pérdida'+(r.nP>1?'s':'') : '', r.nG ? r.nG+' ganancia'+(r.nG>1?'s':'') : ''].filter(Boolean).join(' · ')}</div></div></div>
+      <div class="inv-ov-num r">${r.gasto ? '−'+invFmt(r.gasto) : '—'}</div>
+      <div class="inv-ov-num g">${r.ganado ? '+'+invFmt(r.ganado) : '—'}</div>
+      <div class="inv-ov-rec">${rec === null ? '<span class="inv-ov-muted">—</span>' : `<div class="inv-meter"><span style="width:${Math.min(100, rec)}%;background:${rec >= 100 ? 'var(--inv-green)' : '#f59e0b'};"></span></div><span>${Math.round(rec)}%</span>`}</div>
+      <div class="inv-co-net ${r.neto>=0?'pos':'neg'}">${invSigned(r.neto)}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = `
+    <div class="inv-chart-top">
+      <div><div class="inv-chart-eyebrow">Visión general</div><div class="inv-chart-title">Resumen por categoría</div></div>
+    </div>
+    <div class="inv-ov-split">
+      <div class="inv-ov-comp">
+        <div class="inv-ov-comp-h"><span>¿En qué se va el dinero?</span><b style="color:var(--inv-red);">${invFmt(tP)}</b></div>
+        <div class="inv-stack">${tP > 0 ? seg('gasto', tP) : ''}</div>
+        <div class="inv-stack-legend">${tP > 0 ? legend('gasto', tP) : ''}</div>
+      </div>
+      <div class="inv-ov-comp">
+        <div class="inv-ov-comp-h"><span>¿De dónde vienen las ganancias?</span><b style="color:var(--inv-green);">${invFmt(tW)}</b></div>
+        <div class="inv-stack">${tW > 0 ? seg('ganado', tW) : ''}</div>
+        <div class="inv-stack-legend">${tW > 0 ? legend('ganado', tW) : '<span class="inv-ov-muted">Sin ganancias</span>'}</div>
+      </div>
+    </div>
+    <div class="inv-ov-table">
+      <div class="inv-ov-row inv-ov-th"><div>Categoría</div><div class="inv-ov-num">Pérdidas</div><div class="inv-ov-num">Ganancias</div><div class="inv-ov-rec">Recuperado</div><div class="inv-co-net">Neto</div></div>
+      ${body}
+    </div>
+    <div class="inv-chart-note">Pulsa una categoría para ver solo sus datos.</div>`;
+}
+let _invChartRsz = null;
+window.addEventListener('resize', () => { clearTimeout(_invChartRsz); _invChartRsz = setTimeout(() => { if (document.getElementById('invOverlay')?.classList.contains('open')) invRenderChart(invChartP, invChartG); }, 150); });
+let invFilter = ''; // '' = todo; si no, nombre de categoría en minúsculas
+function invExportCsv() {
+  const num = v => (Math.round((v||0)*100)/100).toFixed(2).replace('.', ',');
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const catL = (cats, id) => cats.find(c => c.id === id)?.label || 'Sin categoría';
+  const rows = [['Tipo','Categoría','Empresa / descripción','Fecha','Importe original','Moneda','Cambio BCE (€ por $)','Importe en EUR','Importe en USD']];
+  const line = (tipo, cat, name, date, amt, cur) => {
+    const r = invRateOn(date || null);
+    const eur = cur === 'EUR' ? amt : amt * r, usd = cur === 'USD' ? amt : amt / r;
+    rows.push([tipo, cat, name, date ? invFmtDate(date) : 'Sin fecha', num(amt), cur, r.toFixed(4).replace('.', ','), num(eur), num(usd)]);
+  };
+  invPerdidas.forEach(p => {
+    const cur = invCurOfP(p), cat = catL(invPcats, p.cat);
+    (Array.isArray(p.pagos) ? [...p.pagos].sort((a,b) => (a.date||'').localeCompare(b.date||'')) : []).forEach(x => line('Pérdida', cat, p.name, x.date, x.amount||0, cur));
+    const rest = Math.round(((p.amount||0) - invPagosSum(p))*100)/100;
+    if (rest > 0.004) line('Pérdida', cat, p.name, null, rest, cur);
+  });
+  invGanancias.forEach(g => line('Ganancia', catL(invGcats, g.cat), g.name, g.date, g.amount||0, 'EUR'));
+  const csv = '\ufeff' + rows.map(r => r.map(q).join(';')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'perdidas-ganancias-' + invTodayStr() + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  showToast('⬇ CSV descargado (' + (rows.length-1) + ' movimientos)', 'ok');
+}
+function invRenderCurUi() {
+  const seg = document.getElementById('invCurSeg');
+  if (seg) seg.innerHTML = ['EUR','USD'].map(c => `<button type="button" class="${invCur===c?'active':''}" aria-pressed="${invCur===c}" onclick="invSetCur('${c}')">${c==='EUR'?'€ EUR':'$ USD'}</button>`).join('');
+  const note = document.getElementById('invFxNote'); if (!note) return;
+  const hasUsd = invPerdidas.some(p => invIsUsdP(p) && (p.amount||0) > 0);
+  if (!hasUsd) { note.textContent = ''; return; }
+  const last = invFxDates[invFxDates.length-1];
+  note.innerHTML = last
+    ? `Pagos de Trading en $ · cambio oficial BCE de cada día · último: 1 $ = ${invFx[last].toFixed(4).replace('.', ',')} € (${invFmtDate(last)})`
+    : (invFxLoading ? 'Descargando tipos de cambio…' : `⚠ Sin conexión al BCE: cambio aproximado 1 $ = ${String(INV_FX_FALLBACK).replace('.', ',')} €`);
+}
+function invSetFilter(k) { invFilter = k || ''; invRenderPerdidas(); }
+
+// Cada categoría (Inversiones, Cursos, Trading, Retiro…) es un desplegable; se abre/cierra tocando su cabecera
+let invCatOpen = {}; // clave de categoría -> abierta
+function invCatSectionHtml(key, label, color, total, count, bodyHtml) {
+  const open = !!invCatOpen[key];
+  return `<div class="inv-cat-section">
+    <button type="button" class="inv-cat-header inv-cat-toggle" aria-expanded="${open?'true':'false'}" data-key="${invEsc(key)}" onclick="invToggleCat(this)">
+      <span class="inv-cat-title"><span class="inv-cat-chev">${open?'▾':'▸'}</span>${invEsc(label)}<span class="inv-cat-count">${count}</span></span>
+      <span class="inv-cat-total-${color}">${invFmt(total)}</span>
+    </button>
+    <div class="inv-cat-body" style="display:${open?'block':'none'};">${bodyHtml}</div>
+  </div>`;
+}
+function invToggleCat(btn) {
+  const key = btn.dataset.key;
+  invCatOpen[key] = !invCatOpen[key];
+  const body = btn.nextElementSibling; if (body) body.style.display = invCatOpen[key] ? 'block' : 'none';
+  btn.setAttribute('aria-expanded', invCatOpen[key] ? 'true' : 'false');
+  const ch = btn.querySelector('.inv-cat-chev'); if (ch) ch.textContent = invCatOpen[key] ? '▾' : '▸';
+}
 function invPerdidasItemHtml(item, isTrading) {
   const plusBtn = isTrading
     ? `<button class="inv-icon-btn" onclick="invOpenEntryModal(${item.id})" title="Añadir" style="color:var(--inv-red);font-size:16px;font-weight:600;">+</button>`
     : '';
   return `<div class="inv-perdida-item">
     <div class="inv-perdida-name">${invEsc(item.name)}</div>
-    <div class="inv-perdida-amount">${invFmtEur(item.amount||0)}</div>
+    <div class="inv-perdida-amount">${invFmt(invPVal(item))}</div>
     <div class="inv-item-actions">
       ${plusBtn}
       <button class="inv-icon-btn" onclick="invEditPerdida(${item.id})" title="Editar">✎</button>
@@ -4621,14 +5222,43 @@ function closeCalRetirosModal() {
   document.getElementById('calRetirosOverlay').style.display = 'none';
 }
 
-function invGananciaItemHtml(g) {
+// Retiros agrupados por empresa: si una empresa tiene varios, se muestran en un desplegable
+let invGExpanded = {}; // empresa (en minúsculas) -> abierto
+function invGananciaGroupsHtml(items) {
+  const groups = [], byKey = {};
+  items.forEach(g => { const key = String(g.name||'').trim().toLowerCase(); if (!byKey[key]) { byKey[key] = { name: g.name, items: [] }; groups.push(byKey[key]); } byKey[key].items.push(g); });
+  return groups.map(gr => {
+    if (gr.items.length === 1) return invGananciaItemHtml(gr.items[0]);
+    const key = String(gr.name||'').trim().toLowerCase();
+    const open = !!invGExpanded[key];
+    const total = gr.items.reduce((s,g) => s+invGVal(g), 0);
+    return `<div class="inv-g-group">
+    <button type="button" class="inv-g-group-head" aria-expanded="${open?'true':'false'}" data-key="${invEsc(key)}" onclick="invToggleGGroup(this)">
+      <span class="inv-g-chev">${open?'▾':'▸'}</span>
+      <span class="inv-ganancia-name">${invEsc(gr.name)}</span>
+      <span class="inv-g-count">${gr.items.length} retiros</span>
+      <span class="inv-ganancia-amount">${invFmt(total)}</span>
+    </button>
+    <div class="inv-g-group-body" style="display:${open?'block':'none'};">${gr.items.map(g => invGananciaItemHtml(g, true)).join('')}</div>
+  </div>`;
+  }).join('');
+}
+function invToggleGGroup(btn) {
+  const key = btn.dataset.key;
+  invGExpanded[key] = !invGExpanded[key];
+  const body = btn.nextElementSibling; if (body) body.style.display = invGExpanded[key] ? 'block' : 'none';
+  btn.setAttribute('aria-expanded', invGExpanded[key] ? 'true' : 'false');
+  const ch = btn.querySelector('.inv-g-chev'); if (ch) ch.textContent = invGExpanded[key] ? '▾' : '▸';
+}
+function invGananciaItemHtml(g, inGroup) {
   const mul = g.multiplier && g.multiplier > 1;
   const mulBadge = mul ? `<span style="font-size:10px;background:rgba(34,197,94,.15);color:var(--inv-green);border-radius:99px;padding:1px 7px;flex-shrink:0;">x${g.multiplier}</span>` : '';
   const subline  = mul ? `<div style="font-size:11px;color:var(--inv-text2);margin-top:2px;">${invFmtEur(g.baseAmount||0)} × ${g.multiplier}</div>` : '';
-  const dateBadge = g.date ? `<div style="font-size:10px;color:var(--inv-text3);margin-top:3px;">📅 ${g.date.split('-').reverse().join('  /  ')}</div>` : '';
+  const dateBadge = g.date && !inGroup ? `<div style="font-size:10px;color:var(--inv-text3);margin-top:3px;">📅 ${g.date.split('-').reverse().join('  /  ')}</div>` : '';
+  const title = inGroup ? (g.date ? '📅 ' + g.date.split('-').reverse().join(' / ') : 'Sin fecha') : invEsc(g.name);
   return `<div class="inv-ganancia-item">
-    <div style="flex:1;min-width:0;"><div class="inv-ganancia-name">${invEsc(g.name)}</div>${mulBadge}${subline}${dateBadge}</div>
-    <div class="inv-ganancia-amount">${invFmtEur(g.amount||0)}</div>
+    <div style="flex:1;min-width:0;"><div class="inv-ganancia-name">${title}</div>${mulBadge}${subline}${dateBadge}</div>
+    <div class="inv-ganancia-amount">${invFmt(invGVal(g))}</div>
     <div class="inv-item-actions">
       <button class="inv-icon-btn" onclick="invEditGanancia(${g.id})" title="Editar">✎</button>
       <button class="inv-icon-btn del" onclick="invAskDeleteGanancia(${g.id})" title="Eliminar">✕</button>
@@ -4641,6 +5271,11 @@ function invPopulatePCatSelect(sel) {
   document.getElementById('invPCat').innerHTML =
     invPcats.map(c => `<option value="${invEsc(c.id)}" ${c.id===sel?'selected':''}>${invEsc(c.label)}</option>`).join('');
 }
+// Cada pérdida puede llevar `pagos: [{id,date,amount}]`. `amount` sigue siendo el total;
+// lo que no está cubierto por pagos con fecha (amount − suma de pagos) cuenta como "sin fecha".
+function invPagosSum(item) { return Math.round((Array.isArray(item.pagos) ? item.pagos : []).reduce((s,x) => s+(x.amount||0), 0)*100)/100; }
+function invTodayStr() { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function invNewPagoId() { return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function invOpenPerdidasModal(id) {
   invPEditingId = id !== undefined ? id : null;
   if (id !== undefined) {
@@ -4651,25 +5286,120 @@ function invOpenPerdidasModal(id) {
     document.getElementById('invPAmount').value = item.amount;
     document.getElementById('invPAmount').title = 'Importe total actual: ' + item.amount;
     invPopulatePCatSelect(item.cat);
+    invPagoEditing = null; invRenderPagosList();
   } else {
     document.getElementById('invPerdidasModalTitle').textContent = 'Nueva pérdida';
     document.getElementById('invPName').value   = '';
     document.getElementById('invPAmount').value = '';
     document.getElementById('invPAmount').title = '';
     invPopulatePCatSelect(invPcats[0]?.id || '');
+    document.getElementById('invPPagosWrap').style.display = 'none';
   }
+  invUpdatePAmountLbl();
   document.getElementById('invPerdidasModal').classList.add('open');
   setTimeout(() => document.getElementById('invPName').focus(), 50);
+}
+function invUpdatePAmountLbl() {
+  const usd = invIsUsdP({ cat: document.getElementById('invPCat').value });
+  document.getElementById('invPAmountLbl').textContent = usd ? 'Importe ($)' : 'Importe (€)';
 }
 function invClosePerdidasModal() { document.getElementById('invPerdidasModal').classList.remove('open'); }
 function invSavePerdida() { _invTakeSnapshot();
   const name = document.getElementById('invPName').value.trim();
   if (!name) { document.getElementById('invPName').focus(); return; }
-  const item = { id: invPEditingId !== null ? invPEditingId : invPNextId++, name, amount: parseFloat(document.getElementById('invPAmount').value)||0, cat: document.getElementById('invPCat').value };
+  const amount = parseFloat(document.getElementById('invPAmount').value)||0;
+  const cat = document.getElementById('invPCat').value;
+  const prevItem = invPEditingId !== null ? invPerdidas.find(p => p.id === invPEditingId) : null;
+  if (prevItem && Array.isArray(prevItem.pagos) && amount < invPagosSum(prevItem) - 0.001) {
+    showToast('⚠️ El total no puede ser menor que la suma de sus pagos ('+invFmtMoney(invPagosSum(prevItem), invCurOfP(prevItem))+')','err');
+    document.getElementById('invPAmount').focus(); return;
+  }
+  // Conservar el historial de pagos al editar; una pérdida nueva de Trading guarda su importe como pago de hoy
+  const _isTradingCat = (invPcats.find(c => c.id === cat)?.label || '').trim().toLowerCase() === 'trading';
+  const item = prevItem ? { ...prevItem, name, amount, cat }
+    : { id: invPNextId++, name, amount, cat, ...(_isTradingCat && amount > 0 ? { pagos: [{ id: invNewPagoId(), date: invTodayStr(), amount }] } : {}) };
   invPerdidas = invPEditingId !== null ? invPerdidas.map(p => p.id===invPEditingId ? item : p) : [...invPerdidas, item];
   invClosePerdidasModal(); invPersist();
 }
 function invEditPerdida(id) { invOpenPerdidasModal(id); }
+// ── Historial de pagos (dentro de "Editar pérdida") ──
+let invPagoEditing = null;   // id del pago en edición
+let invPagoPending = null;   // acción pendiente de confirmar
+function invFmtDate(d) { return d ? d.split('-').reverse().join('/') : 'Sin fecha'; }
+function invRenderPagosList() {
+  const wrap = document.getElementById('invPPagosWrap');
+  const item = invPerdidas.find(p => p.id === invPEditingId);
+  if (!item || (!Array.isArray(item.pagos) && !invIsUsdP(item))) { wrap.style.display = 'none'; return; }
+  if (!Array.isArray(item.pagos)) item.pagos = [];
+  wrap.style.display = '';
+  const cur = invCurOfP(item), other = cur === 'USD' ? 'EUR' : 'USD';
+  const conv = x => { const r = invRateOn(x.date); return cur === 'USD' ? (x.amount||0) * r : (x.amount||0) / r; };
+  const pagos = [...item.pagos].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  document.getElementById('invPPagosCount').textContent = '(' + pagos.length + ')';
+  const list = document.getElementById('invPPagosList');
+  list.innerHTML = pagos.length ? pagos.map(x => x.id === invPagoEditing
+    ? `<div class="inv-pago-row"><input type="date" id="invPagoEdDate" value="${invEsc(x.date||'')}" aria-label="Fecha del pago"/><input type="number" id="invPagoEdAmt" step="0.01" min="0" inputmode="decimal" value="${x.amount}" aria-label="Importe del pago"/><button type="button" class="inv-icon-btn inv-pago-ok" onclick="invAskSavePago('${invEsc(x.id)}')" title="Guardar" aria-label="Guardar pago">✓</button><button type="button" class="inv-icon-btn" onclick="invCancelEditPago()" title="Cancelar" aria-label="Cancelar edición">↺</button></div>`
+    : `<div class="inv-pago-row"><span class="inv-pago-date">📅 ${invFmtDate(x.date)}</span><span class="inv-pago-amt">${invFmtMoney(x.amount||0, cur)}<small class="inv-pago-conv">≈ ${invFmtMoney(conv(x), other)}</small></span><button type="button" class="inv-icon-btn" onclick="invEditPago('${invEsc(x.id)}')" title="Editar" aria-label="Editar pago">✎</button><button type="button" class="inv-icon-btn del" onclick="invAskDeletePago('${invEsc(x.id)}')" title="Eliminar" aria-label="Eliminar pago">✕</button></div>`
+  ).join('') : '<div class="inv-pagos-note" style="padding:10px;">Sin pagos con fecha</div>';
+  list.innerHTML += `<div class="inv-pago-row inv-pago-add"><input type="date" id="invPagoNewDate" value="${invTodayStr()}" aria-label="Fecha del nuevo pago"/><input type="number" id="invPagoNewAmt" step="0.01" min="0" inputmode="decimal" placeholder="${cur === 'USD' ? '$' : '€'}" aria-label="Importe del nuevo pago"/><button type="button" class="inv-pago-add-btn" onclick="invAddPago()">+ Añadir pago</button></div>`;
+  const sinFecha = Math.round(((item.amount||0) - invPagosSum(item))*100)/100;
+  document.getElementById('invPPagosNote').textContent = (sinFecha > 0.004 ? `${invFmtMoney(sinFecha, cur)} del total no tienen fecha. ` : '') + (cur === 'USD' ? 'Importes en dólares; la conversión usa el cambio del BCE de cada día.' : '');
+}
+function invAddPago() {
+  const date = document.getElementById('invPagoNewDate').value;
+  const amount = Math.round((parseFloat(document.getElementById('invPagoNewAmt').value)||0)*100)/100;
+  if (!date) { document.getElementById('invPagoNewDate').focus(); return; }
+  if (!(amount > 0)) { document.getElementById('invPagoNewAmt').focus(); return; }
+  const itemId = invPEditingId;
+  _invTakeSnapshot();
+  invPerdidas = invPerdidas.map(p => p.id !== itemId ? p : { ...p, amount: Math.round(((p.amount||0) + amount)*100)/100, pagos: [...(Array.isArray(p.pagos) ? p.pagos : []), { id: invNewPagoId(), date, amount }] });
+  invPersist(); invAfterPagoChange(itemId);
+}
+function invEditPago(pid) { invPagoEditing = pid; invRenderPagosList(); setTimeout(() => document.getElementById('invPagoEdAmt')?.focus(), 30); }
+function invCancelEditPago() { invPagoEditing = null; invRenderPagosList(); }
+function invOpenConfirmPago(title, text, btn, action) {
+  invPagoPending = action;
+  document.getElementById('invConfirmPagoTitle').textContent = title;
+  document.getElementById('invConfirmPagoText').textContent = text;
+  const b = document.getElementById('invConfirmPagoBtn'); b.textContent = btn;
+  b.className = btn === 'Eliminar' ? 'inv-btn-danger' : 'inv-btn-save';
+  document.getElementById('invConfirmPago').classList.add('open');
+}
+function invCloseConfirmPago() { document.getElementById('invConfirmPago').classList.remove('open'); invPagoPending = null; }
+function invDoConfirmPago() { const fn = invPagoPending; invCloseConfirmPago(); if (fn) fn(); }
+function invAskSavePago(pid) {
+  const date = document.getElementById('invPagoEdDate').value;
+  const amount = Math.round((parseFloat(document.getElementById('invPagoEdAmt').value)||0)*100)/100;
+  if (!date) { document.getElementById('invPagoEdDate').focus(); return; }
+  if (!(amount > 0)) { document.getElementById('invPagoEdAmt').focus(); return; }
+  const itemId = invPEditingId;
+  invOpenConfirmPago('¿Guardar cambios?', `El pago quedará en ${invFmtMoney(amount, invCurOfP(invPerdidas.find(p => p.id === itemId)||{}))} con fecha ${invFmtDate(date)}.`, 'Guardar', () => {
+    const it = invPerdidas.find(p => p.id === itemId); if (!it) return;
+    const old = (it.pagos||[]).find(x => x.id === pid); if (!old) return;
+    _invTakeSnapshot();
+    invPerdidas = invPerdidas.map(p => p.id !== itemId ? p : { ...p, amount: Math.round(((p.amount||0) - (old.amount||0) + amount)*100)/100, pagos: p.pagos.map(x => x.id === pid ? { ...x, date, amount } : x) });
+    invPagoEditing = null; invPersist(); invAfterPagoChange(itemId);
+  });
+}
+function invAskDeletePago(pid) {
+  const itemId = invPEditingId;
+  const it = invPerdidas.find(p => p.id === itemId); const x = it && (it.pagos||[]).find(q => q.id === pid); if (!x) return;
+  invOpenConfirmPago('¿Eliminar pago?', `Se eliminará el pago de ${invFmtMoney(x.amount||0, invCurOfP(it))} del ${invFmtDate(x.date)} y se restará del total.`, 'Eliminar', () => {
+    const it2 = invPerdidas.find(p => p.id === itemId); const old = it2 && (it2.pagos||[]).find(q => q.id === pid); if (!old) return;
+    _invTakeSnapshot();
+    invPerdidas = invPerdidas.map(p => p.id !== itemId ? p : { ...p, amount: Math.max(0, Math.round(((p.amount||0) - (old.amount||0))*100)/100), pagos: p.pagos.filter(q => q.id !== pid) });
+    invPersist(); invAfterPagoChange(itemId);
+  });
+}
+// Refleja en el modal abierto el nuevo total y la lista (y de nuevo tras un posible revert)
+function invAfterPagoChange(itemId) {
+  const sync = () => {
+    if (invPEditingId !== itemId || !document.getElementById('invPerdidasModal').classList.contains('open')) return;
+    const it = invPerdidas.find(p => p.id === itemId); if (it) document.getElementById('invPAmount').value = it.amount;
+    invRenderPagosList();
+  };
+  sync(); setTimeout(sync, 0);
+}
 function invAskDeletePerdida(id) {
   invPDeletingId = id;
   const item = invPerdidas.find(p => p.id === id);
@@ -4684,6 +5414,7 @@ function invConfirmDeletePerdida() {
 }
 
 // ── MODAL ENTRY ───────────────────────────────────────────────
+let invEntryCur = 'EUR';
 function invOpenEntryModal(id) {
   invEntryTargetId = id;
   const item = invPerdidas.find(p => p.id === id);
@@ -4692,7 +5423,11 @@ function invOpenEntryModal(id) {
   document.getElementById('invEAmount').value = '';
   document.getElementById('invEQty').value = '1';
   document.getElementById('invEPreview').textContent = '0,00 €';
-  document.getElementById('invETotalPreview').textContent = invFmtEur(item.amount||0);
+  invEntryCur = invCurOfP(item);
+  document.getElementById('invEAmountLbl').textContent = invEntryCur === 'USD' ? 'Importe ($)' : 'Importe (€)';
+  document.getElementById('invEPreview').textContent = invFmtMoney(0, invEntryCur);
+  document.getElementById('invETotalPreview').textContent = invFmtMoney(item.amount||0, invEntryCur);
+  document.getElementById('invEDate').value = invTodayStr();
   document.getElementById('invEntryModal').classList.add('open');
   setTimeout(() => document.getElementById('invEAmount').focus(), 50);
 }
@@ -4701,15 +5436,17 @@ function invUpdateEntryPreview() {
   const amt = parseFloat(document.getElementById('invEAmount').value)||0;
   const qty = Math.max(1, parseInt(document.getElementById('invEQty').value)||1);
   const item = invPerdidas.find(p => p.id===invEntryTargetId);
-  document.getElementById('invEPreview').textContent = invFmtEur(amt*qty);
-  document.getElementById('invETotalPreview').textContent = invFmtEur((item?item.amount:0)+amt*qty);
+  document.getElementById('invEPreview').textContent = invFmtMoney(amt*qty, invEntryCur);
+  document.getElementById('invETotalPreview').textContent = invFmtMoney((item?item.amount:0)+amt*qty, invEntryCur);
 }
 function invConfirmAddEntry() {
   const amt = parseFloat(document.getElementById('invEAmount').value)||0;
   const qty = Math.max(1, parseInt(document.getElementById('invEQty').value)||1);
   if (!amt) { document.getElementById('invEAmount').focus(); return; }
   _invTakeSnapshot();
-  invPerdidas = invPerdidas.map(p => p.id===invEntryTargetId ? {...p,amount:(p.amount||0)+amt*qty} : p);
+  const date = document.getElementById('invEDate').value || invTodayStr();
+  const nuevos = Array.from({ length: qty }, () => ({ id: invNewPagoId(), date, amount: amt })); // cada unidad es un pago con su fecha
+  invPerdidas = invPerdidas.map(p => p.id===invEntryTargetId ? {...p, amount:Math.round(((p.amount||0)+amt*qty)*100)/100, pagos:[...(Array.isArray(p.pagos)?p.pagos:[]), ...nuevos]} : p);
   invCloseEntryModal(); invPersist();
 }
 
@@ -4731,17 +5468,76 @@ function invOpenGananciaModal(id) {
     document.getElementById('invGMultiplier').value = g.multiplier||1;
     document.getElementById('invGDate').value       = g.date || todayStr;
     invPopulateGCatSelect(g.cat);
+    invPopulateEmpresaSelect(g.name);
   } else {
     document.getElementById('invGananciaModalTitle').textContent = 'Nueva ganancia';
     document.getElementById('invGName').value       = '';
     document.getElementById('invGAmount').value     = '';
     document.getElementById('invGMultiplier').value = '1';
     document.getElementById('invGDate').value       = todayStr;
-    invPopulateGCatSelect(invGcats[0]?.id || '');
+    invPopulateGCatSelect(invGcats.some(c => c.id === INV_RETIRO_CAT) ? INV_RETIRO_CAT : (invGcats[0]?.id || '')); // Retiro por defecto
+    invPopulateEmpresaSelect('');
   }
+  invOnGCatChange();
   invUpdateGananciaPreview();
   document.getElementById('invGananciaModal').classList.add('open');
-  setTimeout(() => document.getElementById('invGName').focus(), 50);
+  setTimeout(() => { const _ret = invIsRetiroCat(document.getElementById('invGCat').value); const _nw = document.getElementById('invGEmpresaNew'); document.getElementById(!_ret ? 'invGName' : (_nw.style.display !== 'none' ? 'invGEmpresaNew' : 'invGAmount')).focus(); }, 50);
+}
+const INV_RETIRO_CAT = 'gcat_retiro';
+function invIsRetiroCat(id) { return id === INV_RETIRO_CAT; }
+// Empresas conocidas: pérdidas de Trading + retiros ya registrados (sin duplicados, ignorando mayúsculas)
+function invEmpresas() {
+  const out = [], seen = new Set();
+  const add = n => { n = String(n || '').trim(); if (n && !seen.has(n.toLowerCase())) { seen.add(n.toLowerCase()); out.push(n); } };
+  invPerdidas.filter(p => p.cat === 'pcat_trading').forEach(p => add(p.name));
+  invGanancias.filter(g => g.cat === INV_RETIRO_CAT).forEach(g => add(g.name));
+  const hidden = invEmpresasOcultas().map(n => n.toLowerCase());
+  return out.filter(n => !hidden.includes(n.toLowerCase())).sort((a,b) => a.localeCompare(b, 'es'));
+}
+function invPopulateEmpresaSelect(sel) {
+  const list = invEmpresas();
+  sel = String(sel || '').trim();
+  if (sel && !list.some(e => e === sel)) list.push(sel);
+  const cur = sel || list[0] || '__new__';
+  document.getElementById('invGEmpresa').innerHTML =
+    list.map(e => `<option value="${invEsc(e)}" ${e===cur?'selected':''}>${invEsc(e)}</option>`).join('') +
+    `<option value="__new__" ${cur==='__new__'?'selected':''}>+ Añadir empresa…</option>`;
+  document.getElementById('invGEmpresaNew').value = '';
+  invOnEmpresaChange(true);
+}
+// Empresas quitadas de la lista: se guardan dentro de la categoría Retiro (se sincroniza con el resto de inversiones)
+function invEmpresasOcultas() { const c = invGcats.find(x => x.id === INV_RETIRO_CAT); return (c && Array.isArray(c.ocultas)) ? c.ocultas : []; }
+let invEmpresaDeleting = null;
+function invAskDeleteEmpresa() {
+  const v = document.getElementById('invGEmpresa').value;
+  if (!v || v === '__new__') return;
+  invEmpresaDeleting = v;
+  document.getElementById('invConfirmEmpresaName').textContent = `"${v}" dejará de aparecer en la lista de empresas. Los retiros ya registrados no se borran.`;
+  document.getElementById('invConfirmEmpresa').classList.add('open');
+}
+function invCloseConfirmEmpresa() { document.getElementById('invConfirmEmpresa').classList.remove('open'); invEmpresaDeleting = null; }
+function invConfirmDeleteEmpresa() {
+  const name = invEmpresaDeleting;
+  invCloseConfirmEmpresa();
+  const cat = invGcats.find(x => x.id === INV_RETIRO_CAT);
+  if (!name || !cat) return;
+  _invTakeSnapshot();
+  const prev = Array.isArray(cat.ocultas) ? cat.ocultas : [];
+  if (!prev.some(n => n.toLowerCase() === name.toLowerCase())) cat.ocultas = [...prev, name];
+  invPersist();
+  invPopulateEmpresaSelect('');
+}
+function invOnEmpresaChange(noFocus) {
+  const isNew = document.getElementById('invGEmpresa').value === '__new__';
+  const inp = document.getElementById('invGEmpresaNew');
+  inp.style.display = isNew ? 'block' : 'none';
+  const del = document.getElementById('invGEmpresaDel'); if (del) del.disabled = isNew;
+  if (isNew && !noFocus) setTimeout(() => inp.focus(), 30);
+}
+function invOnGCatChange() {
+  const ret = invIsRetiroCat(document.getElementById('invGCat').value);
+  document.getElementById('invGNameWrap').style.display = ret ? 'none' : '';
+  document.getElementById('invGEmpresaWrap').style.display = ret ? '' : 'none';
 }
 function invCloseGananciaModal() { document.getElementById('invGananciaModal').classList.remove('open'); }
 function invUpdateGananciaPreview() {
@@ -4752,8 +5548,21 @@ function invUpdateGananciaPreview() {
   else { row.style.display='none'; }
 }
 function invSaveGanancia() { _invTakeSnapshot();
-  const name = document.getElementById('invGName').value.trim();
-  if (!name) { document.getElementById('invGName').focus(); return; }
+  let name;
+  if (invIsRetiroCat(document.getElementById('invGCat').value)) {
+    const _sel = document.getElementById('invGEmpresa').value;
+    if (_sel === '__new__') {
+      name = document.getElementById('invGEmpresaNew').value.trim();
+      if (!name) { document.getElementById('invGEmpresaNew').focus(); return; }
+      const _same = invEmpresas().find(e => e.toLowerCase() === name.toLowerCase()); if (_same) name = _same; // misma empresa con otras mayúsculas
+    } else name = _sel;
+    if (!name) { document.getElementById('invGEmpresa').focus(); return; }
+    const _rc = invGcats.find(x => x.id === INV_RETIRO_CAT);
+    if (_rc && Array.isArray(_rc.ocultas)) _rc.ocultas = _rc.ocultas.filter(n => n.toLowerCase() !== name.toLowerCase());
+  } else {
+    name = document.getElementById('invGName').value.trim();
+    if (!name) { document.getElementById('invGName').focus(); return; }
+  }
   const baseAmount = parseFloat(document.getElementById('invGAmount').value)||0;
   const multiplier = parseInt(document.getElementById('invGMultiplier').value)||1;
   const _nowD = new Date();
@@ -4838,6 +5647,8 @@ document.getElementById('invEntryModal').addEventListener('click', e=>{if(e.targ
 document.getElementById('invGananciaModal').addEventListener('click', e=>{if(e.target===e.currentTarget)invCloseGananciaModal();});
 document.getElementById('invPcatModal').addEventListener('click', e=>{if(e.target===e.currentTarget)invClosePCatModal();});
 document.getElementById('invConfirmPerdida').addEventListener('click', e=>{if(e.target===e.currentTarget)invCloseConfirmPerdida();});
+document.getElementById('invConfirmPago').addEventListener('click', e=>{if(e.target===e.currentTarget)invCloseConfirmPago();});
+document.getElementById('invConfirmEmpresa').addEventListener('click', e=>{if(e.target===e.currentTarget)invCloseConfirmEmpresa();});
 document.getElementById('invConfirmGanancia').addEventListener('click', e=>{if(e.target===e.currentTarget)invCloseConfirmGanancia();});
 
 // ── MÁS DETALLES (stats colapsables) ─────────────────────────
@@ -4980,6 +5791,8 @@ document.addEventListener('keydown', e => {
     // Nivel más alto: confirmaciones de inversiones
     if (_isOpen('invConfirmPerdida'))  { invCloseConfirmPerdida(); return; }
     if (_isOpen('invConfirmGanancia')) { invCloseConfirmGanancia(); return; }
+    if (_isOpen('invConfirmEmpresa'))  { invCloseConfirmEmpresa(); return; }
+    if (_isOpen('invConfirmPago'))     { invCloseConfirmPago(); return; }
 
     // Aviso de elegir sesión del nuevo trade
     if (_isOpen('sesAddOverlay')) { closeSesAdd(); return; }
