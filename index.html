@@ -2188,7 +2188,7 @@ function renderMonthTable() {
     const cb=cierre?`<span class="badge ${cierre}">${cierre==='pos'?'Positivo':cierre==='neg'?'Negativo':'Neutro'}</span>`:'<span style="color:#2a2a2a;">—</span>';
     const pb=cierre?`<span style="font-weight:500;color:${pnl>0?'#4caf50':pnl<0?'#e53935':'#2196f3'}">${pnl>0?'+$':pnl<0?'-$':'$'}${Math.abs(pnl).toFixed(0)}</span>`:'<span style="color:#2a2a2a;">—</span>';
     const prefix=`${YEAR}-${pad(m)}-`;
-    const tot=invGanancias.filter(g=>g.date&&g.date.startsWith(prefix)).reduce((s,g)=>s+(g.amount||0),0);
+    const tot=invGanancias.filter(g=>g.cat===INV_RETIRO_CAT&&g.date&&g.date.startsWith(prefix)).reduce((s,g)=>s+(g.amount||0),0);
     const retColor=_mostrarRetiros?(tot>0?'#4caf50':'#333'):'transparent';
     const retText=tot>0?invFmtEur(tot):'—';
     tr.innerHTML=`<td class="month-name">${MONTHS[m-1]}${tag}</td><td>${cb}</td><td style="text-align:right;">${pb}</td><td class="retiros-cell" data-pos="${tot>0?1:0}" style="font-size:12px;font-weight:500;color:${retColor};text-align:right;padding-right:8px;">${retText}</td>`;
@@ -2196,7 +2196,7 @@ function renderMonthTable() {
   }
   const posEl=document.getElementById('mStatPos'); if(posEl) posEl.textContent=pos;
   const negEl=document.getElementById('mStatNeg'); if(negEl) negEl.textContent=neg;
-  const totalRetiros=invGanancias.filter(g=>g.date&&g.date.startsWith(String(YEAR))).reduce((s,g)=>s+(g.amount||0),0);
+  const totalRetiros=invGanancias.filter(g=>g.cat===INV_RETIRO_CAT&&g.date&&g.date.startsWith(String(YEAR))).reduce((s,g)=>s+(g.amount||0),0);
   const totalEl=document.getElementById('retirosTotal'); if(totalEl) totalEl.textContent='Total retiros: '+invFmtEur(totalRetiros);
   updateAllStats();
 }
@@ -2318,7 +2318,7 @@ function renderCalendar(){
     const m = calMonth + 1;
     const pad = n => String(n).padStart(2,'0');
     const monthPrefix = `${yr}-${pad(m)}-`;
-    const hasRetiros = invGanancias.some(g => g.date && g.date.startsWith(monthPrefix));
+    const hasRetiros = invGanancias.some(g => g.cat === INV_RETIRO_CAT && g.date && g.date.startsWith(monthPrefix));
     btn.style.display = hasRetiros ? 'inline-block' : 'none';
   }
 }
@@ -5229,7 +5229,7 @@ function openCalRetirosModal() {
   const monthName = MONTHS[calMonth] + ' ' + yr;
 
   const retiros = invGanancias
-    .filter(g => g.date && g.date.startsWith(monthPrefix))
+    .filter(g => g.cat === INV_RETIRO_CAT && g.date && g.date.startsWith(monthPrefix))
     .sort((a,b) => a.date.localeCompare(b.date));
 
   const title = document.getElementById('calRetirosTitle');
