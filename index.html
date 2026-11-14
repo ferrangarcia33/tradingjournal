@@ -4253,7 +4253,7 @@ function removeAvatar(){
 .inv-legend i.ln { height:2px; border-radius:0; vertical-align:3px; width:14px; }
 .inv-svg-wrap { position:relative; width:100%; }
 .inv-svg-wrap svg { display:block; width:100%; }
-.inv-tip { position:absolute; pointer-events:none; background:#0b0b0e; border:1px solid var(--inv-border2); border-radius:10px; padding:9px 11px; font-size:12px; color:var(--inv-text); box-shadow:0 8px 24px rgba(0,0,0,.5); white-space:nowrap; z-index:2; display:none; }
+.inv-tip { position:absolute; pointer-events:none; width:max-content; max-width:min(280px, 100%); box-sizing:border-box; background:#0b0b0e; border:1px solid var(--inv-border2); border-radius:10px; padding:9px 11px; font-size:12px; color:var(--inv-text); box-shadow:0 8px 24px rgba(0,0,0,.5); white-space:nowrap; z-index:2; display:none; }
 .inv-tip b { display:block; font-size:11px; color:var(--inv-text2); font-weight:600; margin-bottom:5px; text-transform:uppercase; letter-spacing:.06em; }
 .inv-tip div { display:flex; justify-content:space-between; gap:16px; }
 .inv-chart-note { font-size:11px; color:var(--inv-text3); margin-top:8px; }
@@ -4271,6 +4271,37 @@ function removeAvatar(){
 .inv-pagos-note { font-size:11px; color:var(--inv-text3); margin-top:6px; }
 @media(max-width:700px){ .inv-chart{padding:14px 12px 10px;} .inv-kpi-v{font-size:14px;} .inv-kpi{padding:8px 9px;} }
 .inv-cur-seg button { padding:6px 11px; }
+.inv-tip { white-space:normal; }
+.inv-tip b { white-space:nowrap; }
+.inv-tip .inv-tip-sec { display:block; }
+.inv-tip .inv-tip-co { display:flex; flex-wrap:wrap; justify-content:space-between; column-gap:10px; row-gap:0; padding:2px 0; }
+.inv-tip .inv-tip-co > span:first-child { white-space:nowrap; }
+.inv-tip .inv-tip-co > span:last-child { margin-left:auto; text-align:right; white-space:nowrap; }
+.inv-fx-short { display:none; }
+@media(max-width:700px){
+  .inv-app { padding:1.25rem 16px 4rem; }
+  .inv-app .inv-page-header { margin-bottom:1.1rem; gap:12px; }
+  .inv-app .inv-page-title { font-size:21px; }
+  .inv-app .inv-page-header > div:first-child { flex:1 1 100%; }
+  .inv-app .inv-header-actions { width:100%; flex-wrap:nowrap; gap:6px; }
+  .inv-app .inv-cur-seg { margin-right:auto; }
+  .inv-app .inv-cur-seg button { padding:6px 12px; font-size:12px; }
+  .inv-app .inv-btn-lbl { display:none; }
+  .inv-app .inv-header-actions .inv-ghost-btn { width:36px; height:34px; padding:0; font-size:15px; display:inline-flex; align-items:center; justify-content:center; }
+  .inv-app .inv-filter-bar { flex-wrap:nowrap; overflow-x:auto; margin:0 -16px .7rem; padding:0 16px 2px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .inv-app .inv-filter-bar::-webkit-scrollbar { display:none; }
+  .inv-app .inv-filter-chip { flex-shrink:0; padding:6px 13px; font-size:12.5px; }
+  .inv-app .inv-fx-note { margin:0 0 1rem; font-size:10.5px; }
+  .inv-app .inv-fx-long { display:none; } .inv-fx-short { display:inline; }
+  .inv-app .inv-stats.inv-stats { grid-template-columns:1fr 1fr!important; gap:8px; margin-bottom:1.25rem; }
+  .inv-app .inv-stat-card { padding:12px 13px; border-radius:12px; min-width:0; }
+  .inv-app .inv-stat-card:hover { transform:none; }
+  .inv-app .inv-stat-label { font-size:9px; letter-spacing:.08em; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .inv-app .inv-stat-value { font-size:18px; letter-spacing:-.4px; }
+  .inv-app .inv-stat-sub { font-size:10.5px; margin-top:4px; }
+  .inv-app .inv-stat-net { grid-column:1 / -1; }
+  .inv-app .inv-stat-net .inv-stat-value { font-size:22px; }
+}
 .inv-header-actions { flex-wrap:wrap; align-items:center; }
 .inv-fx-note { font-size:11px; color:var(--inv-text3); margin:-0.6rem 0 1.2rem; }
 .inv-fx-note:empty { display:none; }
@@ -4377,9 +4408,9 @@ function removeAvatar(){
       </div>
       <div class="inv-header-actions">
         <div class="inv-seg inv-cur-seg" role="group" aria-label="Moneda" id="invCurSeg"></div>
-        <button class="inv-ghost-btn" onclick="invExportCsv()" title="Descargar todos los movimientos en CSV (Excel)">⬇ Exportar</button>
-        <button class="inv-ghost-btn" onclick="closeInversiones()">← Volver</button>
-        <button class="inv-ghost-btn" onclick="invOpenPCatModal()">⚙ Categorías</button>
+        <button class="inv-ghost-btn" onclick="invExportCsv()" title="Descargar todos los movimientos en CSV (Excel)" aria-label="Exportar">↓<span class="inv-btn-lbl"> Exportar</span></button>
+        <button class="inv-ghost-btn" onclick="invOpenPCatModal()" title="Categorías" aria-label="Categorías">⚙&#xFE0E;<span class="inv-btn-lbl"> Categorías</span></button>
+        <button class="inv-ghost-btn" onclick="closeInversiones()" title="Volver" aria-label="Volver">←<span class="inv-btn-lbl"> Volver</span></button>
       </div>
     </div>
 
@@ -5042,6 +5073,7 @@ function invDrawChartSvg(buckets, coNames) {
     tip.style.left = left + 'px'; tip.style.top = '4px';
   };
   const hide = () => { tip.style.display = 'none'; band.style.display = 'none'; shown = -1; };
+  _invTipHide = hide;
   box.querySelectorAll('.inv-hit').forEach(el => {
     el.addEventListener('mouseenter', () => show(el));
     el.addEventListener('click', () => {
@@ -5105,6 +5137,9 @@ function invRenderOverview(wrap) {
     <div class="inv-chart-note">Pulsa una categoría para ver solo sus datos.</div>`;
 }
 let _invChartRsz = null;
+let _invTipHide = null;
+// Tocar o pulsar fuera de la gráfica cierra el detalle
+document.addEventListener('pointerdown', e => { if (_invTipHide && !(e.target.closest && e.target.closest('.inv-hit'))) _invTipHide(); }, true);
 window.addEventListener('resize', () => { clearTimeout(_invChartRsz); _invChartRsz = setTimeout(() => { if (document.getElementById('invOverlay')?.classList.contains('open')) invRenderChart(invChartP, invChartG); }, 150); });
 let invFilter = ''; // '' = todo; si no, nombre de categoría en minúsculas
 function invExportCsv() {
@@ -5140,7 +5175,7 @@ function invRenderCurUi() {
   if (!hasUsd) { note.textContent = ''; return; }
   const last = invFxDates[invFxDates.length-1];
   note.innerHTML = last
-    ? `Pagos de Trading en $ · cambio oficial BCE de cada día · último: 1 $ = ${invFx[last].toFixed(4).replace('.', ',')} € (${invFmtDate(last)})`
+    ? `<span class="inv-fx-long">Pagos de Trading en $ · cambio oficial BCE de cada día · último: </span>1 $ = ${invFx[last].toFixed(4).replace('.', ',')} € <span class="inv-fx-short">· BCE </span>(${invFmtDate(last)})`
     : (invFxLoading ? 'Descargando tipos de cambio…' : `⚠ Sin conexión al BCE: cambio aproximado 1 $ = ${String(INV_FX_FALLBACK).replace('.', ',')} €`);
 }
 function invSetFilter(k) { invFilter = k || ''; invRenderPerdidas(); }
